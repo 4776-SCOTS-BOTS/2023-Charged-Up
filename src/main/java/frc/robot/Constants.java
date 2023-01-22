@@ -156,8 +156,32 @@ public final class Constants {
 
   public static final class ArmConstants {
     public static final int kShoulder1Port = 55;
-    public static final int kShoulder2Port = 92; //TODO: Make these the actual port numbers
+    public static final int kShoulder2Port = 92; // TODO: Make these the actual port numbers
     public static final int kElbowPort = 42;
+
+    // Elbow Constants
+    public static final class Elbow {
+      public static final double kP = 0.04;
+      public static final double kI = 0;
+      public static final double kD = 0;
+      public static final double kFF = 0.01;
+      public static final double kMinOutput = -1;
+      public static final double kMaxOutput = 1;
+      public static final double kCCWLimit = 0.7;
+      public static final double kCWLimit = 0.3;
+    }
+
+        // Shoulder Constants
+        public static final class Shoulder {
+          public static final double kP = 0.04;
+          public static final double kI = 0;
+          public static final double kD = 0;
+          public static final double kFF = 0.01;
+          public static final double kMinOutput = -1;
+          public static final double kMaxOutput = 1;
+          public static final double kCCWLimit = 0.65;
+          public static final double kCWLimit = 0.35;
+        }
   }
 
   public static RobotType GenerateConstants(RobotType robot) {
