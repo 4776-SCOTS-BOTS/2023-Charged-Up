@@ -58,10 +58,6 @@ public final class Constants {
     public static final int kFrontRightTurningMotorPort = 3;
     public static final int kRearRightTurningMotorPort = 7;
 
-    public static final int kShoulder1Port = 55;
-    public static final int kShoulder2Port = 92; //TODO: Make these the actual port numbers
-    public static final int kElbowPort = 42;
-
     public static final int[] kFrontLeftTurningEncoderPorts = new int[] { 0, 1 };
     public static final int[] kRearLeftTurningEncoderPorts = new int[] { 2, 3 };
     public static final int[] kFrontRightTurningEncoderPorts = new int[] { 6, 7 };
@@ -156,6 +152,12 @@ public final class Constants {
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+
+  public static final class ArmConstants {
+    public static final int kShoulder1Port = 55;
+    public static final int kShoulder2Port = 92; //TODO: Make these the actual port numbers
+    public static final int kElbowPort = 42;
   }
 
   public static RobotType GenerateConstants(RobotType robot) {
