@@ -28,15 +28,20 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class Arm extends SubsystemBase {
-  public final CANSparkMax shoulder1;
-  public final CANSparkMax shoulder2;
-  public final CANSparkMax elbow;
+  private final CANSparkMax shoulder1;
+  private final CANSparkMax shoulder2;
+  private final CANSparkMax elbow;
 
   private final AbsoluteEncoder elbowEncoder;
   private final AbsoluteEncoder shoulderEncoder;
 
   private final SparkMaxPIDController elbowPIDController;
   private final SparkMaxPIDController shoulderPIDController;
+
+  private final ArmSubsystem elbowTrapController;
+
+  public double elbowPosition;
+  public double shoulderPosition;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -50,21 +55,32 @@ public class Arm extends SubsystemBase {
     shoulder2.setIdleMode(IdleMode.kBrake);
     elbow.setIdleMode(IdleMode.kBrake);
 
+    elbow.setSmartCurrentLimit(Constants.ArmConstants.Elbow.kCurrentLimit);
+
     elbowEncoder = elbow.getAbsoluteEncoder(Type.kDutyCycle);
-    shoulderEncoder = shoulder1.getAbsoluteEncoder(Type.kDutyCycle);
     elbowPIDController = elbow.getPIDController();
-    shoulderPIDController = shoulder1.getPIDController();
     elbowPIDController.setFeedbackDevice(elbowEncoder);
+    elbowPIDController.setPositionPIDWrappingEnabled(false);
+    elbowEncoder.setPositionConversionFactor((2 * Math.PI));
+    elbowEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
+
+    shoulderEncoder = shoulder1.getAbsoluteEncoder(Type.kDutyCycle);
+    shoulderPIDController = shoulder1.getPIDController();
     shoulderPIDController.setFeedbackDevice(shoulderEncoder);
+    shoulderPIDController.setPositionPIDWrappingEnabled(false);
+    shoulderEncoder.setPositionConversionFactor((2 * Math.PI));
+    shoulderEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
 
+    elbowTrapController = new ArmSubsystem(elbowPIDController, Constants.ArmConstants.elbow,
+        getElbowCurrentPos(), elbowEncoder, shoulderEncoder);
 
-    // Set the PID gains for the elbow motor.
-    elbowPIDController.setP(ArmConstants.Elbow.kP);
-    elbowPIDController.setI(ArmConstants.Elbow.kI);
-    elbowPIDController.setD(ArmConstants.Elbow.kD);
-    elbowPIDController.setFF(ArmConstants.Elbow.kFF);
-    elbowPIDController.setOutputRange(ArmConstants.Elbow.kMinOutput,
-        ArmConstants.Elbow.kMaxOutput);
+    // Set the PID gains for the elbow motor.  These values are set in the Trapezoid Controller above.
+    // elbowPIDController.setP(ArmConstants.Elbow.kP);
+    // elbowPIDController.setI(ArmConstants.Elbow.kI);
+    // elbowPIDController.setD(ArmConstants.Elbow.kD);
+    // elbowPIDController.setFF(ArmConstants.Elbow.kFF);
+    // elbowPIDController.setOutputRange(ArmConstants.Elbow.kMinOutput,
+    //     ArmConstants.Elbow.kMaxOutput);
 
     // Set the PID gains for the elbow motor.
     shoulderPIDController.setP(ArmConstants.Shoulder.kP);
@@ -79,20 +95,23 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    elbowPosition = getElbowCurrentPos();
+    shoulderPosition = getShoulderCurrentPos();
   }
 
   public void setElbowPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with elbow straight.
-    if(position > ArmConstants.Elbow.kCWLimit && position < ArmConstants.Elbow.kCCWLimit){
+    if(position > ArmConstants.Elbow.kCWLimit*2*Math.PI && position < ArmConstants.Elbow.kCCWLimit*2*Math.PI){
       //Do nothing.  Invalid elbow position
     } else {
-      elbowPIDController.setReference(position, ControlType.kSmartMotion);
+      elbowTrapController.enable();
+      elbowTrapController.setGoal(position);
     }
   }
 
   public void setShoulderPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with arm straight up.
-    if(position > ArmConstants.Shoulder.kCWLimit && position < ArmConstants.Shoulder.kCCWLimit){
+    if(position > ArmConstants.Shoulder.kCWLimit*2*Math.PI && position < ArmConstants.Shoulder.kCCWLimit*2*Math.PI){
       //Do nothing.  Invalid shoulder position
     } else {
       shoulderPIDController.setReference(position, ControlType.kSmartMotion);
@@ -106,4 +125,20 @@ public class Arm extends SubsystemBase {
   public double getShoulderCurrentPos(){
     return shoulderEncoder.getPosition();
   }
+
+  public void runShoulder(double power){
+    shoulder1.set(Constants.ArmConstants.Shoulder.kManualScale * power);
+  }
+
+  public void runElbow(double power){
+    elbowTrapController.disable();
+    elbow.set(Constants.ArmConstants.Elbow.kManualScale * power);
+    elbowTrapController.setGoal(elbowPosition); //Keep trap controller updated with position
+  }
+
+  public void holdElbowPosition(){
+    elbowTrapController.holdArmPosition();
+  }
+
+  
 }

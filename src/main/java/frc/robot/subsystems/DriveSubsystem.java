@@ -87,7 +87,6 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   // private final Gyro m_gyro = new ADXRS450_Gyro();
   private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB1);
-  
   //private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // Zeroed Module State
@@ -98,10 +97,6 @@ public class DriveSubsystem extends SubsystemBase {
   NetworkTableEntry tx = table.getEntry("tx");
   NetworkTableEntry ty = table.getEntry("ty");
   NetworkTableEntry ta = table.getEntry("ta");
-
-  // Auto Aim values TODO: Needs to be tuned to our robot
-  float Kp = -0.1f;
-  float min_command = 0.05f;
 
 
   // Odometry class for tracking robot pose
@@ -147,15 +142,6 @@ public class DriveSubsystem extends SubsystemBase {
     odoX.setDouble(this.getPose().getX());
     odoY.setDouble(this.getPose().getY());
     odoRot.setDouble(this.getPose().getRotation().getDegrees());
-
-    //gyroAngle.setDouble(-m_gyro.getFusedHeading());
-    //SmartDashboard.putNumber("Gyro getAngle", -m_gyro.getAngle());
-    //SmartDashboard.putNumber("Gyro getRot", m_gyro.getRotation2d().getDegrees());
-    //SmartDashboard.putNumber("Gyro Fused", -m_gyro.getFusedHeading());
-    //System.out.println("OdoX = " + getPose().getX());
-
-    
-
   }
 
   /**
@@ -239,6 +225,15 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(desiredStates[3], false, false);
   }
 
+  public SwerveModulePosition[] getModulePositions(){
+    return new SwerveModulePosition[] {
+      m_frontLeft.getPosition(),
+      m_frontRight.getPosition(),
+      m_rearLeft.getPosition(),
+      m_rearRight.getPosition()
+    };
+  }
+
   /** Resets the drive encoders to currently read a position of 0. */
   public void resetEncoders() {
     m_frontLeft.resetEncoders();
@@ -261,6 +256,10 @@ public class DriveSubsystem extends SubsystemBase {
   public double getHeading() {
     return -m_gyro.getAngle();
     //return m_gyro.getRotation2d().getDegrees();
+  }
+
+  public Rotation2d getGyroRotation() {
+    return m_gyro.getRotation2d();
   }
 
   /**

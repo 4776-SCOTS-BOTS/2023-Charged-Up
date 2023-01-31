@@ -10,6 +10,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
+import frc.robot.customClass.ArmJointConstants;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -155,33 +157,54 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int kShoulder1Port = 55;
-    public static final int kShoulder2Port = 92; // TODO: Make these the actual port numbers
-    public static final int kElbowPort = 42;
+    public static final int kShoulder1Port = 20;
+    public static final int kShoulder2Port = 21; // TODO: Make these the actual port numbers
+    public static final int kElbowPort = 22;
 
     // Elbow Constants
+
     public static final class Elbow {
+      public static final double kSVolts = 0;
+      public static final double kGVolts = 0;
+      public static final double kVVoltSecondPerRad = 0;
+      public static final double kAVoltSecondSquaredPerRad = 0;
+      public static final double kP = 0.001;
+      public static final double kI = 0;
+      public static final double kD = 0;
+      public static final double kFF = 0;
+      public static final double kMinOutput = -1;
+      public static final double kMaxOutput = 1;
+      public static final double kCCWLimit = 0.7;
+      public static final double kCWLimit = 0.3;
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
+      public static final double kOffsetRads = 2 * Math.PI * 0.5; // Final constant is 0-1 from Rev Throughbore setup
+      public static final int kCurrentLimit = 10;
+      public static final double kManualScale = 0.5;
+
+      public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared);
+
+    }
+
+    public static final ArmJointConstants elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
+        Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
+        Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kCCWLimit, Elbow.kCWLimit,
+        Elbow.trapConstraints, Elbow.kOffsetRads);
+
+    // Shoulder Constants
+    public static final class Shoulder {
       public static final double kP = 0.04;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 0.01;
       public static final double kMinOutput = -1;
       public static final double kMaxOutput = 1;
-      public static final double kCCWLimit = 0.7;
-      public static final double kCWLimit = 0.3;
+      public static final double kCCWLimit = 0.65;
+      public static final double kCWLimit = 0.35;
+
+      public static final double kManualScale = 0.5;
     }
 
-        // Shoulder Constants
-        public static final class Shoulder {
-          public static final double kP = 0.04;
-          public static final double kI = 0;
-          public static final double kD = 0;
-          public static final double kFF = 0.01;
-          public static final double kMinOutput = -1;
-          public static final double kMaxOutput = 1;
-          public static final double kCCWLimit = 0.65;
-          public static final double kCWLimit = 0.35;
-        }
   }
 
   public static RobotType GenerateConstants(RobotType robot) {
@@ -233,4 +256,7 @@ public final class Constants {
     }
 
 
+
   }
+
+  

@@ -64,6 +64,10 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
 
+  private Arm arm = new Arm();
+  private boolean elbowInManual = false;
+  private boolean shoulderInManual = false;
+
   // Init Limelight
   // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   // NetworkTableEntry txShuffle = table.getEntry("tx");
@@ -92,6 +96,9 @@ public class RobotContainer {
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
+
+  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(1, 3, 0);
+  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(1, 3, 0);
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
@@ -250,5 +257,33 @@ public class RobotContainer {
   public void zeroOdo(){
     m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
   }
+
+  Runnable ControlArm = () -> {
+    // Arm Control
+    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
+    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
+
+    //This following violates the intent of Command-based and should
+    //modified to use Commands
+    if(shoulderPower != 0){
+      shoulderInManual = true;
+      arm.runShoulder(shoulderPower);
+    } else if(shoulderInManual) {
+      //Do nothing other than stop the shoulder as shoulder control code is not done
+      arm.runShoulder(0); //Remove this line once control code is done
+    }
+
+    if(elbowPower!=0){
+      elbowInManual = true;
+      arm.runElbow(elbowPower);
+    } else if(elbowInManual) {
+      elbowInManual = false;  
+      arm.holdElbowPosition();
+    } else if(m_manipulatorController.){
+      double a =1;
+    }
+    
+    
+  };
   
 }
