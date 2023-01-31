@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 
 
@@ -80,7 +81,7 @@ public class Arm extends SubsystemBase {
     // elbowPIDController.setD(ArmConstants.Elbow.kD);
     // elbowPIDController.setFF(ArmConstants.Elbow.kFF);
     // elbowPIDController.setOutputRange(ArmConstants.Elbow.kMinOutput,
-    //     ArmConstants.Elbow.kMaxOutput);
+    // ArmConstants.Elbow.kMaxOutput);
 
     // Set the PID gains for the elbow motor.
     shoulderPIDController.setP(ArmConstants.Shoulder.kP);
@@ -89,6 +90,9 @@ public class Arm extends SubsystemBase {
     shoulderPIDController.setFF(ArmConstants.Shoulder.kFF);
     shoulderPIDController.setOutputRange(ArmConstants.Shoulder.kMinOutput,
         ArmConstants.Shoulder.kMaxOutput);
+
+    Shuffleboard.getTab("Arm").addNumber("Elbow", this::getElbowPositionDeg);
+    Shuffleboard.getTab("Arm").addNumber("Shoulder", this::getShoulderPositionDeg);
 
   }
 
@@ -122,8 +126,24 @@ public class Arm extends SubsystemBase {
     return elbowEncoder.getPosition();
   }
 
+  public double getElbowPosition(){
+    return elbowPosition;
+  }
+  
+  public double getElbowPositionDeg(){
+    return Math.toDegrees(elbowPosition);
+  }
+
   public double getShoulderCurrentPos(){
     return shoulderEncoder.getPosition();
+  }
+
+  public double getShoulderPosition(){
+    return shoulderPosition;
+  }
+
+  public double getShoulderPositionDeg(){
+    return Math.toDegrees(shoulderPosition);
   }
 
   public void runShoulder(double power){

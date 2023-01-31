@@ -64,7 +64,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
 
-  private Arm arm = new Arm();
+  private Arm m_arm = new Arm();
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
 
@@ -166,50 +166,54 @@ public class RobotContainer {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
 
     Runnable Control = () -> {
+      if (m_robotDrive != null) {
+        // SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
+        // SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
+        // SmartDashboard.putNumber("RightX", m_driverController.getRightX());
 
-      // SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
-      // SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
-      // SmartDashboard.putNumber("RightX", m_driverController.getRightX());
+        // Swerve xSpeed is the vertical/forward (negative because stick is inverse)
+        double xSpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
+            * xSpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftY()));
 
-      // Swerve xSpeed is the vertical/forward (negative because stick is inverse)
-      double xSpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
-          * xSpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftY()));
+        // Swerve ySpeed is the sideways left/right movement (negative because chassis
+        // +y is LEFT)
+        double ySpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
+            * ySpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftX()));
 
-      // Swerve ySpeed is the sideways left/right movement (negative because chassis
-      // +y is LEFT)
-      double ySpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
-          * ySpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftX()));
+        // Swerve rotation is the counter-clockwise rotation of the robot (negate stick
+        // input)
+        double rotation = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
+            * DriveConstants.rotRateModifier * rotLimiter.calculate(new_deadzone(-m_driverController.getRightX()));
 
-      // Swerve rotation is the counter-clockwise rotation of the robot (negate stick
-      // input)
-      double rotation = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
-          * DriveConstants.rotRateModifier * rotLimiter.calculate(new_deadzone(-m_driverController.getRightX()));
+        // Swap field/robot relative mode
+        if (m_driverController.getLeftBumper()) {
+          fieldRelative = true;
+        } else if (m_driverController.getRightBumper()) {
+          fieldRelative = false;
+        }
 
-      // Swap field/robot relative mode
-      if (m_driverController.getLeftBumper()) {
-        fieldRelative = true;
-      } else if (m_driverController.getRightBumper()) {
-        fieldRelative = false;
+        // Reset Gyro
+        // if (m_driverController.getPOV() == 0) {
+        // m_robotDrive.zeroHeading();
+        // System.out.println("Zeroing");
+        // }
+
+        // Call the Method
+        // SmartDashboard.putNumber("xSpeed", xSpeed);
+        // SmartDashboard.putNumber("ySpeed", ySpeed);
+        // SmartDashboard.putNumber("rotation", rotation);
+        SmartDashboard.putBoolean("Field Rel", fieldRelative);
+        m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
+
+        // System.out.println("Starting Pose Angle" +
+        // m_robotDrive.getPose().getRotation().getDegrees());
+
       }
-
-      // Reset Gyro
-      // if (m_driverController.getPOV() == 0) {
-      //   m_robotDrive.zeroHeading();
-      //   System.out.println("Zeroing");
-      // }
-
-      // Call the Method
-      // SmartDashboard.putNumber("xSpeed", xSpeed);
-      // SmartDashboard.putNumber("ySpeed", ySpeed);
-      // SmartDashboard.putNumber("rotation", rotation);
-      SmartDashboard.putBoolean("Field Rel", fieldRelative);
-      m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
-
-      // System.out.println("Starting Pose Angle" +
-      // m_robotDrive.getPose().getRotation().getDegrees());
-
     };
+
     m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
+    m_arm.setDefaultCommand(new RunCommand(ControlArm, m_arm));
+    
 
     lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
         .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
@@ -263,24 +267,28 @@ public class RobotContainer {
     double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
     double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
 
-    //This following violates the intent of Command-based and should
+    //The following violates the intent of Command-based and should
     //modified to use Commands
     if(shoulderPower != 0){
       shoulderInManual = true;
-      arm.runShoulder(shoulderPower);
+      m_arm.runShoulder(shoulderPower);
     } else if(shoulderInManual) {
       //Do nothing other than stop the shoulder as shoulder control code is not done
-      arm.runShoulder(0); //Remove this line once control code is done
+      m_arm.runShoulder(0); //Remove this line once control code is done
     }
-
+    
     if(elbowPower!=0){
       elbowInManual = true;
-      arm.runElbow(elbowPower);
+      m_arm.runElbow(elbowPower);
     } else if(elbowInManual) {
       elbowInManual = false;  
-      arm.holdElbowPosition();
-    } else if(m_manipulatorController.){
-      double a =1;
+      m_arm.holdElbowPosition();
+    } else if(m_manipulatorController.getXButton()){
+      elbowInManual = false;
+      m_arm.setElbowPosition(Math.toRadians(180));
+    } else if (m_manipulatorController.getAButton()){
+      elbowInManual = false;
+      m_arm.setElbowPosition(Math.toRadians(270));
     }
     
     
