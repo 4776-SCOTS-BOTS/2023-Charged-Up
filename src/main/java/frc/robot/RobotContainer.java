@@ -61,7 +61,7 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final DriveSubsystem m_robotDrive = null; //new DriveSubsystem();
   private boolean fieldRelative = true;
 
   private Arm m_arm = new Arm();
@@ -211,16 +211,16 @@ public class RobotContainer {
       }
     };
 
-    m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
+    //m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
     m_arm.setDefaultCommand(new RunCommand(ControlArm, m_arm));
     
 
-    lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
-        .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
+    // lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
+    //     .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
     
-    resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+    // resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    brakeButton.whileTrue(new InstantCommand(m_robotDrive::setXModuleState, m_robotDrive));
+    // brakeButton.whileTrue(new InstantCommand(m_robotDrive::setXModuleState, m_robotDrive));
 
     // testCommandButton.whenPressed(new InstantCommand(()->{
     // m_robotDrive.turnByAngle(179.9);
@@ -264,9 +264,14 @@ public class RobotContainer {
 
   Runnable ControlArm = () -> {
     // Arm Control
-    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
-    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
+    //double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
+    //double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
 
+    double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
+    double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
+
+    System.out.println("Elbow" + m_arm.getElbowCurrentPos());
+    System.out.println("Shoulder Power" + shoulderPower);
     //The following violates the intent of Command-based and should
     //modified to use Commands
     if(shoulderPower != 0){
@@ -282,13 +287,13 @@ public class RobotContainer {
       m_arm.runElbow(elbowPower);
     } else if(elbowInManual) {
       elbowInManual = false;  
-      m_arm.holdElbowPosition();
+     //m_arm.holdElbowPosition();
     } else if(m_manipulatorController.getXButton()){
       elbowInManual = false;
-      m_arm.setElbowPosition(Math.toRadians(180));
+      //m_arm.setElbowPosition(Math.toRadians(180));
     } else if (m_manipulatorController.getAButton()){
       elbowInManual = false;
-      m_arm.setElbowPosition(Math.toRadians(270));
+      //m_arm.setElbowPosition(Math.toRadians(270));
     }
     
     

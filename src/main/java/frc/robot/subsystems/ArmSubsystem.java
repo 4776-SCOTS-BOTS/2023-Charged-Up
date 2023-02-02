@@ -42,6 +42,8 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem {
     this.offsetEncoder = offestEncoder;
     this.jointEncoder = jointEncoder;
 
+    this.m_motor = sparkMAX;
+
     m_motor.setP(jointConstants.kP);
     m_motor.setI(jointConstants.kI);
     m_motor.setD(jointConstants.kD);
@@ -60,8 +62,8 @@ public class ArmSubsystem extends TrapezoidProfileSubsystem {
   }
 
 
-  public Command setArmGoalCommand(double kArmOffsetRads) {
-    return Commands.runOnce(() -> setGoal(kArmOffsetRads), this);
+  public Command setArmGoalCommand(double goal) {
+    return Commands.runOnce(() -> setGoal(goal), this);
   }
 
   public Command holdArmPositionCommand() {

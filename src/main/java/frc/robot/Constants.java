@@ -157,8 +157,10 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int kShoulder1Port = 20;
-    public static final int kShoulder2Port = 21; // TODO: Make these the actual port numbers
+    public static final int kShoulder1Port = 21;
+    public static final boolean kShoulder1Inv = true;
+    public static final int kShoulder2Port = 20; // TODO: Make these the actual port numbers
+    public static final boolean kShoulder2Inv = false;
     public static final int kElbowPort = 22;
 
     // Elbow Constants
@@ -178,7 +180,7 @@ public final class Constants {
       public static final double kCWLimit = 0.3;
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffsetRads = 2 * Math.PI * 0.5; // Final constant is 0-1 from Rev Throughbore setup
+      public static final double kOffset = 0.779; // Final constant is 0-1 from Rev Throughbore setup
       public static final int kCurrentLimit = 10;
       public static final double kManualScale = 0.5;
 
@@ -189,7 +191,7 @@ public final class Constants {
     public static final ArmJointConstants elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
         Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
         Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kCCWLimit, Elbow.kCWLimit,
-        Elbow.trapConstraints, Elbow.kOffsetRads);
+        Elbow.trapConstraints, Elbow.kOffset);
 
     // Shoulder Constants
     public static final class Shoulder {

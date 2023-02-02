@@ -50,6 +50,9 @@ public class Arm extends SubsystemBase {
     shoulder2 = new CANSparkMax(Constants.ArmConstants.kShoulder2Port , MotorType.kBrushless);
     elbow = new CANSparkMax(Constants.ArmConstants.kElbowPort , MotorType.kBrushless);
 
+    shoulder1.setInverted(Constants.ArmConstants.kShoulder1Inv);
+    shoulder2.setInverted(Constants.ArmConstants.kShoulder2Inv);
+
     shoulder2.follow(shoulder1, true);
 
     shoulder1.setIdleMode(IdleMode.kBrake);
@@ -64,6 +67,7 @@ public class Arm extends SubsystemBase {
     elbowPIDController.setPositionPIDWrappingEnabled(false);
     elbowEncoder.setPositionConversionFactor((2 * Math.PI));
     elbowEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
+    elbowEncoder.setZeroOffset(Constants.ArmConstants.elbow.kArmOffsetRads);
 
     shoulderEncoder = shoulder1.getAbsoluteEncoder(Type.kDutyCycle);
     shoulderPIDController = shoulder1.getPIDController();
@@ -74,6 +78,7 @@ public class Arm extends SubsystemBase {
 
     elbowTrapController = new ArmSubsystem(elbowPIDController, Constants.ArmConstants.elbow,
         getElbowCurrentPos(), elbowEncoder, shoulderEncoder);
+    elbowTrapController.disable();
 
     // Set the PID gains for the elbow motor.  These values are set in the Trapezoid Controller above.
     // elbowPIDController.setP(ArmConstants.Elbow.kP);
@@ -118,7 +123,7 @@ public class Arm extends SubsystemBase {
     if(position > ArmConstants.Shoulder.kCWLimit*2*Math.PI && position < ArmConstants.Shoulder.kCCWLimit*2*Math.PI){
       //Do nothing.  Invalid shoulder position
     } else {
-      shoulderPIDController.setReference(position, ControlType.kSmartMotion);
+      //shoulderPIDController.setReference(position, ControlType.kSmartMotion);
     }
   }
 
