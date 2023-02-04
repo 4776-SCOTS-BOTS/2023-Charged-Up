@@ -208,6 +208,12 @@ public final class Constants {
     }
 
   }
+//Solenoid Constants RAAAAAAA
+  public static final class PneumaticsConstants{
+    public static final int phCanID = 10;
+    public static final int gripperSolenoidPort = 1;
+    public static final int intakeSolenoidPort = 10;
+  }
 
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
