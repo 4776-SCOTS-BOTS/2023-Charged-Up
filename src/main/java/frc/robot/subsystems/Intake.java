@@ -30,12 +30,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor;
+  private final CANSparkMax magicCarpetMotor;
   private boolean isRunning = false;
 
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
     intakeMotor.setInverted(true);
+
+    magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
+    magicCarpetMotor.setInverted(true);
   }
 
   public void runIntake(double power){
@@ -55,6 +59,19 @@ public class Intake extends SubsystemBase {
     isRunning = false;
   }
 
+  public void runMagicCarpet(double power){
+    magicCarpetMotor.set(power);
+    isRunning = true;
+  }
+  public void magicCarpetIn(){
+    magicCarpetMotor.set(IntakeConstants.intakePower);
+    isRunning = true;
+  }
+  public void magicCarpetOff(){
+    magicCarpetMotor.stopMotor();
+    isRunning = false;
+  }
+  
   public boolean getIsRunning(){
     return isRunning;
   }
