@@ -67,6 +67,8 @@ public class RobotContainer {
   private Arm m_arm = new Arm();
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
+  
+  private Intake m_Intake = new Intake();
 
   // Init Limelight
   // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -85,13 +87,21 @@ public class RobotContainer {
   // }
 
   // The controllers
+  
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
 
-  POVButton resetGyro = new POVButton(m_driverController, 0);
+  POVButton resetGyro = new POVButton(m_driverController, 0); // Up on the D-Pad
 
+  // Drive controllers
   final JoystickButton brakeButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+
+  // Manipulator controllers
+  final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
+  final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
+  final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController,XboxController.Button.kA.value);
+
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -164,6 +174,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
+   
+    intakeInButton.onTrue(new InstantCommand(m_Intake::intakeIn, m_Intake));
+    intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
+    intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
+    
+
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
@@ -210,6 +226,8 @@ public class RobotContainer {
 
       }
     };
+
+
 
     //m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
     m_arm.setDefaultCommand(new RunCommand(ControlArm, m_arm));

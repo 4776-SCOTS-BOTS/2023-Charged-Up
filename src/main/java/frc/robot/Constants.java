@@ -209,6 +209,13 @@ public final class Constants {
 
   }
 
+    // Intake Constants
+    public static final class IntakeConstants {
+      public static final int kIntakePort = 23;
+      public static final boolean kIntakeInv = false;
+      public static final double intakePower = 0.75;
+    }
+
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
         case CompBot: {
