@@ -97,8 +97,8 @@ public class RobotContainer {
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
 
-  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(1, 3, 0);
-  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(1, 3, 0);
+  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(4, -4, 0);
+  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(4, -4, 0);
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
@@ -264,14 +264,12 @@ public class RobotContainer {
 
   Runnable ControlArm = () -> {
     // Arm Control
-    //double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
-    //double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
+    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
+    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
 
-    double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
-    double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
+    //double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
+    //double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
 
-    System.out.println("Elbow" + m_arm.getElbowCurrentPos());
-    System.out.println("Shoulder Power" + shoulderPower);
     //The following violates the intent of Command-based and should
     //modified to use Commands
     if(shoulderPower != 0){
@@ -282,20 +280,20 @@ public class RobotContainer {
       m_arm.runShoulder(0); //Remove this line once control code is done
     }
     
-    if(elbowPower!=0){
+    if (elbowPower != 0) {
       elbowInManual = true;
       m_arm.runElbow(elbowPower);
-    } else if(elbowInManual) {
-      elbowInManual = false;  
-     //m_arm.holdElbowPosition();
-    } else if(m_manipulatorController.getXButton()){
+    } else if (elbowInManual) {
       elbowInManual = false;
-      //m_arm.setElbowPosition(Math.toRadians(180));
-    } else if (m_manipulatorController.getAButton()){
+      m_arm.runElbow(0); // Remove once hold function is stable
+      // m_arm.holdElbowPosition();
+    } else if (m_manipulatorController.getXButton()) {
       elbowInManual = false;
-      //m_arm.setElbowPosition(Math.toRadians(270));
+      // m_arm.setElbowPosition(Math.toRadians(180));
+    } else if (m_manipulatorController.getAButton()) {
+      elbowInManual = false;
+      // m_arm.setElbowPosition(Math.toRadians(270));
     }
-    
     
   };
   

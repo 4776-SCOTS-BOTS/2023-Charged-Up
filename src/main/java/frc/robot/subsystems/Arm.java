@@ -39,7 +39,7 @@ public class Arm extends SubsystemBase {
   private final SparkMaxPIDController elbowPIDController;
   private final SparkMaxPIDController shoulderPIDController;
 
-  private final ArmSubsystem elbowTrapController;
+  private final JointSubsystem elbowTrapController;
 
   public double elbowPosition;
   public double shoulderPosition;
@@ -67,7 +67,7 @@ public class Arm extends SubsystemBase {
     elbowPIDController.setPositionPIDWrappingEnabled(false);
     elbowEncoder.setPositionConversionFactor((2 * Math.PI));
     elbowEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
-    elbowEncoder.setZeroOffset(Constants.ArmConstants.elbow.kArmOffsetRads);
+    elbowEncoder.setZeroOffset(Constants.ArmConstants.elbow.kOffset);
 
     shoulderEncoder = shoulder1.getAbsoluteEncoder(Type.kDutyCycle);
     shoulderPIDController = shoulder1.getPIDController();
@@ -76,7 +76,7 @@ public class Arm extends SubsystemBase {
     shoulderEncoder.setPositionConversionFactor((2 * Math.PI));
     shoulderEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
 
-    elbowTrapController = new ArmSubsystem(elbowPIDController, Constants.ArmConstants.elbow,
+    elbowTrapController = new JointSubsystem(elbowPIDController, Constants.ArmConstants.elbow,
         getElbowCurrentPos(), elbowEncoder, shoulderEncoder);
     elbowTrapController.disable();
 
