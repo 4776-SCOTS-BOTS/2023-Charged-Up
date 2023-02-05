@@ -65,10 +65,10 @@ public final class Constants {
     public static final int[] kFrontRightTurningEncoderPorts = new int[] { 6, 7 };
     public static final int[] kRearRightTurningEncoderPorts = new int[] { 8, 9 };
 
-    public static final int kFrontLeftTurningAnalogPort = 2;
-    public static final int kRearLeftTurningAnalogPort = 1;
-    public static final int kFrontRightTurningAnalogPort = 3;
-    public static final int kRearRightTurningAnalogPort = 0;
+    public static final int kFrontLeftTurningAnalogPort = 0;
+    public static final int kRearLeftTurningAnalogPort = 3;
+    public static final int kFrontRightTurningAnalogPort = 1;
+    public static final int kRearRightTurningAnalogPort = 2;
 
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = false;
@@ -80,10 +80,10 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
 
-    public static Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
-    public static Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
-    public static Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(+37.5));
-    public static Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+    public static Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(0));
+    public static Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(0));
+    public static Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(0));
+    public static Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(0));
 
     // Distance between centers of right and left wheels on robot
     public static double kTrackWidth = 0.587375;
@@ -211,7 +211,7 @@ public final class Constants {
 // Solenoid Constants RAAAAAAA
   public static final class PneumaticsConstants{
     public static final int phCanID = 10;
-    public static final int gripperSolenoidPort = 1;
+    public static final int gripperSolenoidPort = 8;
     public static final int intakeSolenoidPort = 10;
   }
 

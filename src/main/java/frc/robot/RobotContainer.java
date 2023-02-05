@@ -63,7 +63,7 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = null; //new DriveSubsystem();
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
 
   private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
@@ -121,12 +121,12 @@ public class RobotContainer {
   private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(4, -4, 0);
   private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(4, -4, 0);
 
-  
-
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
+  
+  
 
   private enum CommandsToChoose {
     ShootandRunLOW, ShootandRunHIGH, GrabShootShoot, WallGrabShootShoot
@@ -198,6 +198,10 @@ public class RobotContainer {
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
 
+    gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper,m_gripper));
+    gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper)
+      .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
+
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
@@ -247,7 +251,7 @@ public class RobotContainer {
 
 
 
-    //m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
+    m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
     m_arm.setDefaultCommand(new RunCommand(ControlArm, m_arm));
     
 
@@ -303,8 +307,7 @@ public class RobotContainer {
     double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
     double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
 
-    gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper,m_gripper));
-    gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper));
+
 
     //double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
     //double elbowPower = new_deadzone(-m_manipulatorController.getRightY());

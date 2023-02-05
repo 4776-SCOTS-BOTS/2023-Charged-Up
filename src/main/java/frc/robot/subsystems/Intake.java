@@ -36,12 +36,17 @@ public class Intake extends SubsystemBase {
   private Solenoid intakeSolenoid;
   private boolean isRunning = false;
 
+  private enum IntakeState {
+    IN, OUT, STOPPED;
+  }
+  private IntakeState intakeState = IntakeState.STOPPED;
+
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
     intakeMotor.setInverted(true);
 
-    magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
+    magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kMagicCarpetPort, MotorType.kBrushless);
     magicCarpetMotor.setInverted(true);
 
     intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
@@ -53,15 +58,22 @@ public class Intake extends SubsystemBase {
   }
   public void intakeIn(){
     intakeMotor.set(IntakeConstants.intakePower);
+    magicCarpetIn();
     isRunning = true;
+    intakeState = IntakeState.IN;
   }
   public void intakeOut(){
     intakeMotor.set(-IntakeConstants.intakePower);
+    magicCarpetOut();
     isRunning = true;
+    intakeState = IntakeState.OUT;
   }
   public void intakeOff(){
     intakeMotor.stopMotor();
+    if(intakeState == IntakeState.IN){
+    } else {magicCarpetOff();}
     isRunning = false;
+    intakeState = IntakeState.STOPPED;
   }
 
   public void runMagicCarpet(double power){
@@ -70,6 +82,10 @@ public class Intake extends SubsystemBase {
   }
   public void magicCarpetIn(){
     magicCarpetMotor.set(IntakeConstants.intakePower);
+    isRunning = true;
+  }
+  public void magicCarpetOut(){
+    magicCarpetMotor.set(-IntakeConstants.intakePower);
     isRunning = true;
   }
   public void magicCarpetOff(){
