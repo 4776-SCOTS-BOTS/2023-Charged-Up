@@ -108,6 +108,11 @@ public class RobotContainer {
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
   final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController,XboxController.Button.kA.value);
 
+  private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
+  private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
+
+  private final JoystickButton intakeExtendButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton intakeRetractButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -116,8 +121,7 @@ public class RobotContainer {
   private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(4, -4, 0);
   private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(4, -4, 0);
 
-  private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
-  private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
+  
 
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
@@ -191,6 +195,8 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
     
+    intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
+    intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
 
 
     Runnable Control = () -> {

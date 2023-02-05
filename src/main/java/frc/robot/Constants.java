@@ -208,7 +208,7 @@ public final class Constants {
     }
 
   }
-//Solenoid Constants RAAAAAAA
+// Solenoid Constants RAAAAAAA
   public static final class PneumaticsConstants{
     public static final int phCanID = 10;
     public static final int gripperSolenoidPort = 1;
@@ -220,6 +220,11 @@ public final class Constants {
       public static final int kIntakePort = 23;
       public static final boolean kIntakeInv = false;
       public static final double intakePower = 0.75;
+
+      // Magic Carpet Constants
+      public static final int kMagicCarpetPort = 24;
+      public static final boolean kMagicCarpetInv = false;
+      public static final double magicCarpetPower = 0.5;
     }
 
   public static RobotType GenerateConstants(RobotType robot) {

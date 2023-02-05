@@ -10,6 +10,8 @@ import frc.robot.Robot;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import com.revrobotics.CANSparkMax;
@@ -25,17 +27,24 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-
+import frc.robot.Constants.PneumaticsConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor;
+  private final CANSparkMax magicCarpetMotor;
+  private Solenoid intakeSolenoid;
   private boolean isRunning = false;
 
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
     intakeMotor.setInverted(true);
+
+    magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
+    magicCarpetMotor.setInverted(true);
+
+    intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
   }
 
   public void runIntake(double power){
@@ -55,6 +64,24 @@ public class Intake extends SubsystemBase {
     isRunning = false;
   }
 
+  public void runMagicCarpet(double power){
+    magicCarpetMotor.set(power);
+    isRunning = true;
+  }
+  public void magicCarpetIn(){
+    magicCarpetMotor.set(IntakeConstants.intakePower);
+    isRunning = true;
+  }
+  public void magicCarpetOff(){
+    magicCarpetMotor.stopMotor();
+    isRunning = false;
+  }
+  public void intakeExtend(){
+    intakeSolenoid.set(true);
+  }
+  public void intakeRetract(){
+    intakeSolenoid.set(false);
+  }
   public boolean getIsRunning(){
     return isRunning;
   }
