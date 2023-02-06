@@ -9,6 +9,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -42,9 +43,10 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.Compressor;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +63,17 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = null; //new DriveSubsystem();
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
+
+  private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
 
   private Arm m_arm = new Arm();
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
+  private final Gripper m_gripper = new Gripper(true);
+  
+  private Intake m_Intake = new Intake();
 
   // Init Limelight
   // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -84,25 +91,42 @@ public class RobotContainer {
   // setupLimelightShuffleBoard();
   // }
 
-  // The controllers
+  // The controllers - Making two references for backwards compatibility and new Trigger methods
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
 
-  POVButton resetGyro = new POVButton(m_driverController, 0);
+  CommandXboxController m_manipCommandController = new CommandXboxController(OIConstants.kManipulatorControllerPort);
 
+  POVButton resetGyro = new POVButton(m_driverController, 0); // Up on the D-Pad
+
+  // Drive controllers
   final JoystickButton brakeButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+
+  // Manipulator controllers
+  final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
+  final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
+  final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController,XboxController.Button.kA.value);
+
+  private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
+  private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
+
+  private final JoystickButton intakeExtendButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton intakeRetractButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
 
-  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(1, 3, 0);
-  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(1, 3, 0);
+  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(4, -4, 0);
+  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(4, -4, 0);
+
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
+  
+  
 
   private enum CommandsToChoose {
     ShootandRunLOW, ShootandRunHIGH, GrabShootShoot, WallGrabShootShoot
@@ -121,6 +145,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     SmartDashboard.putString("Robot Type", Constants.robotType.toString());
+
+    phCompressor.enableDigital();
 
     // Generate Auto Command Sequences
     //generateAutoRoutines();
@@ -164,6 +190,18 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
+   
+    intakeInButton.onTrue(new InstantCommand(m_Intake::intakeIn, m_Intake));
+    intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
+    intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
+    
+    intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
+    intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
+
+    gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper,m_gripper));
+    gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper)
+      .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
+
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
@@ -211,7 +249,9 @@ public class RobotContainer {
       }
     };
 
-    //m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
+
+
+    m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
     m_arm.setDefaultCommand(new RunCommand(ControlArm, m_arm));
     
 
@@ -264,14 +304,14 @@ public class RobotContainer {
 
   Runnable ControlArm = () -> {
     // Arm Control
-    //double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
-    //double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
+    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
+    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
 
-    double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
-    double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
 
-    System.out.println("Elbow" + m_arm.getElbowCurrentPos());
-    System.out.println("Shoulder Power" + shoulderPower);
+
+    //double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
+    //double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
+
     //The following violates the intent of Command-based and should
     //modified to use Commands
     if(shoulderPower != 0){
@@ -282,20 +322,20 @@ public class RobotContainer {
       m_arm.runShoulder(0); //Remove this line once control code is done
     }
     
-    if(elbowPower!=0){
+    if (elbowPower != 0) {
       elbowInManual = true;
       m_arm.runElbow(elbowPower);
-    } else if(elbowInManual) {
-      elbowInManual = false;  
-     //m_arm.holdElbowPosition();
-    } else if(m_manipulatorController.getXButton()){
+    } else if (elbowInManual) {
       elbowInManual = false;
-      //m_arm.setElbowPosition(Math.toRadians(180));
-    } else if (m_manipulatorController.getAButton()){
+      m_arm.runElbow(0); // Remove once hold function is stable
+      // m_arm.holdElbowPosition();
+    } else if (m_manipulatorController.getXButton()) {
       elbowInManual = false;
-      //m_arm.setElbowPosition(Math.toRadians(270));
+      // m_arm.setElbowPosition(Math.toRadians(180));
+    } else if (m_manipulatorController.getAButton()) {
+      elbowInManual = false;
+      // m_arm.setElbowPosition(Math.toRadians(270));
     }
-    
     
   };
   

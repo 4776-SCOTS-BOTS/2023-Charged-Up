@@ -1,2 +1,5 @@
 /build
 /.gradle
+/vendordeps
+vendordeps/NavX.json
+vendordeps/REVLib.json
