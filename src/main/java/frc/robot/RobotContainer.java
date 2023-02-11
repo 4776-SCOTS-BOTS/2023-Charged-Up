@@ -124,8 +124,8 @@ public class RobotContainer {
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
 
-  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(4, -4, 0);
-  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(4, -4, 0);
+  private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(2.0);
+  private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(2.0);
 
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
@@ -317,8 +317,8 @@ public class RobotContainer {
 
   Runnable ControlArm = () -> {
     // Arm Control
-    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
-    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
+    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
+    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));
 
     //double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
     //double elbowPower = new_deadzone(-m_manipulatorController.getRightY());

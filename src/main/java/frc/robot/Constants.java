@@ -189,9 +189,9 @@ public final class Constants {
       public static final double kCWLimit = 0.3;
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 0.779; // Final constant is 0-1 from Rev Throughbore setup
+      public static final double kOffset = 2.45; // Radians
       public static final int kCurrentLimit = 10;
-      public static final double kManualScale = 0.5;
+      public static final double kManualScale = 0.3;
 
       public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
           kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared);
@@ -205,16 +205,26 @@ public final class Constants {
 
     // Shoulder Constants
     public static final class Shoulder {
-      public static final double kP = 0.04;
+      public static final double kSVolts = 0;
+      public static final double kGVolts = 0;
+      public static final double kVVoltSecondPerRad = 0;
+      public static final double kAVoltSecondSquaredPerRad = 0;
+      public static final double kP = 0.001;
       public static final double kI = 0;
       public static final double kD = 0;
-      public static final double kFF = 0.01;
+      public static final double kFF = 0;
       public static final double kMinOutput = -1;
       public static final double kMaxOutput = 1;
-      public static final double kCCWLimit = 0.65;
-      public static final double kCWLimit = 0.35;
+      public static final double kCCWLimit = 0.7;
+      public static final double kCWLimit = 0.3;
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
+      public static final double kOffset = 0.38; // Final constant is 0-1 from Rev Throughbore setup
+      public static final int kCurrentLimit = 10;
+      public static final double kManualScale = 0.3;
 
-      public static final double kManualScale = 0.5;
+      public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
+          kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared);
     }
 
   }
