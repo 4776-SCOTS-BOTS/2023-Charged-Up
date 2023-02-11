@@ -107,6 +107,9 @@ public class RobotContainer {
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
   final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController,XboxController.Button.kA.value);
+  
+  final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
+  final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
@@ -194,6 +197,10 @@ public class RobotContainer {
     intakeInButton.onTrue(new InstantCommand(m_Intake::intakeIn, m_Intake));
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
+
+    intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::intakePowerCubeRunable, m_Intake));
+    intakePowerConeButton.onTrue(new InstantCommand(m_Intake::intakePowerConeRunable, m_Intake));
+
     
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));

@@ -35,6 +35,9 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax magicCarpetMotor;
   private Solenoid intakeSolenoid;
   private boolean isRunning = false;
+  private double intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCone;
+
+
 
   private enum IntakeState {
     IN, OUT, STOPPED;
@@ -43,27 +46,34 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
+    
     intakeMotor = new CANSparkMax(Constants.IntakeConstants.kIntakePort, MotorType.kBrushless);
-    intakeMotor.setInverted(true);
-
+    intakeMotor.setInverted(Constants.IntakeConstants.kIntakeInv);
+    
     magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kMagicCarpetPort, MotorType.kBrushless);
-    magicCarpetMotor.setInverted(true);
+    magicCarpetMotor.setInverted(Constants.IntakeConstants.kMagicCarpetInv);
 
     intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
   }
 
+  public void intakePowerConeRunable(){
+    intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCone;
+  }
+  public void intakePowerCubeRunable(){
+    intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCube;
+  }
   public void runIntake(double power){
     intakeMotor.set(power);
     isRunning = true;
   }
   public void intakeIn(){
-    intakeMotor.set(IntakeConstants.intakePower);
+    intakeMotor.set(intakePowerSetPoint);
     magicCarpetIn();
     isRunning = true;
     intakeState = IntakeState.IN;
   }
   public void intakeOut(){
-    intakeMotor.set(-IntakeConstants.intakePower);
+    intakeMotor.set(-intakePowerSetPoint);
     magicCarpetOut();
     isRunning = true;
     intakeState = IntakeState.OUT;
@@ -81,11 +91,11 @@ public class Intake extends SubsystemBase {
     isRunning = true;
   }
   public void magicCarpetIn(){
-    magicCarpetMotor.set(IntakeConstants.intakePower);
+    magicCarpetMotor.set(IntakeConstants.kMagicCarpetPower);
     isRunning = true;
   }
   public void magicCarpetOut(){
-    magicCarpetMotor.set(-IntakeConstants.intakePower);
+    magicCarpetMotor.set(-IntakeConstants.kMagicCarpetPower);
     isRunning = true;
   }
   public void magicCarpetOff(){

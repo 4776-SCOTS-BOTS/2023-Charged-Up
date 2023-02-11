@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ConfigConstants;
 import edu.wpi.first.cameraserver.CameraServer;
+import frc.robot.subsystems.LED;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -20,7 +21,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
+  private LED m_led;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -35,10 +36,14 @@ public class Robot extends TimedRobot {
     if (ConfigConstants.hasCamera) {
       CameraServer.startAutomaticCapture();
     }
-
+    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    m_led = new LED();
     m_robotContainer = new RobotContainer();
+    
+    m_led.setColor(Constants.kRGB_purple);
+    m_led.setDisplay();
   }
 
   /**
