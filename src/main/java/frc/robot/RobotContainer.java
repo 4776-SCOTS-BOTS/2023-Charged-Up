@@ -314,8 +314,6 @@ public class RobotContainer {
     double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getLeftY()));
     double elbowPower = elbowPowerLimiter.calculate(new_deadzone(-m_manipulatorController.getRightY()));
 
-
-
     //double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
     //double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
 
