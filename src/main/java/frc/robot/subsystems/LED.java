@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.customClass.CRGB;
 
+
 public class LED extends SubsystemBase {
   /** Creates a new LED. */
   // PWM port 9
@@ -30,6 +31,7 @@ public class LED extends SubsystemBase {
     m_led.setData(m_ledBuffer);
     m_led.start();
   }
+
   public void setColor(CRGB color){
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
       // Sets the specified LED to the RGB values for red
@@ -37,6 +39,14 @@ public class LED extends SubsystemBase {
       m_ledBuffer.setRGB(i, color.r, color.b, color.g);
    }
    
+  }
+  public void setYellow(){
+    setColor(Constants.kRGB_yellow);
+    setDisplay();
+  }
+  public void setPurple(){
+    setColor(Constants.kRGB_purple);
+    setDisplay();
   }
   
 }

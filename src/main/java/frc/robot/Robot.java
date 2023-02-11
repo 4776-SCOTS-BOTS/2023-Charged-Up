@@ -40,9 +40,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_led = new LED();
-    m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer(m_led);
     
-    m_led.setColor(Constants.kRGB_purple);
+    m_led.setColor(Constants.kRGB_yellow);
     m_led.setDisplay();
   }
 

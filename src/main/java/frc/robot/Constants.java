@@ -42,8 +42,8 @@ public final class Constants {
   public static final CRGB kRGB_red = new CRGB(255, 0, 0);
   public static final CRGB kRGB_green = new CRGB(0, 255, 0);
   public static final CRGB kRGB_blue = new CRGB(0, 0, 255);
-  public static final CRGB kRGB_yellow = new CRGB(204, 204, 0);
-  public static final CRGB kRGB_purple = new CRGB(70, 0, 70);
+  public static final CRGB kRGB_yellow = new CRGB(204, 104, 0);
+  public static final CRGB kRGB_purple = new CRGB(70, 0, 40);
   public static final CRGB kRGB_boaz = new CRGB(0, 59, 111);
 
   public static final class DriveConstants {

@@ -52,6 +52,7 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+import frc.robot.customClass.CRGB;
 import frc.robot.customClass.TriggerButton;
 import frc.robot.subsystems.*;
 
@@ -74,6 +75,8 @@ public class RobotContainer {
   private final Gripper m_gripper = new Gripper(true);
   
   private Intake m_Intake = new Intake();
+  private LED m_Led;
+
 
   // Init Limelight
   // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -146,10 +149,11 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() {
+  public RobotContainer(LED led) {
     SmartDashboard.putString("Robot Type", Constants.robotType.toString());
 
     phCompressor.enableDigital();
+    m_Led = led;
 
     // Generate Auto Command Sequences
     //generateAutoRoutines();
@@ -198,8 +202,10 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::intakePowerCubeRunable, m_Intake));
-    intakePowerConeButton.onTrue(new InstantCommand(m_Intake::intakePowerConeRunable, m_Intake));
+    intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube, m_Intake)
+    .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
+    intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone, m_Intake)
+    .andThen(new InstantCommand(m_Led::setYellow,m_Led)));
 
     
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));

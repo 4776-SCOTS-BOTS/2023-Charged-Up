@@ -24,11 +24,17 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
-
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PneumaticsConstants;
+import frc.robot.customClass.CRGB;
+import frc.robot.Constants.LEDConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LED;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.customClass.CRGB;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor;
@@ -56,10 +62,10 @@ public class Intake extends SubsystemBase {
     intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
   }
 
-  public void intakePowerConeRunable(){
+  public void setIntakePowerCone(){
     intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCone;
   }
-  public void intakePowerCubeRunable(){
+  public void setIntakePowerCube(){
     intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCube;
   }
   public void runIntake(double power){
