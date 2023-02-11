@@ -21,14 +21,14 @@ import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.customClass.ArmJointConstants;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class JointSubsystem extends TrapezoidProfileSubsystem {
+public class ElbowSubsystem extends TrapezoidProfileSubsystem {
   private SparkMaxPIDController m_motor;
   private final ArmFeedforward m_feedforward;
   private AbsoluteEncoder jointEncoder;
   private AbsoluteEncoder offsetEncoder;
 
   /** Create a new ArmSubsystem. */
-  public JointSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants, 
+  public ElbowSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants, 
   double initPosition, AbsoluteEncoder jointEncoder, AbsoluteEncoder offestEncoder) {
     super(
         jointConstants.trapConstraints,
