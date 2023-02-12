@@ -8,14 +8,14 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /** Add your docs here. */
 public class ArmJointConstants {
-  public double kSVolts, kGVolts, kVVoltSecondPerRad, kAVoltSecondSquaredPerRad;
+  public double kSVolts, kGVolts, kVVoltSecondPerRad, kAVoltSecondSquaredPerRad, kgBeta;
   public double kP, kI, kD, kFF, kMinOutput, kMaxOutput, kCCWLimit, kCWLimit;
   public TrapezoidProfile.Constraints trapConstraints;
   public double kOffset;
 
   public ArmJointConstants(double kSVolts, double kGVolts, double kVVoltSecondPerRad, double kAVoltSecondSquaredPerRad,
       double kP, double kI, double kD, double kFF, double kMinOutput, double kMaxOutput, double kCCWLimit,
-      double kCWLimit, TrapezoidProfile.Constraints trapConstraints, double kOffset) {
+      double kCWLimit, TrapezoidProfile.Constraints trapConstraints, double kOffset, double kgBeta) {
     this.kSVolts = kSVolts;
     this.kGVolts = kGVolts;
     this.kVVoltSecondPerRad = kVVoltSecondPerRad;
@@ -30,5 +30,6 @@ public class ArmJointConstants {
     this.kCWLimit = kCWLimit;
     this.trapConstraints = trapConstraints;
     this.kOffset = kOffset;
+    this.kgBeta = kgBeta;
   }
 }

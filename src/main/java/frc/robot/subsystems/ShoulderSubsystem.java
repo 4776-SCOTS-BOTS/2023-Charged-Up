@@ -19,25 +19,26 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
 import frc.robot.customClass.ArmJointConstants;
+import frc.robot.customClass.ShoulderFeedFowardController;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class ElbowSubsystem extends TrapezoidProfileSubsystem {
+public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
   private SparkMaxPIDController m_motor;
-  private final ArmFeedforward m_feedforward;
+  private final ShoulderFeedFowardController m_feedforward;
   private AbsoluteEncoder jointEncoder;
   private AbsoluteEncoder offsetEncoder;
 
   /** Create a new ArmSubsystem. */
-  public ElbowSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants, 
+  public ShoulderSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants, 
   double initPosition, AbsoluteEncoder jointEncoder, AbsoluteEncoder offestEncoder) {
     super(
         jointConstants.trapConstraints,
         initPosition);
 
         m_feedforward =
-        new ArmFeedforward(
-            jointConstants.kSVolts, jointConstants.kGVolts,
-            jointConstants.kVVoltSecondPerRad, jointConstants.kAVoltSecondSquaredPerRad);
+        new ShoulderFeedFowardController(
+            jointConstants.kSVolts, jointConstants.kGVolts, jointConstants.kgBeta, 
+            jointConstants.kVVoltSecondPerRad);
 
     this.offsetEncoder = offestEncoder;
     this.jointEncoder = jointEncoder;
@@ -55,7 +56,7 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
   @Override
   public void useState(TrapezoidProfile.State setpoint) {
     // Calculate the feedforward from the sepoint
-      double feedforward = m_feedforward.calculate(getFFAngle(setpoint.position), setpoint.velocity);
+      double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity, offsetEncoder.getPosition());
       // Add the feedforward to the PID output to get the motor output
       m_motor.setReference(
               setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
@@ -86,7 +87,4 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
     }
   }
 
-  public double getFFAngle(double setpoint){
-    return Math.PI + getOffset() - setpoint;
-  }
 }

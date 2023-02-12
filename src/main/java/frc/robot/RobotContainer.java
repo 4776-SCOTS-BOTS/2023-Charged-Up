@@ -69,7 +69,7 @@ public class RobotContainer {
 
   private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
 
-  private Arm m_arm = new Arm();
+  private Arm m_Arm = new Arm();
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
   private final Gripper m_gripper = new Gripper(true);
@@ -113,6 +113,9 @@ public class RobotContainer {
   
   final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
   final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
+  final POVButton testPosition1Button = new POVButton(m_manipulatorController, 90);
+  final POVButton testPosition2Button = new POVButton(m_manipulatorController, 270);
+
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
@@ -206,7 +209,6 @@ public class RobotContainer {
     .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
     intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone, m_Intake)
     .andThen(new InstantCommand(m_Led::setYellow,m_Led)));
-
     
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
@@ -214,6 +216,8 @@ public class RobotContainer {
     gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper,m_gripper));
     gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper)
       .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
+
+    //testPosition1Button.onTrue(new InstantCommand(m_Arm::setElbowPosition(Math.toRadians(180)),m_Arm);
 
 
     Runnable Control = () -> {
@@ -265,7 +269,7 @@ public class RobotContainer {
 
 
     m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
-    m_arm.setDefaultCommand(new RunCommand(ControlArm, m_arm));
+    m_Arm.setDefaultCommand(new RunCommand(ControlArm, m_Arm));
     
 
     // lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
@@ -327,20 +331,20 @@ public class RobotContainer {
     //modified to use Commands
     if(shoulderPower != 0){
       shoulderInManual = true;
-      m_arm.runShoulder(shoulderPower);
+      m_Arm.runShoulder(shoulderPower);
     } else if(shoulderInManual) {
       //Do nothing other than stop the shoulder as shoulder control code is not done
-      m_arm.runShoulder(0); //Remove this line once control code is done
+      m_Arm.runShoulder(0); //Remove this line once control code is done
     }
     
     if (elbowPower != 0) {
       elbowInManual = true;
-      m_arm.runElbow(elbowPower);
+      m_Arm.runElbow(elbowPower);
     } else if (elbowInManual) {
       elbowInManual = false;
-      m_arm.runElbow(0); // Remove once hold function is stable
+      m_Arm.runElbow(0); // Remove once hold function is stable
       // m_arm.holdElbowPosition();
-    } else if (m_manipulatorController.getXButton()) {
+    } else if (m_manipulatorController.getAButton()) {
       elbowInManual = false;
       // m_arm.setElbowPosition(Math.toRadians(180));
     } else if (m_manipulatorController.getAButton()) {

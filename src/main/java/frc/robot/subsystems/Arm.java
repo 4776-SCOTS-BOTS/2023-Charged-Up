@@ -40,6 +40,7 @@ public class Arm extends SubsystemBase {
   private final SparkMaxPIDController shoulderPIDController;
 
   private final ElbowSubsystem elbowTrapController;
+  private final ShoulderSubsystem shoulderTrapController;
 
   public double elbowPosition;
   public double shoulderPosition;
@@ -80,6 +81,10 @@ public class Arm extends SubsystemBase {
         getElbowCurrentPos(), elbowEncoder, shoulderEncoder);
     elbowTrapController.disable();
 
+    shoulderTrapController = new ShoulderSubsystem(elbowPIDController, Constants.ArmConstants.shoulder,
+        getShoulderCurrentPos(), shoulderEncoder, elbowEncoder);
+    shoulderTrapController.disable();
+
     // Set the PID gains for the elbow motor.  These values are set in the Trapezoid Controller above.
     // elbowPIDController.setP(ArmConstants.Elbow.kP);
     // elbowPIDController.setI(ArmConstants.Elbow.kI);
@@ -88,13 +93,13 @@ public class Arm extends SubsystemBase {
     // elbowPIDController.setOutputRange(ArmConstants.Elbow.kMinOutput,
     // ArmConstants.Elbow.kMaxOutput);
 
-    // Set the PID gains for the elbow motor.
-    shoulderPIDController.setP(ArmConstants.Shoulder.kP);
-    shoulderPIDController.setI(ArmConstants.Shoulder.kI);
-    shoulderPIDController.setD(ArmConstants.Shoulder.kD);
-    shoulderPIDController.setFF(ArmConstants.Shoulder.kFF);
-    shoulderPIDController.setOutputRange(ArmConstants.Shoulder.kMinOutput,
-        ArmConstants.Shoulder.kMaxOutput);
+    // Set the PID gains for the shoulder motor.
+    // shoulderPIDController.setP(ArmConstants.Shoulder.kP);
+    // shoulderPIDController.setI(ArmConstants.Shoulder.kI);
+    // shoulderPIDController.setD(ArmConstants.Shoulder.kD);
+    // shoulderPIDController.setFF(ArmConstants.Shoulder.kFF);
+    // shoulderPIDController.setOutputRange(ArmConstants.Shoulder.kMinOutput,
+    //     ArmConstants.Shoulder.kMaxOutput);
 
     Shuffleboard.getTab("Arm").addNumber("Elbow", this::getElbowPositionDeg);
     Shuffleboard.getTab("Arm").addNumber("Shoulder", this::getShoulderPositionDeg);
@@ -110,20 +115,21 @@ public class Arm extends SubsystemBase {
 
   public void setElbowPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with elbow straight.
-    if(position > ArmConstants.Elbow.kLowerLimit*2*Math.PI && position < ArmConstants.Elbow.kUpperLimit*2*Math.PI){
-      //Do nothing.  Invalid elbow position
-    } else {
+    if(position > ArmConstants.Elbow.kLowerLimit && position < ArmConstants.Elbow.kUpperLimit){
       elbowTrapController.enable();
       elbowTrapController.setGoal(position);
+    } else {
+      //Do nothing.  Invalid setpoint
     }
   }
 
   public void setShoulderPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with arm straight up.
     if(position > ArmConstants.Shoulder.kLowerLimit*2*Math.PI && position < ArmConstants.Shoulder.kUpperLimit*2*Math.PI){
-      //Do nothing.  Invalid shoulder position
+      elbowTrapController.enable();
+      elbowTrapController.setGoal(position);
     } else {
-      //shoulderPIDController.setReference(position, ControlType.kSmartMotion);
+      //Do nothing.  Invalid shoulder position
     }
   }
 
@@ -152,7 +158,9 @@ public class Arm extends SubsystemBase {
   }
 
   public void runShoulder(double power){
+    shoulderTrapController.disable();
     shoulder1.set(Constants.ArmConstants.Shoulder.kManualScale * power);
+    shoulderTrapController.setGoal(shoulderPosition); //Keep trap controller updated with position
   }
 
   public void runElbow(double power){
@@ -163,6 +171,10 @@ public class Arm extends SubsystemBase {
 
   public void holdElbowPosition(){
     elbowTrapController.holdArmPosition();
+  }
+
+  public void holdShoulderPosition(){
+    shoulderTrapController.holdArmPosition();
   }
 
   

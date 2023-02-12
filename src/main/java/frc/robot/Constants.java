@@ -184,8 +184,8 @@ public final class Constants {
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 0;
-      public static final double kMinOutput = -1;
-      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = -0.4;
+      public static final double kMaxOutput = 0.4;
       public static final double kUpperLimit = Math.toRadians(270);
       public static final double kLowerLimit = Math.toRadians(30);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
@@ -202,7 +202,7 @@ public final class Constants {
     public static final ArmJointConstants elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
         Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
         Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit, Elbow.kLowerLimit,
-        Elbow.trapConstraints, Elbow.kOffset);
+        Elbow.trapConstraints, Elbow.kOffset, 0);
 
     // Shoulder Constants
     public static final class Shoulder {
@@ -215,8 +215,8 @@ public final class Constants {
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 0;
-      public static final double kMinOutput = -1;
-      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = -0.4;
+      public static final double kMaxOutput = 0.4;
       public static final double kUpperLimit = Math.toRadians(225);
       public static final double kLowerLimit = Math.toRadians(-60);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
@@ -228,6 +228,11 @@ public final class Constants {
       public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
           kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared);
     }
+
+    public static final ArmJointConstants shoulder = new ArmJointConstants(Shoulder.kSVolts, Shoulder.kGAplhaVolts,
+        Shoulder.kVVoltSecondPerRad, Shoulder.kAVoltSecondSquaredPerRad,
+        Shoulder.kP, Shoulder.kI, Shoulder.kD, Shoulder.kFF, Shoulder.kMinOutput, Shoulder.kMaxOutput, Shoulder.kUpperLimit, Shoulder.kLowerLimit,
+        Shoulder.trapConstraints, Elbow.kOffset, Shoulder.kGBetaVolts);
 
   }
 
