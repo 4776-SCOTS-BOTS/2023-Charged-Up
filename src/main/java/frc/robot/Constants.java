@@ -45,6 +45,7 @@ public final class Constants {
   public static final CRGB kRGB_yellow = new CRGB(204, 104, 0);
   public static final CRGB kRGB_purple = new CRGB(70, 0, 40);
   public static final CRGB kRGB_boaz = new CRGB(0, 59, 111);
+  public static final CRGB kRGB_greenLow = new CRGB(0, 20, 0);
 
   public static final class DriveConstants {
     // Any constants that are not final can and should be update in
@@ -63,12 +64,12 @@ public final class Constants {
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 8;
     public static final int kFrontRightDriveMotorPort = 2;
-    public static final int kRearRightDriveMotorPort = 7;
+    public static final int kRearRightDriveMotorPort = 6;
 
     public static final int kFrontLeftTurningMotorPort = 5;
     public static final int kRearLeftTurningMotorPort = 9;
     public static final int kFrontRightTurningMotorPort = 3;
-    public static final int kRearRightTurningMotorPort = 6;
+    public static final int kRearRightTurningMotorPort = 7;
 
     public static final int[] kFrontLeftTurningEncoderPorts = new int[] { 0, 1 };
     public static final int[] kRearLeftTurningEncoderPorts = new int[] { 2, 3 };
@@ -177,7 +178,7 @@ public final class Constants {
     public static final class Elbow {
       public static final double kSVolts = 0;
       public static final double kGVolts = 0;
-      public static final double kVVoltSecondPerRad = 0;
+      public static final double kVVoltSecondPerRad = 1.75;
       public static final double kAVoltSecondSquaredPerRad = 0;
       public static final double kP = 0.001;
       public static final double kI = 0;
@@ -185,8 +186,8 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMinOutput = -1;
       public static final double kMaxOutput = 1;
-      public static final double kCCWLimit = 0.7;
-      public static final double kCWLimit = 0.3;
+      public static final double kUpperLimit = Math.toRadians(270);
+      public static final double kLowerLimit = Math.toRadians(30);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
       public static final double kOffset = 2.45; // Radians
@@ -200,14 +201,15 @@ public final class Constants {
 
     public static final ArmJointConstants elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
         Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
-        Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kCCWLimit, Elbow.kCWLimit,
+        Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit, Elbow.kLowerLimit,
         Elbow.trapConstraints, Elbow.kOffset);
 
     // Shoulder Constants
     public static final class Shoulder {
       public static final double kSVolts = 0;
-      public static final double kGVolts = 0;
-      public static final double kVVoltSecondPerRad = 0;
+      public static final double kGAplhaVolts = 0;
+      public static final double kGBetaVolts = 0;
+      public static final double kVVoltSecondPerRad = 1.95;
       public static final double kAVoltSecondSquaredPerRad = 0;
       public static final double kP = 0.001;
       public static final double kI = 0;
@@ -215,8 +217,8 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMinOutput = -1;
       public static final double kMaxOutput = 1;
-      public static final double kCCWLimit = 0.7;
-      public static final double kCWLimit = 0.3;
+      public static final double kUpperLimit = Math.toRadians(225);
+      public static final double kLowerLimit = Math.toRadians(-60);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
       public static final double kOffset = 0.38; // Final constant is 0-1 from Rev Throughbore setup

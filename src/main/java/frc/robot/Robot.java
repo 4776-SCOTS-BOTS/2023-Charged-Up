@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     m_led = new LED();
     m_robotContainer = new RobotContainer(m_led);
     
-    m_led.setColor(Constants.kRGB_yellow);
+    m_led.setColor(Constants.kRGB_greenLow);
     m_led.setDisplay();
   }
 

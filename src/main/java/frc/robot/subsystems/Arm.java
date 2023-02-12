@@ -110,7 +110,7 @@ public class Arm extends SubsystemBase {
 
   public void setElbowPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with elbow straight.
-    if(position > ArmConstants.Elbow.kCWLimit*2*Math.PI && position < ArmConstants.Elbow.kCCWLimit*2*Math.PI){
+    if(position > ArmConstants.Elbow.kLowerLimit*2*Math.PI && position < ArmConstants.Elbow.kUpperLimit*2*Math.PI){
       //Do nothing.  Invalid elbow position
     } else {
       elbowTrapController.enable();
@@ -120,7 +120,7 @@ public class Arm extends SubsystemBase {
 
   public void setShoulderPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with arm straight up.
-    if(position > ArmConstants.Shoulder.kCWLimit*2*Math.PI && position < ArmConstants.Shoulder.kCCWLimit*2*Math.PI){
+    if(position > ArmConstants.Shoulder.kLowerLimit*2*Math.PI && position < ArmConstants.Shoulder.kUpperLimit*2*Math.PI){
       //Do nothing.  Invalid shoulder position
     } else {
       //shoulderPIDController.setReference(position, ControlType.kSmartMotion);
