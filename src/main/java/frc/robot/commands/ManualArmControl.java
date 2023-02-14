@@ -24,15 +24,15 @@ public class ManualArmControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elbowPos = arm.getElbowCurrentPos();
-    shoulderPos = arm.getShoulderCurrentPos();
+    elbowPos = arm.readElbowCurrentPos();
+    shoulderPos = arm.readShoulderCurrentPos();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elbowPos = arm.getElbowCurrentPos();
-    shoulderPos = arm.getShoulderCurrentPos();
+    elbowPos = arm.readElbowCurrentPos();
+    shoulderPos = arm.readShoulderCurrentPos();
   }
 
   // Called once the command ends or is interrupted.

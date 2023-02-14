@@ -324,17 +324,16 @@ public class RobotContainer {
     double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
     double elbowPower = elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));
 
-    //double shoulderPower = new_deadzone(-m_manipulatorController.getLeftY());
-    //double elbowPower = new_deadzone(-m_manipulatorController.getRightY());
-
     //The following violates the intent of Command-based and should
-    //modified to use Commands
+    //be modified to use Commands
     if(shoulderPower != 0){
       shoulderInManual = true;
       m_Arm.runShoulder(shoulderPower);
     } else if(shoulderInManual) {
-      //Do nothing other than stop the shoulder as shoulder control code is not done
-      m_Arm.runShoulder(0); //Remove this line once control code is done
+      m_Arm.runShoulder(0); // Remove once hold function is stable
+    } else if (m_manipulatorController.getYButton()){
+      shoulderInManual = false;
+      m_Arm.setShoulderPosition(Math.toRadians(180));
     }
     
     if (elbowPower != 0) {
@@ -344,13 +343,14 @@ public class RobotContainer {
       elbowInManual = false;
       m_Arm.runElbow(0); // Remove once hold function is stable
       // m_arm.holdElbowPosition();
-    } else if (m_manipulatorController.getAButton()) {
+    } else if (m_manipulatorController.getYButton()) {
       elbowInManual = false;
-      // m_arm.setElbowPosition(Math.toRadians(180));
-    } else if (m_manipulatorController.getAButton()) {
-      elbowInManual = false;
-      // m_arm.setElbowPosition(Math.toRadians(270));
+      m_Arm.setElbowPosition(Math.toRadians(150));
     }
+
+    // m_manipCommandController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.25)
+    //   .and(m_manipCommandController.axisLessThan(XboxController.Axis.kRightTrigger.value, 0.5))
+    //   .onTrue(new InstantCommand(m_Arm::holdElbowPosition, m_Arm));
     
   };
   

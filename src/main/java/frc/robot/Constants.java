@@ -177,10 +177,10 @@ public final class Constants {
 
     public static final class Elbow {
       public static final double kSVolts = 0;
-      public static final double kGVolts = 0;
+      public static final double kGVolts = 0.6;
       public static final double kVVoltSecondPerRad = 1.75;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.001;
+      public static final double kP = 0.2;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 0;
@@ -190,7 +190,7 @@ public final class Constants {
       public static final double kLowerLimit = Math.toRadians(30);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 2.45; // Radians
+      public static final double kOffset = 4.60; // Radians
       public static final int kCurrentLimit = 10;
       public static final double kManualScale = 0.3;
 
@@ -207,11 +207,11 @@ public final class Constants {
     // Shoulder Constants
     public static final class Shoulder {
       public static final double kSVolts = 0;
-      public static final double kGAplhaVolts = 0;
-      public static final double kGBetaVolts = 0;
+      public static final double kGAplhaVolts = 0.35;
+      public static final double kGBetaVolts = 0.55;
       public static final double kVVoltSecondPerRad = 1.95;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.001;
+      public static final double kP = 0.2;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kFF = 0;
@@ -221,7 +221,7 @@ public final class Constants {
       public static final double kLowerLimit = Math.toRadians(-60);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 0.38; // Final constant is 0-1 from Rev Throughbore setup
+      public static final double kOffset = 1.92; // Final constant is 0-1 from Rev Throughbore setup
       public static final int kCurrentLimit = 10;
       public static final double kManualScale = 0.3;
 
