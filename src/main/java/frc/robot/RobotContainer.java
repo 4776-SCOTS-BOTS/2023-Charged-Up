@@ -330,6 +330,7 @@ public class RobotContainer {
       shoulderInManual = true;
       m_Arm.runShoulder(shoulderPower);
     } else if(shoulderInManual) {
+      shoulderInManual = false;
       m_Arm.runShoulder(0); // Remove once hold function is stable
     } else if (m_manipulatorController.getYButton()){
       shoulderInManual = false;
@@ -345,7 +346,7 @@ public class RobotContainer {
       // m_arm.holdElbowPosition();
     } else if (m_manipulatorController.getYButton()) {
       elbowInManual = false;
-      m_Arm.setElbowPosition(Math.toRadians(150));
+      m_Arm.setElbowPosition(Math.toRadians(90));
     }
 
     // m_manipCommandController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.25)

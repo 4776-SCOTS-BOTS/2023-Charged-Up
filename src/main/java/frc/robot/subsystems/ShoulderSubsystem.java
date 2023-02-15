@@ -2,7 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-
 package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
@@ -18,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.customClass.ArmJointConstants;
 import frc.robot.customClass.ShoulderFeedFowardController;
 
@@ -29,16 +30,15 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
   private AbsoluteEncoder offsetEncoder;
 
   /** Create a new ArmSubsystem. */
-  public ShoulderSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants, 
-  double initPosition, AbsoluteEncoder jointEncoder, AbsoluteEncoder offestEncoder) {
+  public ShoulderSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants,
+      double initPosition, AbsoluteEncoder jointEncoder, AbsoluteEncoder offestEncoder) {
     super(
         jointConstants.trapConstraints,
         initPosition);
 
-        m_feedforward =
-        new ShoulderFeedFowardController(
-            jointConstants.kSVolts, jointConstants.kGVolts, jointConstants.kgBeta, 
-            jointConstants.kVVoltSecondPerRad);
+    m_feedforward = new ShoulderFeedFowardController(
+        jointConstants.kSVolts, jointConstants.kGVolts, jointConstants.kgBeta,
+        jointConstants.kVVoltSecondPerRad);
 
     this.offsetEncoder = offestEncoder;
     this.jointEncoder = jointEncoder;
@@ -56,31 +56,33 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
   @Override
   public void useState(TrapezoidProfile.State setpoint) {
     // Calculate the feedforward from the sepoint
-      double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity, offsetEncoder.getPosition());
-      // Add the feedforward to the PID output to get the motor output
-      m_motor.setReference(
-              setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
-  }
+    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity, offsetEncoder.getPosition());
+    // Add the feedforward to the PID output to get the motor output
+    m_motor.setReference(
+        setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
 
+    // Comment out after tuning
+    SmartDashboard.putNumber("Shoulder FF", feedforward);
+    SmartDashboard.putNumber("Shoulder Setpoint", setpoint.position);
+  }
 
   public Command setArmGoalCommand(double goal) {
     return Commands.runOnce(() -> setGoal(goal), this);
   }
 
   public Command holdArmPositionCommand() {
-    return Commands.runOnce(() ->{ 
-    setGoal(jointEncoder.getPosition());
-    enable();
+    return Commands.runOnce(() -> {
+      holdArmPosition();
     }, this);
   }
 
-  public void holdArmPosition(){
+  public void holdArmPosition() {
     setGoal(jointEncoder.getPosition());
     enable();
   }
 
-  public double getOffset(){
-    if(offsetEncoder == null){
+  public double getOffset() {
+    if (offsetEncoder == null) {
       return 0;
     } else {
       return offsetEncoder.getPosition();

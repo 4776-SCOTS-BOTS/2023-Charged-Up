@@ -177,15 +177,15 @@ public final class Constants {
 
     public static final class Elbow {
       public static final double kSVolts = 0;
-      public static final double kGVolts = 0.6;
-      public static final double kVVoltSecondPerRad = 1.75;
+      public static final double kGVolts = 0.4;
+      public static final double kVVoltSecondPerRad = 2.92;
       public static final double kAVoltSecondSquaredPerRad = 0;
       public static final double kP = 0.2;
       public static final double kI = 0;
-      public static final double kD = 0;
+      public static final double kD = 0.03;
       public static final double kFF = 0;
-      public static final double kMinOutput = -0.4;
-      public static final double kMaxOutput = 0.4;
+      public static final double kMinOutput = -0.6;
+      public static final double kMaxOutput = 0.6;
       public static final double kUpperLimit = Math.toRadians(270);
       public static final double kLowerLimit = Math.toRadians(30);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
@@ -208,21 +208,21 @@ public final class Constants {
     public static final class Shoulder {
       public static final double kSVolts = 0;
       public static final double kGAplhaVolts = 0.35;
-      public static final double kGBetaVolts = 0.55;
+      public static final double kGBetaVolts = 0.50;
       public static final double kVVoltSecondPerRad = 1.95;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.2;
+      public static final double kP = 0.3;
       public static final double kI = 0;
-      public static final double kD = 0;
+      public static final double kD = 0.03;
       public static final double kFF = 0;
-      public static final double kMinOutput = -0.4;
-      public static final double kMaxOutput = 0.4;
+      public static final double kMinOutput = -0.6;
+      public static final double kMaxOutput = 0.6;
       public static final double kUpperLimit = Math.toRadians(225);
       public static final double kLowerLimit = Math.toRadians(-60);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 1.92; // Final constant is 0-1 from Rev Throughbore setup
-      public static final int kCurrentLimit = 10;
+      public static final double kOffset = 1.88; // Final constant is 0-1 from Rev Throughbore setup
+      public static final int kCurrentLimit = 30;
       public static final double kManualScale = 0.3;
 
       public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
@@ -232,7 +232,7 @@ public final class Constants {
     public static final ArmJointConstants shoulder = new ArmJointConstants(Shoulder.kSVolts, Shoulder.kGAplhaVolts,
         Shoulder.kVVoltSecondPerRad, Shoulder.kAVoltSecondSquaredPerRad,
         Shoulder.kP, Shoulder.kI, Shoulder.kD, Shoulder.kFF, Shoulder.kMinOutput, Shoulder.kMaxOutput, Shoulder.kUpperLimit, Shoulder.kLowerLimit,
-        Shoulder.trapConstraints, Elbow.kOffset, Shoulder.kGBetaVolts);
+        Shoulder.trapConstraints, Shoulder.kOffset, Shoulder.kGBetaVolts);
 
   }
 

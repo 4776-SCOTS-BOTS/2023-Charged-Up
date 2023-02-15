@@ -77,6 +77,7 @@ public class Arm extends SubsystemBase {
     shoulderPIDController.setPositionPIDWrappingEnabled(false);
     shoulderEncoder.setPositionConversionFactor((2 * Math.PI));
     shoulderEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
+    shoulderEncoder.setZeroOffset(Constants.ArmConstants.shoulder.kOffset);
 
     elbowTrapController = new ElbowSubsystem(elbowPIDController, Constants.ArmConstants.elbow,
         readElbowCurrentPos(), elbowEncoder, shoulderEncoder);
@@ -153,7 +154,7 @@ public class Arm extends SubsystemBase {
 
   public void setShoulderPosition(double position){
     //Should calibrate Absolute Encoder on SparkMAX to zero with arm horizontal over intake.
-    if(position > ArmConstants.Shoulder.kLowerLimit*2*Math.PI && position < ArmConstants.Shoulder.kUpperLimit*2*Math.PI){
+    if(position > ArmConstants.Shoulder.kLowerLimit && position < ArmConstants.Shoulder.kUpperLimit){
       shoulderTrapController.enable();
       shoulderTrapController.setGoal(position);
     } else {

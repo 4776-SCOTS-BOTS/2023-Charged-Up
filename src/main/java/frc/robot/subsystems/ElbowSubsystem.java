@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.customClass.ArmJointConstants;
 
 /** A robot arm subsystem that moves with a motion profile. */
@@ -55,10 +57,14 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
   @Override
   public void useState(TrapezoidProfile.State setpoint) {
     // Calculate the feedforward from the sepoint
-      double feedforward = m_feedforward.calculate(getFFAngle(setpoint.position), setpoint.velocity);
-      // Add the feedforward to the PID output to get the motor output
-      m_motor.setReference(
-              setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
+    double feedforward = m_feedforward.calculate(getFFAngle(setpoint.position), setpoint.velocity);
+    // Add the feedforward to the PID output to get the motor output
+    m_motor.setReference(
+        setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
+
+    // Comment out after tuning
+    SmartDashboard.putNumber("Elbow FF", feedforward);
+    SmartDashboard.putNumber("Elbow Setpoint", setpoint.position);
   }
 
 
@@ -68,8 +74,7 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
 
   public Command holdArmPositionCommand() {
     return Commands.runOnce(() ->{ 
-    setGoal(jointEncoder.getPosition());
-    enable();
+      holdArmPosition();
     }, this);
   }
 
