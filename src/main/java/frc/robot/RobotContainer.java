@@ -72,6 +72,7 @@ public class RobotContainer {
   private Arm m_Arm = new Arm();
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
+  private int armInvert = 1;
   private final Gripper m_gripper = new Gripper(true);
   
   private Intake m_Intake = new Intake();
@@ -113,8 +114,14 @@ public class RobotContainer {
   
   final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
   final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
-  final POVButton testPosition1Button = new POVButton(m_manipulatorController, 90);
-  final POVButton testPosition2Button = new POVButton(m_manipulatorController, 270);
+  
+  //Arm Position Buttons
+  final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
+  final POVButton pickupPositionButton = new POVButton(m_manipulatorController, 90);
+  final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
+  final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kBack.value);
+  final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
+
 
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
@@ -206,9 +213,9 @@ public class RobotContainer {
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
     intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube, m_Intake)
-    .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
+        .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
     intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone, m_Intake)
-    .andThen(new InstantCommand(m_Led::setYellow,m_Led)));
+        .andThen(new InstantCommand(m_Led::setYellow, m_Led)));
     
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
@@ -217,8 +224,11 @@ public class RobotContainer {
     gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper)
       .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
 
-    //testPosition1Button.onTrue(new InstantCommand(m_Arm::setElbowPosition(Math.toRadians(180)),m_Arm);
-
+    safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
+    pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
+    highPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION));
+    midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
+    lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
@@ -321,8 +331,12 @@ public class RobotContainer {
 
   Runnable ControlArm = () -> {
     // Arm Control
-    double shoulderPower = shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
-    double elbowPower = elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));
+    if(!shoulderInManual){
+      armInvert = (m_Arm.getShoulderPositionDeg() < 180.0) ? 1 : -1;
+    } 
+
+    double shoulderPower = armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
+    double elbowPower = armInvert * elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));
 
     //The following violates the intent of Command-based and should
     //be modified to use Commands
@@ -332,9 +346,6 @@ public class RobotContainer {
     } else if(shoulderInManual) {
       shoulderInManual = false;
       m_Arm.runShoulder(0); // Remove once hold function is stable
-    } else if (m_manipulatorController.getYButton()){
-      shoulderInManual = false;
-      m_Arm.setShoulderPosition(Math.toRadians(180));
     }
     
     if (elbowPower != 0) {
@@ -343,10 +354,6 @@ public class RobotContainer {
     } else if (elbowInManual) {
       elbowInManual = false;
       m_Arm.runElbow(0); // Remove once hold function is stable
-      // m_arm.holdElbowPosition();
-    } else if (m_manipulatorController.getYButton()) {
-      elbowInManual = false;
-      m_Arm.setElbowPosition(Math.toRadians(90));
     }
 
     // m_manipCommandController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.25)

@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import frc.robot.customClass.ArmJointConstants;
 import frc.robot.customClass.CRGB;
+import frc.robot.customClass.ArmPosition;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -169,9 +170,15 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int kShoulder1Port = 21;
     public static final boolean kShoulder1Inv = true;
-    public static final int kShoulder2Port = 20; // TODO: Make these the actual port numbers
+    public static final int kShoulder2Port = 20;
     public static final boolean kShoulder2Inv = false;
     public static final int kElbowPort = 22;
+
+    public static final ArmPosition PICKUP_POSITION = new ArmPosition(80.0, 80.0);
+    public static final ArmPosition SAFE_POSITION = new ArmPosition(20.0, 180.0);
+    public static final ArmPosition HIGH_POSITION = new ArmPosition(180, 250.0);
+    public static final ArmPosition MID_POSITION = new ArmPosition(220.0, 250.0);
+    public static final ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
 
     // Elbow Constants
 
@@ -217,11 +224,11 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMinOutput = -0.6;
       public static final double kMaxOutput = 0.6;
-      public static final double kUpperLimit = Math.toRadians(225);
-      public static final double kLowerLimit = Math.toRadians(-60);
+      public static final double kUpperLimit = Math.toRadians(340);
+      public static final double kLowerLimit = Math.toRadians(20);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 1.88; // Final constant is 0-1 from Rev Throughbore setup
+      public static final double kOffset = 1.88 - Math.PI/2; // Adjusted to zero degrees straight down
       public static final int kCurrentLimit = 30;
       public static final double kManualScale = 0.3;
 

@@ -5,18 +5,18 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants.ArmConstants;
+import frc.robot.customClass.ArmPosition;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -45,6 +45,9 @@ public class Arm extends SubsystemBase {
 
   public double elbowPosition;
   public double shoulderPosition;
+
+  private boolean elbowInManual = false;
+  private boolean shoulderInManual = false;
 
   /** Creates a new Arm. */
   public Arm() {
@@ -108,12 +111,12 @@ public class Arm extends SubsystemBase {
 
     // display PID coefficients on SmartDashboard
     // Comment out once tuning is done
-    SmartDashboard.putNumber("ElbowP", elbowPIDController.getP());
-    SmartDashboard.putNumber("ElbowI", elbowPIDController.getI());
-    SmartDashboard.putNumber("ElbowD", elbowPIDController.getD());
-    SmartDashboard.putNumber("ShoulderP", elbowPIDController.getP());
-    SmartDashboard.putNumber("ShoulderI", elbowPIDController.getI());
-    SmartDashboard.putNumber("ShoulderD", elbowPIDController.getD());
+    // SmartDashboard.putNumber("ElbowP", elbowPIDController.getP());
+    // SmartDashboard.putNumber("ElbowI", elbowPIDController.getI());
+    // SmartDashboard.putNumber("ElbowD", elbowPIDController.getD());
+    // SmartDashboard.putNumber("ShoulderP", elbowPIDController.getP());
+    // SmartDashboard.putNumber("ShoulderI", elbowPIDController.getI());
+    // SmartDashboard.putNumber("ShoulderD", elbowPIDController.getD());
 
   }
 
@@ -123,22 +126,22 @@ public class Arm extends SubsystemBase {
     elbowPosition = readElbowCurrentPos();
     shoulderPosition = readShoulderCurrentPos();
 
-    //PID tuning.  Should be commented out once tuning is complete
-    // read PID coefficients from SmartDashboard
-    double p = SmartDashboard.getNumber("ElbowP", 0);
-    double i = SmartDashboard.getNumber("ElbowI", 0);
-    double d = SmartDashboard.getNumber("ElbowD", 0);
-    double ps = SmartDashboard.getNumber("ShoulderP", 0);
-    double is = SmartDashboard.getNumber("ShoulderI", 0);
-    double ds = SmartDashboard.getNumber("ShoulderD", 0);
+    // //PID tuning.  Should be commented out once tuning is complete
+    // // read PID coefficients from SmartDashboard
+    // double p = SmartDashboard.getNumber("ElbowP", 0);
+    // double i = SmartDashboard.getNumber("ElbowI", 0);
+    // double d = SmartDashboard.getNumber("ElbowD", 0);
+    // double ps = SmartDashboard.getNumber("ShoulderP", 0);
+    // double is = SmartDashboard.getNumber("ShoulderI", 0);
+    // double ds = SmartDashboard.getNumber("ShoulderD", 0);
 
-    // if PID coefficients on SmartDashboard have changed, write new values to controller
-    if((p != elbowPIDController.getP())) { elbowPIDController.setP(p);}
-    if((i != elbowPIDController.getI())) { elbowPIDController.setI(i);}
-    if((d != elbowPIDController.getD())) { elbowPIDController.setD(d);}
-    if((ps != shoulderPIDController.getP())) { shoulderPIDController.setP(ps);}
-    if((is != shoulderPIDController.getI())) { shoulderPIDController.setI(is);}
-    if((ds != shoulderPIDController.getD())) { shoulderPIDController.setD(ds);}
+    // // if PID coefficients on SmartDashboard have changed, write new values to controller
+    // if((p != elbowPIDController.getP())) { elbowPIDController.setP(p);}
+    // if((i != elbowPIDController.getI())) { elbowPIDController.setI(i);}
+    // if((d != elbowPIDController.getD())) { elbowPIDController.setD(d);}
+    // if((ps != shoulderPIDController.getP())) { shoulderPIDController.setP(ps);}
+    // if((is != shoulderPIDController.getI())) { shoulderPIDController.setI(is);}
+    // if((ds != shoulderPIDController.getD())) { shoulderPIDController.setD(ds);}
 
   }
 
@@ -153,7 +156,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void setShoulderPosition(double position){
-    //Should calibrate Absolute Encoder on SparkMAX to zero with arm horizontal over intake.
+    //Should calibrate Absolute Encoder on SparkMAX to zero with arm straight down.
     if(position > ArmConstants.Shoulder.kLowerLimit && position < ArmConstants.Shoulder.kUpperLimit){
       shoulderTrapController.enable();
       shoulderTrapController.setGoal(position);
@@ -204,6 +207,13 @@ public class Arm extends SubsystemBase {
 
   public void holdShoulderPosition(){
     shoulderTrapController.holdArmPosition();
+  }
+
+  public Command setArmPositionCommand(ArmPosition position) {
+    return Commands.runOnce(() -> {
+      setElbowPosition(position.elbowRadians);
+      setShoulderPosition(position.shoulderRadians);
+    }, this);
   }
 
   

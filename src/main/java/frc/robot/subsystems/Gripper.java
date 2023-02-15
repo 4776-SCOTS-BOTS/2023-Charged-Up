@@ -23,10 +23,10 @@ public class Gripper extends SubsystemBase {
   }
 
   public void closeGripper(){
-    gripSolenoid.set(true);
+    gripSolenoid.set(false);
   }
 
   public void openGripper(){
-    gripSolenoid.set(false);
+    gripSolenoid.set(true);
   }
 }

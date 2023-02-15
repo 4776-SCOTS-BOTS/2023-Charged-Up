@@ -56,6 +56,7 @@ public class ShoulderFeedFowardController {
    */
   public double calculate(
       double positionRadians, double velocityRadPerSec, double accelRadPerSecSquared, double elbowPositionRadians) {
+        positionRadians = positionRadians - Math.PI/2;  //Offset added because zero is straight down.
     return ks * Math.signum(velocityRadPerSec)
         + kgAlpha * Math.cos(positionRadians)
         - kgBeta * Math.cos(positionRadians + elbowPositionRadians)
