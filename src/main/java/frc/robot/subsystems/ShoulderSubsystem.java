@@ -28,6 +28,7 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
   private final ShoulderFeedFowardController m_feedforward;
   private AbsoluteEncoder jointEncoder;
   private AbsoluteEncoder offsetEncoder;
+  private double offsetAngleRads;
 
   /** Create a new ArmSubsystem. */
   public ShoulderSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants,
@@ -56,13 +57,13 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
   @Override
   public void useState(TrapezoidProfile.State setpoint) {
     // Calculate the feedforward from the sepoint
-    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity, offsetEncoder.getPosition());
+    double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity, offsetAngleRads);
     // Add the feedforward to the PID output to get the motor output
     m_motor.setReference(
         setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
 
     // Comment out after tuning
-    // SmartDashboard.putNumber("Shoulder FF", feedforward);
+    SmartDashboard.putNumber("Shoulder FF", feedforward);
     // SmartDashboard.putNumber("Shoulder Setpoint", setpoint.position);
   }
 
@@ -82,11 +83,11 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
   }
 
   public double getOffset() {
-    if (offsetEncoder == null) {
-      return 0;
-    } else {
-      return offsetEncoder.getPosition();
-    }
+      return offsetAngleRads;
+  }
+
+  public void setOffsetAngleRads(double offsetAngleRads) {
+    this.offsetAngleRads = offsetAngleRads;
   }
 
 }

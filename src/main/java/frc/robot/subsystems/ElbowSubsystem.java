@@ -28,6 +28,7 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
   private final ArmFeedforward m_feedforward;
   private AbsoluteEncoder jointEncoder;
   private AbsoluteEncoder offsetEncoder;
+  private double offsetAngleRads;
 
   /** Create a new ArmSubsystem. */
   public ElbowSubsystem(SparkMaxPIDController sparkMAX, ArmJointConstants jointConstants, 
@@ -43,6 +44,8 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
 
     this.offsetEncoder = offestEncoder;
     this.jointEncoder = jointEncoder;
+
+    this.offsetAngleRads = offsetEncoder.getPosition();
 
     this.m_motor = sparkMAX;
 
@@ -63,7 +66,7 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
         setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
 
     // Comment out after tuning
-    // SmartDashboard.putNumber("Elbow FF", feedforward);
+    SmartDashboard.putNumber("Elbow FF", feedforward);
     // SmartDashboard.putNumber("Elbow Setpoint", setpoint.position);
   }
 
@@ -84,14 +87,14 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
   }
 
   public double getOffset(){
-    if(offsetEncoder == null){
-      return 0;
-    } else {
-      return offsetEncoder.getPosition();
-    }
+      return offsetAngleRads;
   }
 
   public double getFFAngle(double setpoint){
     return Math.PI + getOffset() - setpoint;
+  }
+
+  public void setOffsetAngleRads(double offsetAngleRads) {
+    this.offsetAngleRads = offsetAngleRads - Math.PI/2; //Need to compensate for shoulder zero point
   }
 }

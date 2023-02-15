@@ -67,8 +67,6 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
 
-  private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
-
   private Arm m_Arm = new Arm();
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
@@ -162,7 +160,6 @@ public class RobotContainer {
   public RobotContainer(LED led) {
     SmartDashboard.putString("Robot Type", Constants.robotType.toString());
 
-    phCompressor.enableDigital();
     m_Led = led;
 
     // Generate Auto Command Sequences

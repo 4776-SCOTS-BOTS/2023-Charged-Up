@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ConfigConstants;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.subsystems.LED;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +21,8 @@ import frc.robot.subsystems.LED;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+
+  private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
 
   private RobotContainer m_robotContainer;
   private LED m_led;
@@ -44,6 +48,8 @@ public class Robot extends TimedRobot {
     
     m_led.setColor(Constants.kRGB_greenLow);
     m_led.setDisplay();
+
+    phCompressor.enableDigital();
   }
 
   /**

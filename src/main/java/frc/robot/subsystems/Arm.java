@@ -126,6 +126,9 @@ public class Arm extends SubsystemBase {
     elbowPosition = readElbowCurrentPos();
     shoulderPosition = readShoulderCurrentPos();
 
+    elbowTrapController.setOffsetAngleRads(shoulderPosition);
+    shoulderTrapController.setOffsetAngleRads(elbowPosition);
+
     // //PID tuning.  Should be commented out once tuning is complete
     // // read PID coefficients from SmartDashboard
     // double p = SmartDashboard.getNumber("ElbowP", 0);
