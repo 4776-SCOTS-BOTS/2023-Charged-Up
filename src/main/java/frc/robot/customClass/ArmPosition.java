@@ -12,7 +12,7 @@ public class ArmPosition {
         this.elbowDegrees = elbowDegrees;
         this.shoulderDegrees = shoulderDegrees;
         this.elbowRadians = Math.toRadians(elbowDegrees);
-        this.shoulderRadians = Math.toRadians(shoulderRadians);
+        this.shoulderRadians = Math.toRadians(shoulderDegrees);
 
     }
 }

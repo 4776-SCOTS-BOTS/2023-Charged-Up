@@ -22,7 +22,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class SwerveModule {
+public class SwerveModuleOld {
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
   private final boolean InvertLeft;
@@ -52,7 +52,7 @@ public class SwerveModule {
    * @param driveMotorChannel   ID for the drive motor.
    * @param turningMotorChannel ID for the turning motor.
    */
-  public SwerveModule(
+  public SwerveModuleOld(
       int driveMotorChannel,
       int turningMotorChannel,
       int[] turningEncoderPorts,

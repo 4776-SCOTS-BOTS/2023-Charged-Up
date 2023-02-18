@@ -279,12 +279,12 @@ public class RobotContainer {
     m_Arm.setDefaultCommand(new RunCommand(ControlArm, m_Arm));
     
 
-    // lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
-    //     .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
+    lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
+         .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
     
-    // resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+    resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    // brakeButton.whileTrue(new InstantCommand(m_robotDrive::setXModuleState, m_robotDrive));
+    brakeButton.whileTrue(new InstantCommand(m_robotDrive::setXModuleState, m_robotDrive));
 
     // testCommandButton.whenPressed(new InstantCommand(()->{
     // m_robotDrive.turnByAngle(179.9);
@@ -329,7 +329,7 @@ public class RobotContainer {
   Runnable ControlArm = () -> {
     // Arm Control
     if(!shoulderInManual){
-      armInvert = (m_Arm.getShoulderPositionDeg() < 180.0) ? 1 : -1;
+      armInvert = (m_Arm.getShoulderPositionDeg() < 180.0) ? -1 : 1;
     } 
 
     double shoulderPower = armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));

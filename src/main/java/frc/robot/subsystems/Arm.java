@@ -214,8 +214,8 @@ public class Arm extends SubsystemBase {
 
   public Command setArmPositionCommand(ArmPosition position) {
     return Commands.runOnce(() -> {
-      setElbowPosition(position.elbowRadians);
       setShoulderPosition(position.shoulderRadians);
+      setElbowPosition(position.elbowRadians);
     }, this);
   }
 

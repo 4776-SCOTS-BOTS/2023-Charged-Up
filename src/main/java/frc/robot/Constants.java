@@ -175,7 +175,7 @@ public final class Constants {
     public static final int kElbowPort = 22;
 
     public static final ArmPosition PICKUP_POSITION = new ArmPosition(80.0, 80.0);
-    public static final ArmPosition SAFE_POSITION = new ArmPosition(20.0, 180.0);
+    public static final ArmPosition SAFE_POSITION = new ArmPosition(25.0, 180.0);
     public static final ArmPosition HIGH_POSITION = new ArmPosition(180, 250.0);
     public static final ArmPosition MID_POSITION = new ArmPosition(220.0, 250.0);
     public static final ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
@@ -193,8 +193,8 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMinOutput = -0.6;
       public static final double kMaxOutput = 0.6;
-      public static final double kUpperLimit = Math.toRadians(270);
-      public static final double kLowerLimit = Math.toRadians(30);
+      public static final double kUpperLimit = Math.toRadians(300);
+      public static final double kLowerLimit = Math.toRadians(10);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
       public static final double kOffset = 4.60; // Radians
@@ -228,7 +228,7 @@ public final class Constants {
       public static final double kLowerLimit = Math.toRadians(20);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 1.88 - Math.PI/2; // Adjusted to zero degrees straight down
+      public static final double kOffset = 1.88 - Math.PI/2 + Math.toRadians(0); // Adjusted to zero degrees straight down
       public static final int kCurrentLimit = 30;
       public static final double kManualScale = 0.3;
 
@@ -297,7 +297,7 @@ public final class Constants {
         break;
 
       case PracticeBot: {
-        ConfigConstants.hasCamera = false;
+        ConfigConstants.hasCamera = true;
 
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-10.5));
         DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-136.8));
