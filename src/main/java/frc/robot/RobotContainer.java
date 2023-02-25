@@ -20,6 +20,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.CubeAndLeaveAutoBlue;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -115,7 +116,7 @@ public class RobotContainer {
   // final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
   // final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
   final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
-  final POVButton kickerButtonRetract = new POVButton(m_manipulatorController, 180);
+  //final POVButton kickerButtonRetract = new POVButton(m_manipulatorController, 180);
 
   //Arm Position Buttons
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
@@ -147,12 +148,13 @@ public class RobotContainer {
   
 
   private enum CommandsToChoose {
-    ShootandRunLOW, ShootandRunHIGH, GrabShootShoot, WallGrabShootShoot
+    CubeAndLeaveAutoBlue
   }
 
   //Create Command variables here for auto
   // public Command shootAndRunLOW;
   // public Command shootAndRunHIGH;
+  public Command cubeAndLeaveBlue;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -166,24 +168,19 @@ public class RobotContainer {
 
     m_Led = led;
 
-    // Generate Auto Command Sequences
-    //generateAutoRoutines();
+    //Generate Auto Command Sequences
+    generateAutoRoutines();
 
-    // Setup auto command chooser
-    // m_selectCommand = new SelectCommand(Map.ofEntries(
-    //     entry(CommandsToChoose.ShootandRunLOW, shootAndRunLOW),
-    //     entry(CommandsToChoose.ShootandRunHIGH, shootAndRunHIGH),
-    //     entry(CommandsToChoose.GrabShootShoot, grabShootShoot),
-    //     entry(CommandsToChoose.WallGrabShootShoot, wallGrabShootShoot)), m_chooser::getSelected);
+    //Setup auto command chooser
+    m_selectCommand = new SelectCommand(Map.ofEntries(
+        entry(CommandsToChoose.CubeAndLeaveAutoBlue, cubeAndLeaveBlue)
+       ), m_chooser::getSelected);
 
-    // m_chooser.setDefaultOption("Shoot and Run Low", CommandsToChoose.ShootandRunLOW);
-    // m_chooser.addOption("Shoot and Run High", CommandsToChoose.ShootandRunHIGH);
-    // m_chooser.addOption("Grab Ball and Shoot Two", CommandsToChoose.GrabShootShoot);
-    // m_chooser.addOption("Wall Grab Ball and Shoot Two", CommandsToChoose.WallGrabShootShoot);
-
-    // Shuffleboard.getTab("Auto").add(m_chooser)
-    // .withPosition(0, 0)
-    // .withSize(7, 2);
+    m_chooser.setDefaultOption("Shoot and Run Low", CommandsToChoose.CubeAndLeaveAutoBlue);
+    
+    Shuffleboard.getTab("Auto").add(m_chooser)
+    .withPosition(0, 0)
+    .withSize(7, 2);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -221,12 +218,13 @@ public class RobotContainer {
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
 
-    gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper,m_gripper));
-    gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper)
-      .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
-    
-    kickerButtonExtend.onTrue(new InstantCommand(m_Kicker::extendKicker,m_Kicker));
-    kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker, m_Kicker));
+    gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper, m_gripper));
+    gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper, m_gripper)
+        .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
+
+    kickerButtonExtend.onTrue(new InstantCommand(m_Kicker::extendKicker, m_Kicker))
+        .onFalse(new InstantCommand(m_Kicker::retractKicker, m_Kicker));
+    //kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker, m_Kicker));
 
     safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
     pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
@@ -291,7 +289,7 @@ public class RobotContainer {
     
     resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    brakeButton.whileTrue(new InstantCommand(m_robotDrive::setXModuleState, m_robotDrive));
+    brakeButton.whileTrue(new RunCommand(m_robotDrive::setXModuleState, m_robotDrive));
 
     // testCommandButton.whenPressed(new InstantCommand(()->{
     // m_robotDrive.turnByAngle(179.9);
@@ -323,7 +321,7 @@ public class RobotContainer {
  
   // Generate auto routines
   public void generateAutoRoutines() {
-    // shootAndRunLOW = new ShootandRunLOW(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
+    cubeAndLeaveBlue = new CubeAndLeaveAutoBlue(m_robotDrive, m_Arm, m_gripper, m_Intake);
     // shootAndRunHIGH = new ShootandRunHIGH(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
     // grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
     // wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
