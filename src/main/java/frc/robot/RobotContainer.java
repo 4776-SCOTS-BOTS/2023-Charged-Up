@@ -72,6 +72,8 @@ public class RobotContainer {
   private boolean shoulderInManual = false;
   private int armInvert = 1;
   private final Gripper m_gripper = new Gripper(true);
+
+  private final Kicker m_Kicker = new Kicker(false);
   
   private Intake m_Intake = new Intake();
   private LED m_Led;
@@ -110,9 +112,11 @@ public class RobotContainer {
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
   final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController,XboxController.Button.kA.value);
   
-  final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
-  final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
-  
+  // final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
+  // final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
+  final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
+  final POVButton kickerButtonRetract = new POVButton(m_manipulatorController, 180);
+
   //Arm Position Buttons
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final POVButton pickupPositionButton = new POVButton(m_manipulatorController, 90);
@@ -209,10 +213,10 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube, m_Intake)
-        .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
-    intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone, m_Intake)
-        .andThen(new InstantCommand(m_Led::setYellow, m_Led)));
+    // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube, m_Intake)
+    //     .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
+    // intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone, m_Intake)
+    //     .andThen(new InstantCommand(m_Led::setYellow, m_Led)));
     
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
@@ -220,6 +224,9 @@ public class RobotContainer {
     gripperButtonOpen.onTrue(new InstantCommand(m_gripper::openGripper,m_gripper));
     gripperButtonClose.onTrue(new InstantCommand(m_gripper::closeGripper,m_gripper)
       .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
+    
+    kickerButtonExtend.onTrue(new InstantCommand(m_Kicker::extendKicker,m_Kicker));
+    kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker, m_Kicker));
 
     safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
     pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
@@ -328,9 +335,9 @@ public class RobotContainer {
 
   Runnable ControlArm = () -> {
     // Arm Control
-    if(!shoulderInManual){
-      armInvert = (m_Arm.getShoulderPositionDeg() < 180.0) ? -1 : 1;
-    } 
+    // if(!shoulderInManual){
+    //   armInvert = (m_Arm.getShoulderPositionDeg() < 200.0) ? -1 : 1;
+    // } 
 
     double shoulderPower = armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
     double elbowPower = armInvert * elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));

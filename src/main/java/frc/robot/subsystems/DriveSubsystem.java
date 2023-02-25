@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import java.nio.channels.Selector;
 import java.sql.Driver;
 
+import frc.robot.subsystems.SwerveModuleCANcoder;
+
 import edu.wpi.first.wpilibj.Timer;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -42,6 +44,49 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
+
+  //  private final SwerveModuleCANcoder m_frontLeft = new SwerveModuleCANcoder(
+  //     DriveConstants.kFrontLeftDriveMotorPort,
+  //     DriveConstants.kFrontLeftTurningMotorPort,
+  //     DriveConstants.kFrontLeftTurningAnalogPort,
+  //     DriveConstants.kFrontLeftDriveEncoderReversed,
+  //     DriveConstants.kFrontLeftTurningEncoderReversed,
+  //     false, false,
+  //     DriveConstants.kFrontLeftTurningHome);
+
+  //  private final SwerveModuleCANcoder m_rearLeft = new SwerveModuleCANcoder(
+  //      DriveConstants.kRearLeftDriveMotorPort,
+  //      DriveConstants.kRearLeftTurningMotorPort,
+  //      DriveConstants.kRearLeftTurningAnalogPort,
+  //      DriveConstants.kRearLeftDriveEncoderReversed,
+  //      DriveConstants.kRearLeftTurningEncoderReversed,
+  //      false, false,
+  //      DriveConstants.kRearLeftTurningHome);
+
+  //  private final SwerveModuleCANcoder m_frontRight = new SwerveModuleCANcoder(
+  //      DriveConstants.kFrontRightDriveMotorPort,
+  //      DriveConstants.kFrontRightTurningMotorPort,
+  //      DriveConstants.kFrontRightTurningAnalogPort,
+  //      DriveConstants.kFrontRightDriveEncoderReversed,
+  //      DriveConstants.kFrontRightTurningEncoderReversed,
+  //      false, false,
+  //      DriveConstants.kFrontRightTurningHome);
+
+  //  private final SwerveModuleCANcoder m_rearRight = new SwerveModuleCANcoder(
+  //      DriveConstants.kRearRightDriveMotorPort,
+  //      DriveConstants.kRearRightTurningMotorPort,
+  //      DriveConstants.kRearRightTurningAnalogPort,
+  //      DriveConstants.kRearRightDriveEncoderReversed,
+  //      DriveConstants.kRearRightTurningEncoderReversed,
+  //      false, false,
+  //      DriveConstants.kRearRightTurningHome);
+
+  //  private final SwerveModuleCANcoder[] swerveModules = {
+  //      m_frontLeft,
+  //      m_frontRight,
+  //      m_rearLeft,
+  //      m_rearRight };
+
   private final SwerveModuleAbs m_frontLeft = new SwerveModuleAbs(
       DriveConstants.kFrontLeftDriveMotorPort,
       DriveConstants.kFrontLeftTurningMotorPort,
@@ -205,7 +250,7 @@ public class DriveSubsystem extends SubsystemBase {
         swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
         swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
 
-        swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
+        //swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
 
       }
 

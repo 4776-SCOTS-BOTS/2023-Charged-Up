@@ -13,14 +13,18 @@ public class Gripper extends SubsystemBase {
   private Solenoid gripSolenoid;
   
   /** Creates a new Gripper. */
-  public Gripper(boolean closed) {
+  public Gripper(boolean gripClosed) {
     gripSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.gripperSolenoidPort);
-    if(closed){
+    if(gripClosed){
       closeGripper();
     } else {
       openGripper();
     }
   }
+  
+  
+  /** Creates a new Gripper. */
+  
 
   public void closeGripper(){
     gripSolenoid.set(false);

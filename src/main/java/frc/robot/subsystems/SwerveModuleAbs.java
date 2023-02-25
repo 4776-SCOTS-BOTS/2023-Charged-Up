@@ -53,7 +53,7 @@ public class SwerveModuleAbs {
   public SwerveModuleAbs(
       int driveMotorChannel,
       int turningMotorChannel,
-      int turningAnaogPort,
+      int turningPort,
       boolean driveEncoderReversed,
       boolean turningEncoderReversed,
       boolean is_invertedLeft,
@@ -70,7 +70,7 @@ public class SwerveModuleAbs {
 
     this.m_driveEncoder = m_driveMotor.getEncoder();
     // m_driveEncoder.setInverted(is_invertedLeft);
-    this.m_turningEncoder = new MA3Encoder(turningAnaogPort, homeLoc);
+    this.m_turningEncoder = new MA3Encoder(turningPort, homeLoc);
 
     InvertLeft = is_invertedLeft;
     InvertBack = is_invertedBack;

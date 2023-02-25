@@ -55,7 +55,7 @@ public final class Constants {
     // below.
 
     public static final double driveNormalPercentScale = 0.7;
-    public static final double rotNormalRateModifier = 1.25;
+    public static final double rotNormalRateModifier = 1.5;
     public static final double driveLowPercentScale = 0.5;
     public static final double rotLowRateModifier = 0.75;
 
@@ -77,10 +77,10 @@ public final class Constants {
     public static final int[] kFrontRightTurningEncoderPorts = new int[] { 6, 7 };
     public static final int[] kRearRightTurningEncoderPorts = new int[] { 8, 9 };
 
-    public static final int kFrontLeftTurningAnalogPort = 0;
-    public static final int kRearLeftTurningAnalogPort = 3;
-    public static final int kFrontRightTurningAnalogPort = 1;
-    public static final int kRearRightTurningAnalogPort = 2;
+    public static int kFrontLeftTurningAnalogPort = 0;
+    public static int kRearLeftTurningAnalogPort = 3;
+    public static int kFrontRightTurningAnalogPort = 1;
+    public static int kRearRightTurningAnalogPort = 2;
 
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = false;
@@ -132,8 +132,8 @@ public final class Constants {
     public static final double kRevolutionsToMeters = Math.PI * kWheelDiameter / kMotorGearsToWheelGears;
     public static final double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
 
-    public static final double kPModuleTurningController = 2.5;
-    public static final double kDModuleTurningController = 0;
+    public static double kPModuleTurningController = 2.5;
+    public static double kDModuleTurningController = 0;
 
     public static final double kPModuleDriveController = 0.6;
     private static final double kDriveP = 15.0;
@@ -174,10 +174,10 @@ public final class Constants {
     public static final boolean kShoulder2Inv = false;
     public static final int kElbowPort = 22;
 
-    public static final ArmPosition PICKUP_POSITION = new ArmPosition(80.0, 80.0);
-    public static final ArmPosition SAFE_POSITION = new ArmPosition(25.0, 180.0);
-    public static final ArmPosition HIGH_POSITION = new ArmPosition(180, 250.0);
-    public static final ArmPosition MID_POSITION = new ArmPosition(220.0, 250.0);
+    public static final ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
+    public static final ArmPosition SAFE_POSITION = new ArmPosition(22.5, 210.0);
+    public static final ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
+    public static final ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
     public static final ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
 
     // Elbow Constants
@@ -187,9 +187,9 @@ public final class Constants {
       public static final double kGVolts = 0.4;
       public static final double kVVoltSecondPerRad = 2.92;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.2;
+      public static final double kP = 0.3;
       public static final double kI = 0;
-      public static final double kD = 0.03;
+      public static final double kD = 0.06;
       public static final double kFF = 0;
       public static final double kMinOutput = -0.6;
       public static final double kMaxOutput = 0.6;
@@ -197,7 +197,7 @@ public final class Constants {
       public static final double kLowerLimit = Math.toRadians(10);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 4.60; // Radians
+      public static final double kOffset = 4.60-Math.toRadians(55); // Radians
       public static final int kCurrentLimit = 10;
       public static final double kManualScale = 0.3;
 
@@ -218,9 +218,9 @@ public final class Constants {
       public static final double kGBetaVolts = 0.50;
       public static final double kVVoltSecondPerRad = 1.95;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.3;
+      public static final double kP = 0.4;
       public static final double kI = 0;
-      public static final double kD = 0.03;
+      public static final double kD = 0.06;
       public static final double kFF = 0;
       public static final double kMinOutput = -0.6;
       public static final double kMaxOutput = 0.6;
@@ -248,6 +248,7 @@ public final class Constants {
     public static final int phCanID = 10;
     public static final int gripperSolenoidPort = 8;
     public static final int intakeSolenoidPort = 0;
+    public static final int kickerSolenoidPort = 11;
   }
 
   // Intake Constants
@@ -278,10 +279,19 @@ public final class Constants {
         ConfigConstants.hasCamera = false;
 
         // Swerve Module Alignment
-        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(0));
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(0));
-        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(0));
-        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(0));// 80.8
+        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-193+180));
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-48+180));
+        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(63));
+        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(148));
+
+        //Encoder Ports
+        DriveConstants.kFrontLeftTurningAnalogPort = 55;
+        DriveConstants.kRearLeftTurningAnalogPort = 59;
+        DriveConstants.kFrontRightTurningAnalogPort = 53;
+        DriveConstants.kRearRightTurningAnalogPort = 57;
+
+        ModuleConstants.kPModuleTurningController = 1.0;
+        ModuleConstants.kDModuleTurningController = 0;
 
         // Distance between centers of right and left wheels on robot
         double kTrackWidth = DriveConstants.kTrackWidth = 0.584;
