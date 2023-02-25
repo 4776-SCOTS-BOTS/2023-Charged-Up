@@ -181,6 +181,7 @@ public final class Constants {
     public static final ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
 
     public static final ArmPosition CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
+
     // Elbow Constants
 
     public static final class Elbow {
