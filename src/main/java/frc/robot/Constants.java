@@ -175,7 +175,7 @@ public final class Constants {
     public static final int kElbowPort = 22;
 
     public static final ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
-    public static final ArmPosition SAFE_POSITION = new ArmPosition(22.5, 210.0);
+    public static final ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
     public static final ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
     public static final ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
     public static final ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
