@@ -42,7 +42,16 @@ public class CubeAndLeaveAutoBlue extends SequentialCommandGroup {
         // Drive Forward
         List.of(new Translation2d(1.0, -0.5)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3.5, -0.5, new Rotation2d(Math.toRadians(0))),
+        new Pose2d(3.7, -0.5, new Rotation2d(Math.toRadians(0))),
+        config);
+
+        Trajectory driveBackTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(3.7, -0.5, new Rotation2d(Math.toRadians(0))),
+        // Drive Forward
+        List.of(new Translation2d(2.5, -0.5)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(2.0, -0.5, new Rotation2d(Math.toRadians(0))),
         config);
 
     var thetaController = new ProfiledPIDController(
@@ -61,25 +70,37 @@ public class CubeAndLeaveAutoBlue extends SequentialCommandGroup {
         drive::setModuleStates,
         drive);
 
-    // Reset odometry to the starting pose of the trajectory.
-    drive.resetOdometry(driveToLineTrajectory.getInitialPose());
+        SwerveControllerCommand driveBack = new SwerveControllerCommand(
+        driveBackTrajectory,
+        drive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
+
+        // Position controllers
+        new PIDController(2, 0, 0),
+        new PIDController(2, 0, 0),
+        thetaController,
+        drive::setModuleStates,
+        drive);
 
     addCommands(
+        // Reset odometry to the starting pose of the trajectory.
+        new InstantCommand(() -> drive.resetOdometry(driveToLineTrajectory.getInitialPose())),
+
         // Extend arm
-        new InstantCommand(() -> {
-          arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION);
-        }, arm),
+        arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION),
 
         // Wait and release
         new WaitCommand(2),
         new InstantCommand(gripper::openGripper, gripper),
+        new WaitCommand(2),
 
         // Pack the arm
-        new InstantCommand(() -> {
-          arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION);
-        }, arm),
+        arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION),
 
-        // Drive to the ball
-        driveToLine.andThen(() -> drive.drive(0, 0, 0, false)));
+        // Drive over line
+        driveToLine,
+
+        //Drive back
+        driveBack.andThen(() -> drive.drive(0, 0, 0, false)));
   }
 }

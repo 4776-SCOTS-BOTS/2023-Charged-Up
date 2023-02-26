@@ -32,7 +32,7 @@ public final class Constants {
     PracticeBot
   }
 
-  public static final RobotType robotType = RobotType.PracticeBot;
+  public static final RobotType robotType = RobotType.CompBot;
 
   public static final class ConfigConstants {
     public static boolean fullShuffleBoardOutput = false;
@@ -246,11 +246,11 @@ public final class Constants {
   }
 
   // Solenoid Constants RAAAAAAA
-  public static final class PneumaticsConstants {
-    public static final int phCanID = 10;
-    public static final int gripperSolenoidPort = 8;
-    public static final int intakeSolenoidPort = 0;
-    public static final int kickerSolenoidPort = 11;
+  public static  class PneumaticsConstants {
+    public static  int phCanID = 10;
+    public static  int gripperSolenoidPort = 8;
+    public static  int intakeSolenoidPort = 0;
+    public static  int kickerSolenoidPort = 11;
   }
 
   // Intake Constants
@@ -311,8 +311,14 @@ public final class Constants {
       case PracticeBot: {
         ConfigConstants.hasCamera = true;
 
+        PneumaticsConstants.phCanID = 10;
+        PneumaticsConstants.gripperSolenoidPort = 8;
+        PneumaticsConstants.intakeSolenoidPort = 0;
+        PneumaticsConstants.kickerSolenoidPort = 11;
+        
+
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-10.5));
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-136.8));
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-224));
         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(-51.6));
         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-156.2));
 

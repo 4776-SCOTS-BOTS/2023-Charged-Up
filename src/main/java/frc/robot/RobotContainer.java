@@ -107,6 +107,8 @@ public class RobotContainer {
   // Drive controllers
   final JoystickButton brakeButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+  final JoystickButton signalCubeButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
+  final JoystickButton signalConeButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
   // Manipulator controllers
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
@@ -176,7 +178,7 @@ public class RobotContainer {
         entry(CommandsToChoose.CubeAndLeaveAutoBlue, cubeAndLeaveBlue)
        ), m_chooser::getSelected);
 
-    m_chooser.setDefaultOption("Shoot and Run Low", CommandsToChoose.CubeAndLeaveAutoBlue);
+    m_chooser.setDefaultOption("Place Cube Blue Right", CommandsToChoose.CubeAndLeaveAutoBlue);
     
     Shuffleboard.getTab("Auto").add(m_chooser)
     .withPosition(0, 0)
@@ -205,6 +207,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
+
+    signalConeButton.onTrue(new InstantCommand(m_Led::setYellow,m_Led));
+    signalCubeButton.onTrue(new InstantCommand(m_Led::setPurple,m_Led));
    
     intakeInButton.onTrue(new InstantCommand(m_Intake::intakeIn, m_Intake));
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));

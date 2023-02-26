@@ -45,49 +45,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
 
-  //  private final SwerveModuleCANcoder m_frontLeft = new SwerveModuleCANcoder(
-  //     DriveConstants.kFrontLeftDriveMotorPort,
-  //     DriveConstants.kFrontLeftTurningMotorPort,
-  //     DriveConstants.kFrontLeftTurningAnalogPort,
-  //     DriveConstants.kFrontLeftDriveEncoderReversed,
-  //     DriveConstants.kFrontLeftTurningEncoderReversed,
-  //     false, false,
-  //     DriveConstants.kFrontLeftTurningHome);
-
-  //  private final SwerveModuleCANcoder m_rearLeft = new SwerveModuleCANcoder(
-  //      DriveConstants.kRearLeftDriveMotorPort,
-  //      DriveConstants.kRearLeftTurningMotorPort,
-  //      DriveConstants.kRearLeftTurningAnalogPort,
-  //      DriveConstants.kRearLeftDriveEncoderReversed,
-  //      DriveConstants.kRearLeftTurningEncoderReversed,
-  //      false, false,
-  //      DriveConstants.kRearLeftTurningHome);
-
-  //  private final SwerveModuleCANcoder m_frontRight = new SwerveModuleCANcoder(
-  //      DriveConstants.kFrontRightDriveMotorPort,
-  //      DriveConstants.kFrontRightTurningMotorPort,
-  //      DriveConstants.kFrontRightTurningAnalogPort,
-  //      DriveConstants.kFrontRightDriveEncoderReversed,
-  //      DriveConstants.kFrontRightTurningEncoderReversed,
-  //      false, false,
-  //      DriveConstants.kFrontRightTurningHome);
-
-  //  private final SwerveModuleCANcoder m_rearRight = new SwerveModuleCANcoder(
-  //      DriveConstants.kRearRightDriveMotorPort,
-  //      DriveConstants.kRearRightTurningMotorPort,
-  //      DriveConstants.kRearRightTurningAnalogPort,
-  //      DriveConstants.kRearRightDriveEncoderReversed,
-  //      DriveConstants.kRearRightTurningEncoderReversed,
-  //      false, false,
-  //      DriveConstants.kRearRightTurningHome);
-
-  //  private final SwerveModuleCANcoder[] swerveModules = {
-  //      m_frontLeft,
-  //      m_frontRight,
-  //      m_rearLeft,
-  //      m_rearRight };
-
-  private final SwerveModuleAbs m_frontLeft = new SwerveModuleAbs(
+   private final SwerveModuleCANcoder m_frontLeft = new SwerveModuleCANcoder(
       DriveConstants.kFrontLeftDriveMotorPort,
       DriveConstants.kFrontLeftTurningMotorPort,
       DriveConstants.kFrontLeftTurningAnalogPort,
@@ -96,38 +54,80 @@ public class DriveSubsystem extends SubsystemBase {
       false, false,
       DriveConstants.kFrontLeftTurningHome);
 
-  private final SwerveModuleAbs m_rearLeft = new SwerveModuleAbs(
-      DriveConstants.kRearLeftDriveMotorPort,
-      DriveConstants.kRearLeftTurningMotorPort,
-      DriveConstants.kRearLeftTurningAnalogPort,
-      DriveConstants.kRearLeftDriveEncoderReversed,
-      DriveConstants.kRearLeftTurningEncoderReversed,
-      false, false,
-      DriveConstants.kRearLeftTurningHome);
+   private final SwerveModuleCANcoder m_rearLeft = new SwerveModuleCANcoder(
+       DriveConstants.kRearLeftDriveMotorPort,
+       DriveConstants.kRearLeftTurningMotorPort,
+       DriveConstants.kRearLeftTurningAnalogPort,
+       DriveConstants.kRearLeftDriveEncoderReversed,
+       DriveConstants.kRearLeftTurningEncoderReversed,
+       false, false,
+       DriveConstants.kRearLeftTurningHome);
 
-  private final SwerveModuleAbs m_frontRight = new SwerveModuleAbs(
-      DriveConstants.kFrontRightDriveMotorPort,
-      DriveConstants.kFrontRightTurningMotorPort,
-      DriveConstants.kFrontRightTurningAnalogPort,
-      DriveConstants.kFrontRightDriveEncoderReversed,
-      DriveConstants.kFrontRightTurningEncoderReversed,
-      false, false,
-      DriveConstants.kFrontRightTurningHome);
+   private final SwerveModuleCANcoder m_frontRight = new SwerveModuleCANcoder(
+       DriveConstants.kFrontRightDriveMotorPort,
+       DriveConstants.kFrontRightTurningMotorPort,
+       DriveConstants.kFrontRightTurningAnalogPort,
+       DriveConstants.kFrontRightDriveEncoderReversed,
+       DriveConstants.kFrontRightTurningEncoderReversed,
+       false, false,
+       DriveConstants.kFrontRightTurningHome);
 
-  private final SwerveModuleAbs m_rearRight = new SwerveModuleAbs(
-      DriveConstants.kRearRightDriveMotorPort,
-      DriveConstants.kRearRightTurningMotorPort,
-      DriveConstants.kRearRightTurningAnalogPort,
-      DriveConstants.kRearRightDriveEncoderReversed,
-      DriveConstants.kRearRightTurningEncoderReversed,
-      false, false,
-      DriveConstants.kRearRightTurningHome);
+   private final SwerveModuleCANcoder m_rearRight = new SwerveModuleCANcoder(
+       DriveConstants.kRearRightDriveMotorPort,
+       DriveConstants.kRearRightTurningMotorPort,
+       DriveConstants.kRearRightTurningAnalogPort,
+       DriveConstants.kRearRightDriveEncoderReversed,
+       DriveConstants.kRearRightTurningEncoderReversed,
+       false, false,
+       DriveConstants.kRearRightTurningHome);
 
-  private final SwerveModuleAbs[] swerveModules = {
-      m_frontLeft,
-      m_frontRight,
-      m_rearLeft,
-      m_rearRight };
+   private final SwerveModuleCANcoder[] swerveModules = {
+       m_frontLeft,
+       m_frontRight,
+       m_rearLeft,
+       m_rearRight };
+
+  // private final SwerveModuleAbs m_frontLeft = new SwerveModuleAbs(
+  //     DriveConstants.kFrontLeftDriveMotorPort,
+  //     DriveConstants.kFrontLeftTurningMotorPort,
+  //     DriveConstants.kFrontLeftTurningAnalogPort,
+  //     DriveConstants.kFrontLeftDriveEncoderReversed,
+  //     DriveConstants.kFrontLeftTurningEncoderReversed,
+  //     false, false,
+  //     DriveConstants.kFrontLeftTurningHome);
+
+  // private final SwerveModuleAbs m_rearLeft = new SwerveModuleAbs(
+  //     DriveConstants.kRearLeftDriveMotorPort,
+  //     DriveConstants.kRearLeftTurningMotorPort,
+  //     DriveConstants.kRearLeftTurningAnalogPort,
+  //     DriveConstants.kRearLeftDriveEncoderReversed,
+  //     DriveConstants.kRearLeftTurningEncoderReversed,
+  //     false, false,
+  //     DriveConstants.kRearLeftTurningHome);
+
+  // private final SwerveModuleAbs m_frontRight = new SwerveModuleAbs(
+  //     DriveConstants.kFrontRightDriveMotorPort,
+  //     DriveConstants.kFrontRightTurningMotorPort,
+  //     DriveConstants.kFrontRightTurningAnalogPort,
+  //     DriveConstants.kFrontRightDriveEncoderReversed,
+  //     DriveConstants.kFrontRightTurningEncoderReversed,
+  //     false, false,
+  //     DriveConstants.kFrontRightTurningHome);
+
+  // private final SwerveModuleAbs m_rearRight = new SwerveModuleAbs(
+  //     DriveConstants.kRearRightDriveMotorPort,
+  //     DriveConstants.kRearRightTurningMotorPort,
+  //     DriveConstants.kRearRightTurningAnalogPort,
+  //     DriveConstants.kRearRightDriveEncoderReversed,
+  //     DriveConstants.kRearRightTurningEncoderReversed,
+  //     false, false,
+  //     DriveConstants.kRearRightTurningHome);
+
+  // private final SwerveModuleAbs[] swerveModules = {
+  //     m_frontLeft,
+  //     m_frontRight,
+  //     m_rearLeft,
+  //     m_rearRight };
 
   // The gyro sensor
   // private final Gyro m_gyro = new ADXRS450_Gyro();
