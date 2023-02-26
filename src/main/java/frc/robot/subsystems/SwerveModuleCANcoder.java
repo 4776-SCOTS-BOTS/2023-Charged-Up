@@ -73,6 +73,7 @@ public class SwerveModuleCANcoder {
     m_driveMotor.setIdleMode(IdleMode.kBrake);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.setIdleMode(IdleMode.kBrake);
+    m_turningMotor.setInverted(true);
 
     this.m_driveEncoder = m_driveMotor.getEncoder();
     // m_driveEncoder.setInverted(is_invertedLeft);
@@ -81,7 +82,7 @@ public class SwerveModuleCANcoder {
     /* Swerve CANCoder Configuration */
     this.swerveCANCoderConfig = new CANCoderConfiguration();
     swerveCANCoderConfig.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
-    swerveCANCoderConfig.sensorDirection = true;
+    swerveCANCoderConfig.sensorDirection = !turningEncoderReversed;
     swerveCANCoderConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     swerveCANCoderConfig.sensorTimeBase = SensorTimeBase.PerSecond;
     swerveCANCoderConfig.sensorCoefficient = 2 * Math.PI / 4096.0;

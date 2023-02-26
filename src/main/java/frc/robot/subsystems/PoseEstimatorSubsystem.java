@@ -57,8 +57,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   private double previousPipelineTimestamp = 0;
 
-  public PoseEstimatorSubsystem(LimeLightPoseEstimator limelight, DriveSubsystem drive) {
-    this.limelight = limelight;
+  public PoseEstimatorSubsystem(String limelightName, DriveSubsystem drive) {
+    this.limelight = new LimeLightPoseEstimator(limelightName);
     this.drive = drive;
     AprilTagFieldLayout layout;
     try {

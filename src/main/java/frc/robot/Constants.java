@@ -82,15 +82,15 @@ public final class Constants {
     public static int kFrontRightTurningAnalogPort = 1;
     public static int kRearRightTurningAnalogPort = 2;
 
-    public static final boolean kFrontLeftTurningEncoderReversed = false;
-    public static final boolean kRearLeftTurningEncoderReversed = false;
-    public static final boolean kFrontRightTurningEncoderReversed = false;
-    public static final boolean kRearRightTurningEncoderReversed = false;
+    public static boolean kFrontLeftTurningEncoderReversed = false;
+    public static boolean kRearLeftTurningEncoderReversed = false;
+    public static boolean kFrontRightTurningEncoderReversed = false;
+    public static boolean kRearRightTurningEncoderReversed = false;
 
-    public static final boolean kFrontLeftDriveEncoderReversed = false;
-    public static final boolean kRearLeftDriveEncoderReversed = false;
-    public static final boolean kFrontRightDriveEncoderReversed = false;
-    public static final boolean kRearRightDriveEncoderReversed = false;
+    public static boolean kFrontLeftDriveEncoderReversed = false;
+    public static boolean kRearLeftDriveEncoderReversed = false;
+    public static boolean kFrontRightDriveEncoderReversed = false;
+    public static boolean kRearRightDriveEncoderReversed = false;
 
     public static Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(0));
     public static Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(0));
@@ -128,9 +128,9 @@ public final class Constants {
 
     public static final double kMaxRPM = 5700;
     public static final double kWheelDiameter = 0.102;
-    public static final double kMotorGearsToWheelGears = 6.67;
-    public static final double kRevolutionsToMeters = Math.PI * kWheelDiameter / kMotorGearsToWheelGears;
-    public static final double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
+    public static double kMotorGearsToWheelGears = 6.67;
+    public static double kRevolutionsToMeters = Math.PI * kWheelDiameter / kMotorGearsToWheelGears;
+    public static double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
 
     public static double kPModuleTurningController = 2.5;
     public static double kDModuleTurningController = 0;
@@ -292,7 +292,22 @@ public final class Constants {
         DriveConstants.kFrontRightTurningAnalogPort = 53;
         DriveConstants.kRearRightTurningAnalogPort = 57;
 
-        ModuleConstants.kPModuleTurningController = 1.0;
+        DriveConstants.kFrontLeftTurningEncoderReversed = true;
+        DriveConstants.kRearLeftTurningEncoderReversed = true;
+        DriveConstants.kFrontRightTurningEncoderReversed = true;
+        DriveConstants.kRearRightTurningEncoderReversed = true;
+
+        DriveConstants.kFrontLeftDriveEncoderReversed = true;
+        DriveConstants.kRearLeftDriveEncoderReversed = true;
+        DriveConstants.kFrontRightDriveEncoderReversed = true;
+        DriveConstants.kRearRightDriveEncoderReversed = true;
+
+        ModuleConstants.kMotorGearsToWheelGears = 6.12;
+        ModuleConstants.kRevolutionsToMeters = Math.PI * ModuleConstants.kWheelDiameter / ModuleConstants.kMotorGearsToWheelGears;
+        ModuleConstants.kRPMToMetersPerSecond = Math.PI * ModuleConstants.kWheelDiameter / (60 * ModuleConstants.kMotorGearsToWheelGears);
+
+
+        ModuleConstants.kPModuleTurningController = 0.4;
         ModuleConstants.kDModuleTurningController = 0;
 
         // Distance between centers of right and left wheels on robot
