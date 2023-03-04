@@ -197,8 +197,8 @@
           },
           "6,0": {
             "size": [
-              11,
-              9
+              26,
+              18
             ],
             "content": {
               "_type": "Camera Stream",
@@ -486,8 +486,8 @@
           },
           "43,2": {
             "size": [
-              2,
-              1
+              7,
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -614,9 +614,9 @@
               "_showGlyph": false
             }
           },
-          "18,0": {
+          "35,11": {
             "size": [
-              3,
+              18,
               2
             ],
             "content": {
@@ -627,10 +627,10 @@
               "_showGlyph": false
             }
           },
-          "18,2": {
+          "32,7": {
             "size": [
               3,
-              2
+              6
             ],
             "content": {
               "_type": "Text View",
@@ -640,7 +640,7 @@
               "_showGlyph": false
             }
           },
-          "21,0": {
+          "43,4": {
             "size": [
               7,
               7
@@ -659,7 +659,7 @@
               "Y-axis/Unit": "ul"
             }
           },
-          "18,4": {
+          "32,5": {
             "size": [
               3,
               2
@@ -672,7 +672,7 @@
               "_showGlyph": false
             }
           },
-          "19,7": {
+          "36,4": {
             "size": [
               7,
               7
@@ -691,15 +691,28 @@
               "Y-axis/Unit": "ul"
             }
           },
-          "28,0": {
+          "50,3": {
+            "size": [
+              2,
+              8
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning5",
+              "_title": "SwerveModuleTurning5",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "68,0": {
             "size": [
               2,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning5",
-              "_title": "SwerveModuleTurning5",
+              "_source0": "network_table:///SmartDashboard/Shoulder FF",
+              "_title": "Shoulder FF",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -1313,9 +1326,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.199999809265137,
-    "y": -7.199999809265137,
-    "width": 1550.4000244140625,
-    "height": 838.4000244140625
+    "x": 1528.0,
+    "y": -8.0,
+    "width": 2576.0,
+    "height": 1056.0
   }
 }

@@ -28,7 +28,8 @@ public class MultiStepArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Arm.setArmPositionCommand(position1);
+    m_Arm.setShoulderPosition(position1.shoulderRadians);
+    m_Arm.setElbowPosition(position1.elbowRadians);
     inStage1 = true;
   }
 
@@ -36,9 +37,10 @@ public class MultiStepArm extends CommandBase {
   @Override
   public void execute() {
     if (inStage1) {
-      double shoulderPos = m_Arm.getElbowPositionDeg();
+      double shoulderPos = m_Arm.getShoulderPositionDeg();
       if (Math.abs(shoulderPos - position1.shoulderDegrees) < 10) {
-        m_Arm.setArmPositionCommand(position2);
+        m_Arm.setShoulderPosition(position2.shoulderRadians);
+        m_Arm.setElbowPosition(position2.elbowRadians);
         inStage1 = false;
       }
     }
@@ -52,7 +54,7 @@ public class MultiStepArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double shoulderPos = m_Arm.getElbowPositionDeg();
+    double shoulderPos = m_Arm.getShoulderPositionDeg();
     return Math.abs(shoulderPos - position1.shoulderDegrees) < 10;
   }
 }

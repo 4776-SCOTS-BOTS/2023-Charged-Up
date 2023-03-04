@@ -330,17 +330,17 @@ public final class Constants {
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         // Arm Constants
-        Elbow.kOffset = 1.618 + Math.PI;
+        Elbow.kOffset = Math.toRadians(71.0);
         ArmConstants.elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
             Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
             Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit,
             Elbow.kLowerLimit,
             Elbow.trapConstraints, Elbow.kOffset, 0);
 
-        ArmConstants.PICKUP_POSITION = new ArmPosition(75, 145);
-        ArmConstants.SAFE_POSITION = new ArmPosition(30, 205.0);
+        ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 120);
+        ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
         ArmConstants.READY_POSITION1 = new ArmPosition(320, 100);
-        ArmConstants.READY_POSITION2 = new ArmPosition(190, 100);
+        ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION3 = new ArmPosition(30, 205.0);
     
         ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
