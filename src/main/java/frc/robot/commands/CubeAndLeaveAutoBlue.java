@@ -36,6 +36,12 @@ public class CubeAndLeaveAutoBlue extends SequentialCommandGroup {
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
 
+        TrajectoryConfig configReversed = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
+
     Trajectory driveToLineTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
@@ -49,10 +55,10 @@ public class CubeAndLeaveAutoBlue extends SequentialCommandGroup {
         // Start at the origin facing the +X direction
         new Pose2d(3.7, -0.5, new Rotation2d(Math.toRadians(0))),
         // Drive Forward
-        List.of(new Translation2d(2.5, -0.5)),
+        List.of(new Translation2d(3.0, -0.5)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(2.0, -0.5, new Rotation2d(Math.toRadians(0))),
-        config);
+        new Pose2d(2.5, -0.5, new Rotation2d(Math.toRadians(0))),
+        configReversed);
 
     var thetaController = new ProfiledPIDController(
         2, 0, 0, AutoConstants.kThetaControllerConstraints);

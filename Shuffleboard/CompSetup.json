@@ -281,19 +281,6 @@
               "_showGlyph": false
             }
           },
-          "28,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Turret Position",
-              "_title": "Turret Position",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "50,0": {
             "size": [
               2,
@@ -303,45 +290,6 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/LimelightArea",
               "_title": "LimelightArea",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "31,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LimelightX",
-              "_title": "LimelightX",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "28,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LimelightY",
-              "_title": "LimelightY",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "30,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning5",
-              "_title": "SwerveModuleTurning5",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -575,32 +523,6 @@
               "_showGlyph": false
             }
           },
-          "17,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ElbowP",
-              "_title": "ElbowP",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,2": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ElbowI",
-              "_title": "ElbowI",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "66,0": {
             "size": [
               2,
@@ -610,32 +532,6 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/ElbowD",
               "_title": "ElbowD",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "20,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ShoulderP",
-              "_title": "ShoulderP",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "20,2": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ShoulderI",
-              "_title": "ShoulderI",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -679,88 +575,10 @@
               "_showGlyph": false
             }
           },
-          "20,6": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shoulder FF",
-              "_title": "Shoulder FF",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "20,8": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shoulder Setpoint",
-              "_title": "Shoulder Setpoint",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,4": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ElbowD",
-              "_title": "SmartDashboard/ElbowD",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,6": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Elbow FF",
-              "_title": "/SmartDashboard/Elbow FF",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,8": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Elbow Setpoint",
-              "_title": "/SmartDashboard/Elbow Setpoint",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "20,4": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ShoulderD",
-              "_title": "SmartDashboard/ShoulderD",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "0,0": {
             "size": [
               2,
-              1
+              2
             ],
             "content": {
               "_type": "Text View",
@@ -792,6 +610,96 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/limelight_Stream",
               "_title": "limelight_Stream",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "18,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/PoseX",
+              "_title": "PoseX",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "18,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/PoseY",
+              "_title": "SmartDashboard/PoseY",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "21,0": {
+            "size": [
+              7,
+              7
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///limelight/botpose_wpired",
+              "_title": "limelight/botpose_wpired",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul"
+            }
+          },
+          "18,4": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/PoseRot",
+              "_title": "PoseRot",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "19,7": {
+            "size": [
+              7,
+              7
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Pose TS",
+              "_title": "Pose TS",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Graph/Visible time": 30.0,
+              "Graph/X-axis auto scrolling": true,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Y-axis/Unit": "ul"
+            }
+          },
+          "28,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning5",
+              "_title": "SwerveModuleTurning5",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -1405,9 +1313,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -6.400000095367432,
-    "y": 0.800000011920929,
-    "width": 1543.199951171875,
-    "height": 624.7999877929688
+    "x": -7.199999809265137,
+    "y": -7.199999809265137,
+    "width": 1550.4000244140625,
+    "height": 838.4000244140625
   }
 }

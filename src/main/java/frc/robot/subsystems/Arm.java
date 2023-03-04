@@ -63,6 +63,7 @@ public class Arm extends SubsystemBase {
     shoulder1.setIdleMode(IdleMode.kBrake);
     shoulder2.setIdleMode(IdleMode.kBrake);
     elbow.setIdleMode(IdleMode.kBrake);
+    elbow.setInverted(true);
 
     elbow.setSmartCurrentLimit(Constants.ArmConstants.Elbow.kCurrentLimit);
 
@@ -70,6 +71,7 @@ public class Arm extends SubsystemBase {
     elbowPIDController = elbow.getPIDController();
     elbowPIDController.setFeedbackDevice(elbowEncoder);
     elbowPIDController.setPositionPIDWrappingEnabled(false);
+    elbowEncoder.setInverted(true);
     elbowEncoder.setPositionConversionFactor((2 * Math.PI));
     elbowEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
     elbowEncoder.setZeroOffset(Constants.ArmConstants.elbow.kOffset);

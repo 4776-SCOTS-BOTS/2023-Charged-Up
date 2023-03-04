@@ -21,6 +21,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.CubeAndLeaveAutoBlue;
+import frc.robot.commands.MultiStepArm;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -79,7 +80,7 @@ public class RobotContainer {
   private Intake m_Intake = new Intake();
   private LED m_Led;
 
-  //private PoseEstimatorSubsystem poseEstimator = new PoseEstimatorSubsystem("limelight", m_robotDrive);
+  private PoseEstimatorSubsystem poseEstimator = new PoseEstimatorSubsystem("limelight", m_robotDrive);
 
 
   // Init Limelight
@@ -128,6 +129,7 @@ public class RobotContainer {
   final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
   final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kBack.value);
   final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
+  final JoystickButton readyPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftStick.value);
 
 
 
@@ -238,6 +240,8 @@ public class RobotContainer {
     highPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION));
     midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
+    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION1, 
+      Constants.ArmConstants.READY_POSITION2));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {

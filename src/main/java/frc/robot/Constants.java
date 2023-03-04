@@ -11,9 +11,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
+import frc.robot.Constants.ArmConstants.Elbow;
 import frc.robot.customClass.ArmJointConstants;
 import frc.robot.customClass.CRGB;
+import frc.robot.subsystems.Arm;
 import frc.robot.customClass.ArmPosition;
 
 /**
@@ -25,6 +26,7 @@ import frc.robot.customClass.ArmPosition;
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the constants are needed, to reduce verbosity.
+ * 16"x22"
  */
 public final class Constants {
   public static enum RobotType {
@@ -135,7 +137,7 @@ public final class Constants {
     public static double kPModuleTurningController = 2.5;
     public static double kDModuleTurningController = 0;
 
-    public static final double kPModuleDriveController = 0.6;
+    public static final double kPModuleDriveController = 2.0;  //0.6
     private static final double kDriveP = 15.0;
     private static final double kDriveI = 0.01;
     private static final double kDriveD = 0.1;
@@ -174,17 +176,20 @@ public final class Constants {
     public static final boolean kShoulder2Inv = false;
     public static final int kElbowPort = 22;
 
-    public static final ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
-    public static final ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
-    public static final ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
-    public static final ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
-    public static final ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
+    public static ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
+    public static ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
+    public static ArmPosition READY_POSITION1 = new ArmPosition(320, 100);
+    public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
+    public static ArmPosition READY_POSITION3 = new ArmPosition(30, 205.0);
+    public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
+    public static ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
+    public static ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
 
-    public static final ArmPosition CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
+    public static ArmPosition CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
 
     // Elbow Constants
 
-    public static final class Elbow {
+    public static class Elbow {
       public static final double kSVolts = 0;
       public static final double kGVolts = 0.4;
       public static final double kVVoltSecondPerRad = 2.92;
@@ -195,11 +200,11 @@ public final class Constants {
       public static final double kFF = 0;
       public static final double kMinOutput = -0.6;
       public static final double kMaxOutput = 0.6;
-      public static final double kUpperLimit = Math.toRadians(300);
+      public static final double kUpperLimit = Math.toRadians(330);
       public static final double kLowerLimit = Math.toRadians(10);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 4.60-Math.toRadians(55); // Radians
+      public static double kOffset = 4.60 - Math.toRadians(55); // Radians
       public static final int kCurrentLimit = 10;
       public static final double kManualScale = 0.3;
 
@@ -208,9 +213,10 @@ public final class Constants {
 
     }
 
-    public static final ArmJointConstants elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
+    public static ArmJointConstants elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
         Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
-        Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit, Elbow.kLowerLimit,
+        Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit,
+        Elbow.kLowerLimit,
         Elbow.trapConstraints, Elbow.kOffset, 0);
 
     // Shoulder Constants
@@ -230,7 +236,8 @@ public final class Constants {
       public static final double kLowerLimit = Math.toRadians(20);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 1.88 - Math.PI/2 + Math.toRadians(0); // Adjusted to zero degrees straight down
+      public static final double kOffset = 1.88 - Math.PI / 2 + Math.toRadians(0); // Adjusted to zero degrees straight
+                                                                                   // down
       public static final int kCurrentLimit = 30;
       public static final double kManualScale = 0.3;
 
@@ -240,32 +247,33 @@ public final class Constants {
 
     public static final ArmJointConstants shoulder = new ArmJointConstants(Shoulder.kSVolts, Shoulder.kGAplhaVolts,
         Shoulder.kVVoltSecondPerRad, Shoulder.kAVoltSecondSquaredPerRad,
-        Shoulder.kP, Shoulder.kI, Shoulder.kD, Shoulder.kFF, Shoulder.kMinOutput, Shoulder.kMaxOutput, Shoulder.kUpperLimit, Shoulder.kLowerLimit,
+        Shoulder.kP, Shoulder.kI, Shoulder.kD, Shoulder.kFF, Shoulder.kMinOutput, Shoulder.kMaxOutput,
+        Shoulder.kUpperLimit, Shoulder.kLowerLimit,
         Shoulder.trapConstraints, Shoulder.kOffset, Shoulder.kGBetaVolts);
 
   }
 
   // Solenoid Constants RAAAAAAA
-  public static  class PneumaticsConstants {
-    public static  int phCanID = 10;
-    public static  int gripperSolenoidPort = 8;
-    public static  int intakeSolenoidPort = 0;
-    public static  int kickerSolenoidPort = 11;
+  public static class PneumaticsConstants {
+    public static int phCanID = 10;
+    public static int gripperSolenoidPort = 2;
+    public static int intakeSolenoidPort = 0;
+    public static int kickerSolenoidPort = 4;
   }
 
   // Intake Constants
   public static final class IntakeConstants {
-    public static final int kIntakePort = 23;
-    public static final boolean kIntakeInv = false;
-    public static final double kIntakePower = 0.85; // @.60 power movement forward is needed to collect cube
+    public static int kIntakePort = 23;
+    public static boolean kIntakeInv = true;
+    public static double kIntakePower = 0.60; // @.60 power movement forward is needed to collect cube
 
-    public static final double kIntakePowerCone = 0.90;
-    public static final double kIntakePowerCube = 0.50;
+    public static double kIntakePowerCone = 0.65;
+    public static double kIntakePowerCube = 0.50;
 
     // Magic Carpet Constants
-    public static final int kMagicCarpetPort = 24;
-    public static final boolean kMagicCarpetInv = true;
-    public static final double kMagicCarpetPower = 0.25;
+    public static int kMagicCarpetPort = 24;
+    public static boolean kMagicCarpetInv = false;
+    public static double kMagicCarpetPower = 0.40;
 
   }
 
@@ -278,15 +286,15 @@ public final class Constants {
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
       case CompBot: {
-        ConfigConstants.hasCamera = false;
+        ConfigConstants.hasCamera = true;
 
         // Swerve Module Alignment
-        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-193+180));
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-48+180));
-        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(63));
-        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(148));
+        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162-180));
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5+180));
+        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(60.7));
+        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(149.0));
 
-        //Encoder Ports
+        // Encoder Ports
         DriveConstants.kFrontLeftTurningAnalogPort = 55;
         DriveConstants.kRearLeftTurningAnalogPort = 59;
         DriveConstants.kFrontRightTurningAnalogPort = 53;
@@ -303,34 +311,66 @@ public final class Constants {
         DriveConstants.kRearRightDriveEncoderReversed = true;
 
         ModuleConstants.kMotorGearsToWheelGears = 6.12;
-        ModuleConstants.kRevolutionsToMeters = Math.PI * ModuleConstants.kWheelDiameter / ModuleConstants.kMotorGearsToWheelGears;
-        ModuleConstants.kRPMToMetersPerSecond = Math.PI * ModuleConstants.kWheelDiameter / (60 * ModuleConstants.kMotorGearsToWheelGears);
-
+        ModuleConstants.kRevolutionsToMeters = Math.PI * ModuleConstants.kWheelDiameter
+            / ModuleConstants.kMotorGearsToWheelGears;
+        ModuleConstants.kRPMToMetersPerSecond = Math.PI * ModuleConstants.kWheelDiameter
+            / (60 * ModuleConstants.kMotorGearsToWheelGears);
 
         ModuleConstants.kPModuleTurningController = 0.4;
         ModuleConstants.kDModuleTurningController = 0;
 
         // Distance between centers of right and left wheels on robot
-        double kTrackWidth = DriveConstants.kTrackWidth = 0.584;
+        double kTrackWidth = DriveConstants.kTrackWidth = 0.552; //21.75in
         // Distance between front and back wheels on robot
-        double kWheelBase = DriveConstants.kWheelBase = 0.56; // actually is 0.4953 and was using 0.587375 021222 ;
+        double kWheelBase = DriveConstants.kWheelBase = 0.521; // 20.5
 
         DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
+        // Arm Constants
+        Elbow.kOffset = 1.618 + Math.PI;
+        ArmConstants.elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
+            Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
+            Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit,
+            Elbow.kLowerLimit,
+            Elbow.trapConstraints, Elbow.kOffset, 0);
+
+        ArmConstants.PICKUP_POSITION = new ArmPosition(75, 145);
+        ArmConstants.SAFE_POSITION = new ArmPosition(30, 205.0);
+        ArmConstants.READY_POSITION1 = new ArmPosition(320, 100);
+        ArmConstants.READY_POSITION2 = new ArmPosition(190, 100);
+        ArmConstants.READY_POSITION3 = new ArmPosition(30, 205.0);
+    
+        ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.MID_POSITION = new ArmPosition(290.0, 195.0);
+        ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
+
+        ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
+
       }
         break;
 
       case PracticeBot: {
-        ConfigConstants.hasCamera = true;
+        ConfigConstants.hasCamera = false;
 
         PneumaticsConstants.phCanID = 10;
         PneumaticsConstants.gripperSolenoidPort = 8;
         PneumaticsConstants.intakeSolenoidPort = 0;
         PneumaticsConstants.kickerSolenoidPort = 11;
-        
+
+        IntakeConstants.kIntakePort = 23;
+        IntakeConstants.kIntakeInv = false;
+        IntakeConstants.kIntakePower = 0.85; // @.60 power movement forward is needed to collect cube
+
+        IntakeConstants.kIntakePowerCone = 0.90;
+        IntakeConstants.kIntakePowerCube = 0.50;
+
+        // Magic Carpet Constants
+        IntakeConstants.kMagicCarpetPort = 24;
+        IntakeConstants.kMagicCarpetInv = true;
+        IntakeConstants.kMagicCarpetPower = 0.25;
 
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-10.5));
         DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-224));
