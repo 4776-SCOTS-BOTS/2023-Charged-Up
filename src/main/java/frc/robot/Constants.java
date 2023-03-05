@@ -56,7 +56,7 @@ public final class Constants {
     // Non-final constants are initialized with the values of the practice bot
     // below.
 
-    public static final double driveNormalPercentScale = 0.7;
+    public static final double driveNormalPercentScale = 0.8;
     public static final double rotNormalRateModifier = 1.5;
     public static final double driveLowPercentScale = 0.5;
     public static final double rotLowRateModifier = 0.75;
@@ -182,6 +182,7 @@ public final class Constants {
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION3 = new ArmPosition(30, 205.0);
     public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
+    public static ArmPosition HIGH_POSITION1 = new ArmPosition(180, 235.0);
     public static ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
     public static ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
 
@@ -239,7 +240,7 @@ public final class Constants {
       public static final double kOffset = 1.88 - Math.PI / 2 + Math.toRadians(0); // Adjusted to zero degrees straight
                                                                                    // down
       public static final int kCurrentLimit = 30;
-      public static final double kManualScale = 0.3;
+      public static final double kManualScale = 0.4;
 
       public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
           kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared);
@@ -337,13 +338,14 @@ public final class Constants {
             Elbow.kLowerLimit,
             Elbow.trapConstraints, Elbow.kOffset, 0);
 
-        ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 120);
+        ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
         ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
         ArmConstants.READY_POSITION1 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
-        ArmConstants.READY_POSITION3 = new ArmPosition(30, 205.0);
+        ArmConstants.READY_POSITION3 = new ArmPosition(320, 220);
     
-        ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.HIGH_POSITION = new ArmPosition(180, 225.0);
+        ArmConstants.HIGH_POSITION1 = new ArmPosition(90, 210.0);
         ArmConstants.MID_POSITION = new ArmPosition(290.0, 195.0);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
@@ -370,7 +372,7 @@ public final class Constants {
         // Magic Carpet Constants
         IntakeConstants.kMagicCarpetPort = 24;
         IntakeConstants.kMagicCarpetInv = true;
-        IntakeConstants.kMagicCarpetPower = 0.25;
+        IntakeConstants.kMagicCarpetPower = 0.33;
 
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-10.5));
         DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-224));

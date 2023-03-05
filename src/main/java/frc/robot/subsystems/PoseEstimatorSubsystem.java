@@ -117,7 +117,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     distance = previousTrans.getDistance(pose.pose3d.toPose2d().getTranslation());
     
 
-    if (pose.timestamp != previousPipelineTimestamp && pose.tagID != 0 && distance <= 2.0) {
+    if (pose.timestamp != previousPipelineTimestamp && pose.tagID != 0 && distance <= 0.5){
       previousPipelineTimestamp = pose.timestamp;
       previousTrans = getCurrentPose().getTranslation();
       // var target = pipelineResult.getBestTarget();

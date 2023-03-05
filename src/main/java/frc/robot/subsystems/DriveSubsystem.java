@@ -41,8 +41,11 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
+
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
+  public PoseEstimatorSubsystem poseEstimator;
   // Robot swerve modules
 
    private final SwerveModuleCANcoder m_frontLeft = new SwerveModuleCANcoder(
@@ -170,6 +173,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.enableLogging(true);
     //m_gyro.enableBoardlevelYawReset(true);
     setupShuffleBoard();
+    poseEstimator = new PoseEstimatorSubsystem("limelight", this);
   }
 
   @Override
@@ -187,6 +191,7 @@ public class DriveSubsystem extends SubsystemBase {
     odoX.setDouble(this.getPose().getX());
     odoY.setDouble(this.getPose().getY());
     odoRot.setDouble(this.getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Pitch", getPitch());
   }
 
   /**
@@ -386,24 +391,6 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
   }
   
-  /** //TODO: Work on finishing Limelight code w/ help
-  public void autoAim(){
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("<tx>").getDouble(0);
-
-    float heading_error = -tx;
-        float steering_adjust = 0.0f;
-        if (tx > 1.0)
-        {
-                steering_adjust = Kp*heading_error - min_command;
-        }
-        else if (tx < 1.0)
-        {
-                steering_adjust = Kp*heading_error + min_command;
-        }
-        left_command += steering_adjust;
-        right_command -= steering_adjust;
-  }
-  */
 
   public void turnByAngle(double turnByDegrees){
     double goal = Math.toRadians(-m_gyro.getAngle() + turnByDegrees);
@@ -443,6 +430,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(-45))), false, false);
     m_rearLeft.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(-45))), false, false);
     m_rearRight.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45))), false, false);
+  }
+
+  public double getPitch(){
+    return m_gyro.getPitch();
   }
 
 }

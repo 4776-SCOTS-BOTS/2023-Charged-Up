@@ -20,6 +20,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ChargeStationBalance;
 import frc.robot.commands.CubeAndLeaveAutoBlue;
 import frc.robot.commands.MultiStepArm;
 import frc.robot.subsystems.DriveSubsystem;
@@ -76,30 +77,14 @@ public class RobotContainer {
   private final Gripper m_gripper = new Gripper(true);
 
   private final Kicker m_Kicker = new Kicker(false);
-  
+
   private Intake m_Intake = new Intake();
   private LED m_Led;
 
-  private PoseEstimatorSubsystem poseEstimator = new PoseEstimatorSubsystem("limelight", m_robotDrive);
+  //private PoseEstimatorSubsystem poseEstimator = new PoseEstimatorSubsystem("limelight", m_robotDrive);
 
-
-  // Init Limelight
-  // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  // NetworkTableEntry txShuffle = table.getEntry("tx");
-  // NetworkTableEntry tyShuffle = table.getEntry("ty");
-  // NetworkTableEntry taShuffle = table.getEntry("ta");
-
-  // Read the Limelight values periodically
-  // double x = txShuffle.getDouble(0.0);
-  // double y = tyShuffle.getDouble(0.0);
-  // double area = taShuffle.getDouble(0.0);
-
-  /** Creates a new LimelightSubsystem. */
-  // public void LimelightSubsystem() {
-  // setupLimelightShuffleBoard();
-  // }
-
-  // The controllers - Making two references for backwards compatibility and new Trigger methods
+  // The controllers - Making two references for backwards compatibility and new
+  // Trigger methods
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
 
@@ -116,28 +101,34 @@ public class RobotContainer {
   // Manipulator controllers
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
-  final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController,XboxController.Button.kA.value);
-  
-  // final POVButton intakePowerCubeButton = new POVButton(m_manipulatorController, 180);
-  // final POVButton intakePowerConeButton = new POVButton(m_manipulatorController, 0);
-  final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
-  //final POVButton kickerButtonRetract = new POVButton(m_manipulatorController, 180);
+  final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
 
-  //Arm Position Buttons
+  // final POVButton intakePowerCubeButton = new
+  // POVButton(m_manipulatorController, 180);
+  // final POVButton intakePowerConeButton = new
+  // POVButton(m_manipulatorController, 0);
+  final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
+  // final POVButton kickerButtonRetract = new POVButton(m_manipulatorController,
+  // 180);
+
+  // Arm Position Buttons
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final POVButton pickupPositionButton = new POVButton(m_manipulatorController, 90);
   final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
-  final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kBack.value);
-  final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
-  final JoystickButton readyPositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftStick.value);
-
-
+  final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kBack.value);
+  final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kStart.value);
+  final JoystickButton readyPositionButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kLeftStick.value);
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
 
-  private final JoystickButton intakeExtendButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton intakeRetractButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
+  private final JoystickButton intakeExtendButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kLeftBumper.value);
+  private final JoystickButton intakeRetractButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kRightBumper.value);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -146,18 +137,15 @@ public class RobotContainer {
   private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(2.0);
   private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(2.0);
 
-
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
-  
-  
 
   private enum CommandsToChoose {
     CubeAndLeaveAutoBlue
   }
 
-  //Create Command variables here for auto
+  // Create Command variables here for auto
   // public Command shootAndRunLOW;
   // public Command shootAndRunHIGH;
   public Command cubeAndLeaveBlue;
@@ -165,7 +153,6 @@ public class RobotContainer {
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
 
-  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -174,19 +161,18 @@ public class RobotContainer {
 
     m_Led = led;
 
-    //Generate Auto Command Sequences
+    // Generate Auto Command Sequences
     generateAutoRoutines();
 
-    //Setup auto command chooser
+    // Setup auto command chooser
     m_selectCommand = new SelectCommand(Map.ofEntries(
-        entry(CommandsToChoose.CubeAndLeaveAutoBlue, cubeAndLeaveBlue)
-       ), m_chooser::getSelected);
+        entry(CommandsToChoose.CubeAndLeaveAutoBlue, cubeAndLeaveBlue)), m_chooser::getSelected);
 
     m_chooser.setDefaultOption("Place Cube Blue Right", CommandsToChoose.CubeAndLeaveAutoBlue);
-    
+
     Shuffleboard.getTab("Auto").add(m_chooser)
-    .withPosition(0, 0)
-    .withSize(7, 2);
+        .withPosition(0, 0)
+        .withSize(7, 2);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -212,18 +198,20 @@ public class RobotContainer {
   private void configureButtonBindings() {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
 
-    signalConeButton.onTrue(new InstantCommand(m_Led::setYellow,m_Led));
-    signalCubeButton.onTrue(new InstantCommand(m_Led::setPurple,m_Led));
-   
+    signalConeButton.onTrue(new InstantCommand(m_Led::setYellow, m_Led));
+    signalCubeButton.onTrue(new InstantCommand(m_Led::setPurple, m_Led));
+
     intakeInButton.onTrue(new InstantCommand(m_Intake::intakeIn, m_Intake));
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube, m_Intake)
-    //     .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
-    // intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone, m_Intake)
-    //     .andThen(new InstantCommand(m_Led::setYellow, m_Led)));
-    
+    // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube,
+    // m_Intake)
+    // .andThen(new InstantCommand(m_Led::setPurple, m_Led)));
+    // intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone,
+    // m_Intake)
+    // .andThen(new InstantCommand(m_Led::setYellow, m_Led)));
+
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));
 
@@ -233,15 +221,17 @@ public class RobotContainer {
 
     kickerButtonExtend.onTrue(new InstantCommand(m_Kicker::extendKicker, m_Kicker))
         .onFalse(new InstantCommand(m_Kicker::retractKicker, m_Kicker));
-    //kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker, m_Kicker));
+    // kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker,
+    // m_Kicker));
 
     safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
     pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
-    highPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION));
+    highPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION1,
+        Constants.ArmConstants.HIGH_POSITION1));
     midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
-    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION1, 
-      Constants.ArmConstants.READY_POSITION2));
+    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION1,
+        Constants.ArmConstants.READY_POSITION2));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
@@ -289,26 +279,24 @@ public class RobotContainer {
       }
     };
 
-
-
     m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
     m_Arm.setDefaultCommand(new RunCommand(ControlArm, m_Arm));
-    
 
     lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
-         .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
-    
+        .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
+
     resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
     brakeButton.whileTrue(new RunCommand(m_robotDrive::setXModuleState, m_robotDrive));
 
-    // testCommandButton.whenPressed(new InstantCommand(()->{
+    testCommandButton.onTrue(new ChargeStationBalance(m_robotDrive, 3, 10));
+    
     // m_robotDrive.turnByAngle(179.9);
     // }, m_robotDrive));
 
     // testCommandButton.whileHeld(new InstantCommand(()->{
-    //   m_robotDrive.coastModuleTurn();
-    //   }, m_robotDrive));
+    // m_robotDrive.coastModuleTurn();
+    // }, m_robotDrive));
 
   }
 
@@ -329,38 +317,40 @@ public class RobotContainer {
     return m_selectCommand;
   }
 
- 
   // Generate auto routines
   public void generateAutoRoutines() {
     cubeAndLeaveBlue = new CubeAndLeaveAutoBlue(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    // shootAndRunHIGH = new ShootandRunHIGH(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
-    // grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
-    // wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
+    // shootAndRunHIGH = new ShootandRunHIGH(m_robotDrive, m_shooter,
+    // m_intakePackage, m_intake, m_intestine, m_climber);
+    // grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage,
+    // m_intake, m_intestine, m_climber);
+    // wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter,
+    // m_intakePackage, m_intake, m_intestine, m_climber);
   }
 
-  public void zeroOdo(){
+  public void zeroOdo() {
     m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
   }
 
   Runnable ControlArm = () -> {
     // Arm Control
     // if(!shoulderInManual){
-    //   armInvert = (m_Arm.getShoulderPositionDeg() < 200.0) ? -1 : 1;
-    // } 
+    // armInvert = (m_Arm.getShoulderPositionDeg() < 200.0) ? -1 : 1;
+    // }
 
     double shoulderPower = armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
     double elbowPower = armInvert * elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));
 
-    //The following violates the intent of Command-based and should
-    //be modified to use Commands
-    if(shoulderPower != 0){
+    // The following violates the intent of Command-based and should
+    // be modified to use Commands
+    if (shoulderPower != 0) {
       shoulderInManual = true;
       m_Arm.runShoulder(shoulderPower);
-    } else if(shoulderInManual) {
+    } else if (shoulderInManual) {
       shoulderInManual = false;
       m_Arm.runShoulder(0); // Remove once hold function is stable
     }
-    
+
     if (elbowPower != 0) {
       elbowInManual = true;
       m_Arm.runElbow(elbowPower);
@@ -369,10 +359,12 @@ public class RobotContainer {
       m_Arm.runElbow(0); // Remove once hold function is stable
     }
 
-    // m_manipCommandController.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.25)
-    //   .and(m_manipCommandController.axisLessThan(XboxController.Axis.kRightTrigger.value, 0.5))
-    //   .onTrue(new InstantCommand(m_Arm::holdElbowPosition, m_Arm));
-    
+    // m_manipCommandController.axisGreaterThan(XboxController.Axis.kRightTrigger.value,
+    // 0.25)
+    // .and(m_manipCommandController.axisLessThan(XboxController.Axis.kRightTrigger.value,
+    // 0.5))
+    // .onTrue(new InstantCommand(m_Arm::holdElbowPosition, m_Arm));
+
   };
-  
+
 }

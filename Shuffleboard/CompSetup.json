@@ -575,45 +575,6 @@
               "_showGlyph": false
             }
           },
-          "0,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
-              "_title": "limelight_PipelineName",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_Interface",
-              "_title": "limelight_Interface",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_Stream",
-              "_title": "limelight_Stream",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "35,11": {
             "size": [
               18,
@@ -713,6 +674,19 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Shoulder FF",
               "_title": "Shoulder FF",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch",
+              "_title": "Pitch",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -1326,9 +1300,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 1528.0,
-    "y": -8.0,
-    "width": 2576.0,
-    "height": 1056.0
+    "x": 13.600000381469727,
+    "y": 4.0,
+    "width": 1483.199951171875,
+    "height": 614.4000244140625
   }
 }
