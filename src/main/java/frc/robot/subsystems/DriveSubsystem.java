@@ -4,16 +4,8 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-
-import java.nio.channels.Selector;
-import java.sql.Driver;
-
-import frc.robot.subsystems.SwerveModuleCANcoder;
-
 import edu.wpi.first.wpilibj.Timer;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.Constants;
 import frc.robot.Constants.ConfigConstants;
@@ -22,7 +14,6 @@ import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -139,12 +130,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Zeroed Module State
   private SwerveModuleState zeroState = new SwerveModuleState();
-  
-  // Init Limelight
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry ty = table.getEntry("ty");
-  NetworkTableEntry ta = table.getEntry("ta");
 
 
   // Odometry class for tracking robot pose
@@ -165,7 +150,7 @@ public class DriveSubsystem extends SubsystemBase {
   private GenericEntry gyroAngle;
 
   //private NetworkTableEntry odoX, odoY, odoRot; /2022 version
-  private GenericEntry odoX, odoY, odoRot;
+  //private GenericEntry odoX, odoY, odoRot;
   
 
   /** Creates a new DriveSubsystem. */
@@ -188,9 +173,9 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
 
-    odoX.setDouble(this.getPose().getX());
-    odoY.setDouble(this.getPose().getY());
-    odoRot.setDouble(this.getPose().getRotation().getDegrees());
+    // odoX.setDouble(this.getPose().getX());
+    // odoY.setDouble(this.getPose().getY());
+    // odoRot.setDouble(this.getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("Pitch", getPitch());
   }
 
@@ -255,7 +240,7 @@ public class DriveSubsystem extends SubsystemBase {
         swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
         swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
 
-        //swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
+        swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getDrivePosition());
 
       }
 
@@ -345,9 +330,9 @@ public class DriveSubsystem extends SubsystemBase {
     // .withSize(4, 8)
     // .withPosition(14, 0);
 
-    odoX =  swerveTab.add("Odometry X Position", this.getPose().getX()).getEntry();
-    odoY = swerveTab.add("Odometry Y Position", this.getPose().getY()).getEntry();
-    odoRot = swerveTab.add("Odometry Rotation", this.getPose().getRotation().getDegrees()).getEntry();
+    // odoX =  swerveTab.add("Odometry X Position", this.getPose().getX()).getEntry();
+    // odoY = swerveTab.add("Odometry Y Position", this.getPose().getY()).getEntry();
+    // odoRot = swerveTab.add("Odometry Rotation", this.getPose().getRotation().getDegrees()).getEntry();
 
     
     gyroAngle = swerveTab.add("Gyro Heading", 0)

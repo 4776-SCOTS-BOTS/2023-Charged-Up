@@ -85,10 +85,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 
-    Pose2d startPose = new Pose2d(1.93, 1.05, new Rotation2d(Math.toRadians(180)));
+    Pose2d startPose = new Pose2d();
     previousPose = startPose;
     previousTrans = startPose.getTranslation();
-    drive.resetOdometry(startPose); // Need to remove this for real use
 
     poseEstimator = new SwerveDrivePoseEstimator(
         DriveConstants.kDriveKinematics,
@@ -137,10 +136,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
       // //poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(),
       // pose.timestamp);
       // }
-      SmartDashboard.putNumber("PoseX", pose.pose3d.toPose2d().getX());
-      SmartDashboard.putNumber("PoseY", pose.pose3d.toPose2d().getY());
-      SmartDashboard.putNumber("PoseRot", pose.pose3d.toPose2d().getRotation().getDegrees());
-      SmartDashboard.putNumber("Pose TS", pose.timestamp);
+      // SmartDashboard.putNumber("PoseX", pose.pose3d.toPose2d().getX());
+      // SmartDashboard.putNumber("PoseY", pose.pose3d.toPose2d().getY());
+      // SmartDashboard.putNumber("PoseRot", pose.pose3d.toPose2d().getRotation().getDegrees());
+      // SmartDashboard.putNumber("Pose TS", pose.timestamp);
       poseEstimator.addVisionMeasurement(pose.pose3d.toPose2d(),
           pose.timestamp);
     }
@@ -172,6 +171,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         drive.getGyroRotation(),
         drive.getModulePositions(),
         newPose);
+        previousTrans = newPose.getTranslation();
   }
 
   /**

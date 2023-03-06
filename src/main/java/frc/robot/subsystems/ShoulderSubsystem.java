@@ -63,7 +63,7 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
         setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
 
     // Comment out after tuning
-    SmartDashboard.putNumber("Shoulder FF", feedforward);
+    //SmartDashboard.putNumber("Shoulder FF", feedforward);
     // SmartDashboard.putNumber("Shoulder Setpoint", setpoint.position);
   }
 

@@ -189,7 +189,7 @@ public class SwerveModule {
 
       m_driveMotor.set(driveOutput);
       // m_turningMotor.set(VictorSPXControlMode., demand);
-      SmartDashboard.putNumber("SwerveModuleTurning" + turningMotorChannel, turnOutput);
+      //SmartDashboard.putNumber("SwerveModuleTurning" + turningMotorChannel, turnOutput);
       m_turningMotor.set(turnOutput);
 
       // System.out.println(state.angle.getRadians()+","+getAngleRadians()+","+error);

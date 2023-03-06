@@ -66,7 +66,7 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
         setpoint.position, CANSparkMax.ControlType.kPosition, 0, feedforward);
 
     // Comment out after tuning
-    SmartDashboard.putNumber("Elbow FF", feedforward);
+    //SmartDashboard.putNumber("Elbow FF", feedforward);
     // SmartDashboard.putNumber("Elbow Setpoint", setpoint.position);
   }
 
