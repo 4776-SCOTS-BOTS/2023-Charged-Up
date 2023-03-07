@@ -20,6 +20,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.BlueLeftCone;
+import frc.robot.commands.BlueMidConePark;
 import frc.robot.commands.BlueRightCone;
 import frc.robot.commands.BlueRightConeCube;
 import frc.robot.commands.ChargeStationBalance;
@@ -143,13 +145,16 @@ public class RobotContainer {
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
   private enum CommandsToChoose {
-    BlueRightCone
+    BlueRightCone,
+    BlueMidConePark,
+    BlueLeftCone
   }
 
   // Create Command variables here for auto
-  // public Command shootAndRunLOW;
-  // public Command shootAndRunHIGH;
-  public Command BlueRightCone;
+
+  public Command blueRightCone;
+  public Command blueMidConePark;
+  public Command blueLeftCone;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -167,9 +172,14 @@ public class RobotContainer {
 
     // Setup auto command chooser
     m_selectCommand = new SelectCommand(Map.ofEntries(
-        entry(CommandsToChoose.BlueRightCone, BlueRightCone)), m_chooser::getSelected);
+        entry(CommandsToChoose.BlueRightCone, blueRightCone),
+        entry(CommandsToChoose.BlueMidConePark, blueMidConePark),
+        entry(CommandsToChoose.BlueLeftCone, blueLeftCone)
+        ), m_chooser::getSelected);
 
-    m_chooser.setDefaultOption("Place Cube Blue Right", CommandsToChoose.BlueRightCone);
+    m_chooser.setDefaultOption("Blue: Right Cone", CommandsToChoose.BlueRightCone);
+    m_chooser.addOption("Blue: Mid Cone and Balance", CommandsToChoose.BlueMidConePark);
+    m_chooser.addOption("Blue: Left Cone", CommandsToChoose.BlueLeftCone);
 
     Shuffleboard.getTab("Auto").add(m_chooser)
         .withPosition(0, 0)
@@ -320,13 +330,9 @@ public class RobotContainer {
 
   // Generate auto routines
   public void generateAutoRoutines() {
-    BlueRightCone = new BlueRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    // shootAndRunHIGH = new ShootandRunHIGH(m_robotDrive, m_shooter,
-    // m_intakePackage, m_intake, m_intestine, m_climber);
-    // grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage,
-    // m_intake, m_intestine, m_climber);
-    // wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter,
-    // m_intakePackage, m_intake, m_intestine, m_climber);
+    blueRightCone = new BlueRightCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    blueMidConePark = new BlueMidConePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    blueLeftCone = new BlueLeftCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
   }
 
   public void zeroOdo() {
