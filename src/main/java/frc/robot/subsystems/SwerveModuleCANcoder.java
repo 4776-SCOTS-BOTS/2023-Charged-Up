@@ -206,4 +206,8 @@ public class SwerveModuleCANcoder {
     //m_turningEncoder.reset();  Do not want to reset the Absolute encoder
   }
 
+  public double getDriveMotorCurrent(){
+    return m_driveMotor.getOutputCurrent();
+  }
+
 }

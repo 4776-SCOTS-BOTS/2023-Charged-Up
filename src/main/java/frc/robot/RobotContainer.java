@@ -20,6 +20,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.BlueRightCone;
+import frc.robot.commands.BlueRightConeCube;
 import frc.robot.commands.ChargeStationBalance;
 import frc.robot.commands.CubeAndLeaveAutoBlue;
 import frc.robot.commands.MultiStepArm;
@@ -142,13 +144,13 @@ public class RobotContainer {
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
   private enum CommandsToChoose {
-    CubeAndLeaveAutoBlue
+    BlueRightCone
   }
 
   // Create Command variables here for auto
   // public Command shootAndRunLOW;
   // public Command shootAndRunHIGH;
-  public Command cubeAndLeaveBlue;
+  public Command BlueRightCone;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -166,9 +168,9 @@ public class RobotContainer {
 
     // Setup auto command chooser
     m_selectCommand = new SelectCommand(Map.ofEntries(
-        entry(CommandsToChoose.CubeAndLeaveAutoBlue, cubeAndLeaveBlue)), m_chooser::getSelected);
+        entry(CommandsToChoose.BlueRightCone, BlueRightCone)), m_chooser::getSelected);
 
-    m_chooser.setDefaultOption("Place Cube Blue Right", CommandsToChoose.CubeAndLeaveAutoBlue);
+    m_chooser.setDefaultOption("Place Cube Blue Right", CommandsToChoose.BlueRightCone);
 
     Shuffleboard.getTab("Auto").add(m_chooser)
         .withPosition(0, 0)
@@ -227,11 +229,11 @@ public class RobotContainer {
     safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
     pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
     highPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION1,
-        Constants.ArmConstants.HIGH_POSITION1));
+        Constants.ArmConstants.HIGH_POSITION));
     midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
-    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION1,
-        Constants.ArmConstants.READY_POSITION2));
+    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION3,
+        Constants.ArmConstants.READY_POSITION3));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
@@ -319,7 +321,7 @@ public class RobotContainer {
 
   // Generate auto routines
   public void generateAutoRoutines() {
-    cubeAndLeaveBlue = new CubeAndLeaveAutoBlue(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    BlueRightCone = new BlueRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
     // shootAndRunHIGH = new ShootandRunHIGH(m_robotDrive, m_shooter,
     // m_intakePackage, m_intake, m_intestine, m_climber);
     // grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage,

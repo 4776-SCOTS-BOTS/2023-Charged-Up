@@ -81,6 +81,13 @@ public class DriveSubsystem extends SubsystemBase {
        m_rearLeft,
        m_rearRight };
 
+  private final String[] moduleNames = {
+    "FL",
+    "FR",
+    "RL",
+    "RR"
+  };
+
   // private final SwerveModuleAbs m_frontLeft = new SwerveModuleAbs(
   //     DriveConstants.kFrontLeftDriveMotorPort,
   //     DriveConstants.kFrontLeftTurningMotorPort,
@@ -146,6 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
   private GenericEntry[] swerveModuleShuffleActualAngle = new GenericEntry[4];
   private GenericEntry[] swerveModuleShuffleActualSpeed = new GenericEntry[4];
   private GenericEntry[] swerveModuleShuffleTurnVolts = new GenericEntry[4];
+  private GenericEntry[] swerveModuleShuffleDriveCUrrent = new GenericEntry[4];
 
   private GenericEntry gyroAngle;
 
@@ -238,9 +246,10 @@ public class DriveSubsystem extends SubsystemBase {
         swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement, false);
 
         swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
-        swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
+        swerveModuleShuffleActualSpeed[i].setDouble(Math.abs(swerveModules[i].getState().speedMetersPerSecond));
 
         swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getDrivePosition());
+        swerveModuleShuffleDriveCUrrent[i].setDouble(swerveModules[i].getDriveMotorCurrent());
 
       }
 
@@ -341,27 +350,30 @@ public class DriveSubsystem extends SubsystemBase {
       .withWidget("Gyro This")
       .getEntry();
 
-
     for (int i = 0; i < 4; i++) {
-      swerveModuleShuffleTargetAngle[i] = swerveTab.add("M" + i + " TarAngle", 0)
+      swerveModuleShuffleTargetAngle[i] = swerveTab.add(moduleNames[i] + " TarAngle", 0)
+          .withSize(3, 2)
+          .withPosition(0, i * 2)
+          .getEntry();
+      swerveModuleShuffleTargetSpeed[i] = swerveTab.add(moduleNames[i] + " TarSpeed", 0)
           .withSize(3, 2)
           .withPosition(6, i * 2)
           .getEntry();
-      swerveModuleShuffleTargetSpeed[i] = swerveTab.add("M" + i + " TarSpeed", 0)
+      swerveModuleShuffleActualAngle[i] = swerveTab.add(moduleNames[i] + " ActAngle", 0)
           .withSize(3, 2)
-          .withPosition(12, i * 2)
+          .withPosition(3, i * 2)
           .getEntry();
-      swerveModuleShuffleActualAngle[i] = swerveTab.add("M" + i + " ActAngle", 0)
+      swerveModuleShuffleActualSpeed[i] = swerveTab.add(moduleNames[i] + " ActSpeed", 0)
           .withSize(3, 2)
           .withPosition(9, i * 2)
           .getEntry();
-      swerveModuleShuffleActualSpeed[i] = swerveTab.add("M" + i + " ActSpeed", 0)
+      swerveModuleShuffleTurnVolts[i] = swerveTab.add(moduleNames[i] + " Distance", 0)
+          .withSize(3, 2)
+          .withPosition(12, i * 2)
+          .getEntry();
+          swerveModuleShuffleDriveCUrrent[i] = swerveTab.add(moduleNames[i] + " Current", 0)
           .withSize(3, 2)
           .withPosition(15, i * 2)
-          .getEntry();
-      swerveModuleShuffleTurnVolts[i] = swerveTab.add("M" + i + " TurnV", 0)
-          .withSize(3, 2)
-          .withPosition(18, i * 2)
           .getEntry();
     }
   }

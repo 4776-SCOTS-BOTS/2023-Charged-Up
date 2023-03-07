@@ -155,8 +155,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 1.0;// was 3
-    public static final double kMaxAccelerationMetersPerSecondSquared = 2;// was 3
+    public static final double kMaxSpeedMetersPerSecond = 2.0;// was 3
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3;// was 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
@@ -183,10 +183,15 @@ public final class Constants {
     public static ArmPosition READY_POSITION3 = new ArmPosition(30, 205.0);
     public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION1 = new ArmPosition(180, 235.0);
+    public static ArmPosition HIGH_POSITION_FINAL = new ArmPosition(180, 235.0);
     public static ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
     public static ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
 
     public static ArmPosition CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
+    public static ArmPosition CUBE_MID_POSITION = new ArmPosition(290.0, 195.0);
+    public static ArmPosition CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
+
+
 
     // Elbow Constants
 
@@ -331,7 +336,7 @@ public final class Constants {
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         // Arm Constants
-        Elbow.kOffset = Math.toRadians(71.0);
+        Elbow.kOffset = Math.toRadians(134);
         ArmConstants.elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
             Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
             Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit,
@@ -340,16 +345,19 @@ public final class Constants {
 
         ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
         ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
-        ArmConstants.READY_POSITION1 = new ArmPosition(320, 100);
+        ArmConstants.READY_POSITION1 = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
-        ArmConstants.READY_POSITION3 = new ArmPosition(320, 220);
+        ArmConstants.READY_POSITION3 = new ArmPosition(40, 300);
     
-        ArmConstants.HIGH_POSITION = new ArmPosition(180, 225.0);
-        ArmConstants.HIGH_POSITION1 = new ArmPosition(90, 210.0);
+        ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.HIGH_POSITION1 = new ArmPosition(180, 225.0);
+        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(180, 245.0);
         ArmConstants.MID_POSITION = new ArmPosition(290.0, 195.0);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
         ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.CUBE_MID_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.CUBE_LOW_POSITION = new ArmPosition(180, 235.0);
 
       }
         break;
