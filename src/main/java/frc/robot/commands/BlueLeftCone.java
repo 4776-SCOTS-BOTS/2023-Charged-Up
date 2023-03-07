@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -28,20 +29,22 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class BlueRightConeCube extends SequentialCommandGroup {
+public class BlueLeftCone extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
-  public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-    Pose2d startPose = new Pose2d(1.905, 1.626, new Rotation2d(0));
-    Pose2d pickupPose = new Pose2d(7.14, 0.91, new Rotation2d(Math.toRadians(0)));
+  public BlueLeftCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
+    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(180), new Rotation2d(Math.toRadians(0)));
+
 
     // Create config for trajectory
-    // RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(new Translation2d(3.295, 1.524),
-    //     new Translation2d(4.46, 0),
-    //     new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
+    // RectangularRegionConstraint bumpConstraint = new
+    // RectangularRegionConstraint(new Translation2d(3.295, 1.524),
+    // new Translation2d(4.46, 0),
+    // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
 
     RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(new Translation2d(3.295, 0),
-    new Translation2d(4.46, 1.524),
-    new MaxVelocityConstraint(0.5));
+        new Translation2d(4.46, 1.524),
+        new MaxVelocityConstraint(0.5));
 
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -54,20 +57,10 @@ public class BlueRightConeCube extends SequentialCommandGroup {
         // Start position
         startPose,
         // Drive to cube
-        List.of(new Translation2d(2.1, 0.914),
-            new Translation2d(3.86, 0.762)),
+        List.of(new Translation2d(2.1, Units.inchesToMeters(170)),
+            new Translation2d(3.86, Units.inchesToMeters(185))),
         // End end at the cube, facing forward
-        new Pose2d(7.14, 0.91, new Rotation2d(Math.toRadians(0))),
-        config);
-
-    Trajectory driveToPlaceTraj = TrajectoryGenerator.generateTrajectory(
-        // Start position
         pickupPose,
-        // Drive to cube
-        List.of(new Translation2d(3.86, 0.762),
-            new Translation2d(2.1, 0.914)),
-        // End end at the cube, facing forward
-        new Pose2d(1.8, 1.067, new Rotation2d(Math.toRadians(0))),
         config);
 
     var thetaController = new ProfiledPIDController(
@@ -76,18 +69,6 @@ public class BlueRightConeCube extends SequentialCommandGroup {
 
     SwerveControllerCommand driveToCube = new SwerveControllerCommand(
         driveToCubeTraj,
-        drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(2, 0, 0),
-        new PIDController(2, 0, 0),
-        thetaController,
-        drive::setModuleStates,
-        drive);
-
-    SwerveControllerCommand driveToScore = new SwerveControllerCommand(
-        driveToPlaceTraj,
         drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
@@ -108,25 +89,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 .andThen(new InstantCommand(intake::intakeExtend))
                 .andThen(new InstantCommand(intake::intakeIn))),
         new InstantCommand(intake::intakeOff),
-        new InstantCommand(intake::intakeOff),
-
-        arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION),
-        new WaitCommand(2),
-        new InstantCommand(gripper::closeGripper, gripper),
-        arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION),
-
-        // Drive back
-        new ParallelCommandGroup(
-            new InstantCommand(intake::intakeRetract),
-            arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION1),
-            driveToScore.andThen(new InstantCommand(() -> drive.drive(-0.2, 0, 0, false)))),
-
-        new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
-            Constants.ArmConstants.HIGH_POSITION_START),
-        new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-        new InstantCommand(gripper::openGripper, gripper)
-
-    );
+        new InstantCommand(intake::intakeOff));
 
   }
 }

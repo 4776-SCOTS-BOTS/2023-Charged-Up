@@ -109,7 +109,7 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     public static final boolean kGyroReversed = true;
-    public static final double kMaxSpeedMetersPerSecond = 3.35; // Was 1 021222
+    public static final double kMaxSpeedMetersPerSecond = 4.9; // Was 1 021222
 
   }
 
@@ -117,16 +117,16 @@ public final class Constants {
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
 
-    public static final int kEncoderCPR = 1024;
-    public static final int kTurningEncoderCPR = 415;
-    public static final double kWheelDiameterMeters = 0.15;
-    public static final double kDriveEncoderDistancePerPulse =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+    // public static final int kEncoderCPR = 1024;
+    // public static final int kTurningEncoderCPR = 415;
+    // public static final double kWheelDiameterMeters = 0.15;
+    // public static final double kDriveEncoderDistancePerPulse =
+    //     // Assumes the encoders are directly mounted on the wheel shafts
+    //     (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
 
-    public static final double kTurningEncoderDistancePerPulse =
-        // Assumes the encoders are on a 1:1 reduction with the module shaft.
-        (2 * Math.PI) / (double) kTurningEncoderCPR;
+    // public static final double kTurningEncoderDistancePerPulse =
+    //     // Assumes the encoders are on a 1:1 reduction with the module shaft.
+    //     (2 * Math.PI) / (double) kTurningEncoderCPR;
 
     public static final double kMaxRPM = 5700;
     public static final double kWheelDiameter = 0.102;
@@ -155,7 +155,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2.0;// was 3
+    public static final double kMaxSpeedMetersPerSecond = 3.0;// was 3
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;// was 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
@@ -180,9 +180,9 @@ public final class Constants {
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
     public static ArmPosition READY_POSITION1 = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
-    public static ArmPosition READY_POSITION3 = new ArmPosition(30, 205.0);
+    public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
     public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
-    public static ArmPosition HIGH_POSITION1 = new ArmPosition(180, 235.0);
+    public static ArmPosition HIGH_POSITION_START = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION_FINAL = new ArmPosition(180, 235.0);
     public static ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
     public static ArmPosition LOW_POSITION = new ArmPosition(290, 270.0);
@@ -347,10 +347,10 @@ public final class Constants {
         ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
         ArmConstants.READY_POSITION1 = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
-        ArmConstants.READY_POSITION3 = new ArmPosition(40, 300);
+        ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 300);
     
         ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
-        ArmConstants.HIGH_POSITION1 = new ArmPosition(180, 225.0);
+        ArmConstants.HIGH_POSITION_START = new ArmPosition(180, 225.0);
         ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(180, 245.0);
         ArmConstants.MID_POSITION = new ArmPosition(290.0, 195.0);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);

@@ -23,7 +23,6 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.BlueRightCone;
 import frc.robot.commands.BlueRightConeCube;
 import frc.robot.commands.ChargeStationBalance;
-import frc.robot.commands.CubeAndLeaveAutoBlue;
 import frc.robot.commands.MultiStepArm;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -228,12 +227,12 @@ public class RobotContainer {
 
     safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
     pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
-    highPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION1,
+    highPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
         Constants.ArmConstants.HIGH_POSITION));
     midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
-    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION3,
-        Constants.ArmConstants.READY_POSITION3));
+    readyPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION_CONE,
+        Constants.ArmConstants.READY_POSITION_CONE));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
