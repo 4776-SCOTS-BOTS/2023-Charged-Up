@@ -81,9 +81,9 @@ public class RedRightCube extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new InstantCommand(() -> drive.resetOdometry(startPose)),
-        new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
-        // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        // new InstantCommand(() -> drive.resetOdometry(startPose)),
+        // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        new PlaceFirstCube(drive, arm, gripper, intake, startPose),
 
         // Drive over line
         new ParallelCommandGroup(

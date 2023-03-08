@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,50 +26,60 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
+import frc.robot.commands.PlaceFirstCone;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class BlueRightConeCube extends SequentialCommandGroup {
+public class BlueMidCubePark extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
-  public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-    Pose2d startPose = new Pose2d(1.905, 1.626, new Rotation2d(0));
-    Pose2d pickupPose = new Pose2d(7.14, 0.91, new Rotation2d(Math.toRadians(0)));
+  public BlueMidCubePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(86.0), new Rotation2d(0));
+    Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
+    Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(180)));
 
     // Create config for trajectory
-    // RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(new Translation2d(3.295, 1.524),
-    //     new Translation2d(4.46, 0),
-    //     new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
+    // RectangularRegionConstraint bumpConstraint = new
+    // RectangularRegionConstraint(new Translation2d(3.295, 1.524),
+    // new Translation2d(4.46, 0),
+    // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
 
-    RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(new Translation2d(3.295, 0),
-    new Translation2d(4.46, 1.524),
-    new MaxVelocityConstraint(0.5));
+    RectangularRegionConstraint rampConstraint = new RectangularRegionConstraint(new Translation2d(2.6, 1.524),
+        new Translation2d(3.5, 4),
+        new MaxVelocityConstraint(0.8));
 
     TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
+        1.4,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-        .addConstraint(bumpConstraint);
+        .addConstraint(rampConstraint);
+
+    TrajectoryConfig configBalance = new TrajectoryConfig(
+        1.2,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
 
     Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
         // Start position
         startPose,
         // Drive to cube
-        List.of(new Translation2d(2.1, 0.914),
-            new Translation2d(3.86, 0.762)),
+        List.of(new Translation2d(2.1, Units.inchesToMeters(108)),
+            new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(108)),
+            new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(108))),
         // End end at the cube, facing forward
-        new Pose2d(7.14, 0.91, new Rotation2d(Math.toRadians(0))),
+        pickupPose,
         config);
 
-    Trajectory driveToPlaceTraj = TrajectoryGenerator.generateTrajectory(
+    Trajectory driveToBalanceTraj = TrajectoryGenerator.generateTrajectory(
         // Start position
-        pickupPose,
-        // Drive to cube
-        List.of(new Translation2d(3.86, 0.762),
-            new Translation2d(2.1, 0.914)),
+        pickupPoseFlipped,
+        // Drive to Center of Charging Station
+        List.of(new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(108))),
         // End end at the cube, facing forward
-        new Pose2d(1.8, 1.067, new Rotation2d(Math.toRadians(0))),
-        config);
+        new Pose2d(Units.inchesToMeters(190), Units.inchesToMeters(108),
+            new Rotation2d(Math.toRadians(180))),
+        configBalance);
 
     var thetaController = new ProfiledPIDController(
         2, 0, 0, AutoConstants.kThetaControllerConstraints);
@@ -86,8 +97,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
         drive::setModuleStates,
         drive);
 
-    SwerveControllerCommand driveToScore = new SwerveControllerCommand(
-        driveToPlaceTraj,
+    SwerveControllerCommand driveToBalance = new SwerveControllerCommand(
+        driveToBalanceTraj,
         drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
@@ -99,32 +110,19 @@ public class BlueRightConeCube extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        new InstantCommand(() -> drive.resetOdometry(startPose)),
+        new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
-        // Drive over line
-        new ParallelCommandGroup(
-            driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
-            new WaitCommand(1)
-                .andThen(new InstantCommand(intake::intakeExtend))
-                .andThen(new InstantCommand(intake::intakeIn))),
-        new InstantCommand(intake::intakeOff),
-        new InstantCommand(intake::intakeOff),
+        driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
+        new InstantCommand(() -> {
+          drive.turnByAngle(179.99);
+        }, drive),
 
-        arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION),
-        new WaitCommand(2),
-        new InstantCommand(gripper::closeGripper, gripper),
-        arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION),
+        driveToBalance.andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
 
-        // Drive back
-        new ParallelCommandGroup(
-            new InstantCommand(intake::intakeRetract),
-            arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE),
-            driveToScore.andThen(new InstantCommand(() -> drive.drive(-0.2, 0, 0, false)))),
-
-        new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
-            Constants.ArmConstants.HIGH_POSITION_START),
-        new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-        new InstantCommand(gripper::openGripper, gripper)
+        new ChargeStationBalance(drive, 1, 5),
+        new InstantCommand(drive::setXModuleState)
 
     );
 

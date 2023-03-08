@@ -178,9 +178,10 @@ public final class Constants {
 
     public static ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
-    public static ArmPosition READY_POSITION1 = new ArmPosition(320, 100);
+    public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
+    
     public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION_START = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION_FINAL = new ArmPosition(180, 235.0);
@@ -345,7 +346,7 @@ public final class Constants {
 
         ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
         ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
-        ArmConstants.READY_POSITION1 = new ArmPosition(40, 230);
+        ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 300);
     

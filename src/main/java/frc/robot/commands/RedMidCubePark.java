@@ -29,10 +29,10 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class RedMidConePark extends SequentialCommandGroup {
+public class RedMidCubePark extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
-    public RedMidConePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(229.5), new Rotation2d(0));
+    public RedMidCubePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(207.5), new Rotation2d(0));
         Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(0)));
         Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(180)));
 
@@ -64,7 +64,7 @@ public class RedMidConePark extends SequentialCommandGroup {
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(2.2, Units.inchesToMeters(220)),
+                List.of(new Translation2d(2.2, Units.inchesToMeters(202)),
                         new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(200)),
                         new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(200))),
                 // End end at the cube, facing forward
@@ -112,7 +112,7 @@ public class RedMidConePark extends SequentialCommandGroup {
         addCommands(
                 // new InstantCommand(() -> drive.resetOdometry(startPose)),
                 // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
-                new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+                new PlaceFirstCube(drive, arm, gripper, intake, startPose),
         
                 driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
                 new InstantCommand(() -> {

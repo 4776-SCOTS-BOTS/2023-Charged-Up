@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -42,6 +43,11 @@ public class LimeLightPoseEstimator extends SubsystemBase {
       this.alliance = Alliance.Blue;
       botPoseName = "botpose_wpiblue";
     }
+
+    Shuffleboard.getTab("Auto")
+      .add("Alliance", DriverStation.getAlliance().toString())
+      .withPosition(0, 0)
+      .withSize(4, 2);
 
     table = NetworkTableInstance.getDefault().getTable(limelightName);
     poseSub = table.getDoubleArrayTopic(botPoseName).subscribe(new double[] {});

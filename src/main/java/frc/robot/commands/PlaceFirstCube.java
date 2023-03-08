@@ -18,9 +18,9 @@ import frc.robot.subsystems.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PlaceFirstCone extends SequentialCommandGroup {
+public class PlaceFirstCube extends SequentialCommandGroup {
   /** Creates a new PlaceFirstCone. */
-  public PlaceFirstCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake, Pose2d startPose) {
+  public PlaceFirstCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake, Pose2d startPose) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -30,20 +30,19 @@ public class PlaceFirstCone extends SequentialCommandGroup {
 
       // Drive against wall and ready arm
       new ParallelCommandGroup(
-          arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
+          arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE),
           new InstantCommand(() -> drive.drive(-0.2, 0, 0, true)),
           new InstantCommand(() -> drive.drive(-0.2, 0, 0, true)), //Set it twice to fix spinning?
           new WaitCommand(1)),
 
       // Stop drive and let arm finish
       new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-      new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CONE,
-      Constants.ArmConstants.READY_POSITION_CONE),
+      new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CUBE,
+      Constants.ArmConstants.READY_POSITION_CUBE),
 
       // Extend arm and release
-      new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
-          Constants.ArmConstants.HIGH_POSITION),
-      arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION_FINAL),
+      new MultiStepArm(arm, Constants.ArmConstants.CUBE_HIGH_POSITION,
+          Constants.ArmConstants.CUBE_HIGH_POSITION),
       new InstantCommand(gripper::openGripper, gripper),
 
       // Pack the arm
