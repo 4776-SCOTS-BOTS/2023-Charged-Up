@@ -31,7 +31,7 @@ public class PlaceFirstCone extends SequentialCommandGroup {
       // Drive against wall and ready arm
       new ParallelCommandGroup(
           arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
-          new InstantCommand(() -> drive.drive(-0.2, 0, 0, false)),
+          new InstantCommand(() -> drive.drive(-0.2, 0, 0, true)),
           new WaitCommand(1)),
 
       // Stop drive and let arm finish

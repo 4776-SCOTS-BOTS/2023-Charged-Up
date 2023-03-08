@@ -30,66 +30,70 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class RedRightCone extends SequentialCommandGroup {
-    /** Creates a new CubeAndLeaveAuto. */
-    public RedRightCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        //Field width = 315.5in
-        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(163.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(135.3), new Rotation2d(Math.toRadians(0)));
+  /** Creates a new CubeAndLeaveAuto. */
+  public RedRightCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+    // Field width = 315.5in
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(163.5), new Rotation2d(0));
+    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(135.3), new Rotation2d(Math.toRadians(0)));
 
-        // Create config for trajectory
-        // RectangularRegionConstraint bumpConstraint = new
-        // RectangularRegionConstraint(new Translation2d(3.295, 1.524),
-        // new Translation2d(4.46, 0),
-        // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
+    // Create config for trajectory
+    // RectangularRegionConstraint bumpConstraint = new
+    // RectangularRegionConstraint(new Translation2d(3.295, 1.524),
+    // new Translation2d(4.46, 0),
+    // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
 
-        RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(new Translation2d(3.295, Units.inchesToMeters(256)),
-                new Translation2d(4.46, Units.inchesToMeters(315.5)),
-                new MaxVelocityConstraint(0.5));
+    RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
+        new Translation2d(3.295, Units.inchesToMeters(256)),
+        new Translation2d(4.46, Units.inchesToMeters(315.5)),
+        new MaxVelocityConstraint(0.5));
 
-        TrajectoryConfig config = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-                .addConstraint(bumpConstraint);
+    TrajectoryConfig config = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
+        .addConstraint(bumpConstraint);
 
-        Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
-                // Start position
-                startPose,
-                // Drive to cube
-                List.of(new Translation2d(2.1, Units.inchesToMeters(142.5)),
-                        new Translation2d(3.86, Units.inchesToMeters(129.0))),
-                // End end at the cube, facing forward
-                pickupPose,
-                config);
+    Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
+        // Start position
+        startPose,
+        // Drive to cube
+        List.of(new Translation2d(2.1, Units.inchesToMeters(142.5)),
+            new Translation2d(3.86, Units.inchesToMeters(129.0))),
+        // End end at the cube, facing forward
+        pickupPose,
+        config);
 
-        var thetaController = new ProfiledPIDController(
-                2, 0, 0, AutoConstants.kThetaControllerConstraints);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    var thetaController = new ProfiledPIDController(
+        2, 0, 0, AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        SwerveControllerCommand driveToCube = new SwerveControllerCommand(
-                driveToCubeTraj,
-                drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
-                DriveConstants.kDriveKinematics,
+    SwerveControllerCommand driveToCube = new SwerveControllerCommand(
+        driveToCubeTraj,
+        drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
 
-                // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
-                thetaController,
-                drive::setModuleStates,
-                drive);
+        // Position controllers
+        new PIDController(2, 0, 0),
+        new PIDController(2, 0, 0),
+        thetaController,
+        drive::setModuleStates,
+        drive);
 
-        addCommands(
-                new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+    addCommands(
+        new InstantCommand(() -> drive.resetOdometry(startPose)),
+        new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
-                // Drive over line
-                new ParallelCommandGroup(
-                        driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
-                        new WaitCommand(1)
-                                .andThen(new InstantCommand(intake::intakeExtend))
-                                .andThen(new InstantCommand(intake::intakeIn))),
-                new InstantCommand(intake::intakeOff),
-                new InstantCommand(intake::intakeOff));
+        // Drive over line
+        new ParallelCommandGroup(
+            driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
+            new WaitCommand(1)
+                .andThen(new InstantCommand(intake::intakeExtend))
+                .andThen(new InstantCommand(intake::intakeIn))),
+        new InstantCommand(intake::intakeOff),
+        new InstantCommand(intake::intakeOff),
+        new InstantCommand(intake::intakeRetract));
 
-    }
+  }
 }

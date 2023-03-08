@@ -38,10 +38,10 @@ public class ChargeStationBalance extends CommandBase {
     //drive.drive(0.5, 0, 0, false);
     if(pitch > 5){
       holdStart = 1000; // Arbitrarily large value
-      drive.drive(0.3, 0, 0, false);
+      drive.drive(0.45, 0, 0, false);
     } else if (pitch < -5){
       holdStart = 1000; // Arbitrarily large value1
-      drive.drive(-0.3, 0, 0, false);
+      drive.drive(-0.45, 0, 0, false);
     } else if (holdStart == 1000){
       holdStart = Timer.getFPGATimestamp();
       drive.drive(0, 0, 0, false);

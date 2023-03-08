@@ -26,6 +26,11 @@ import frc.robot.commands.BlueRightCone;
 import frc.robot.commands.BlueRightConeCube;
 import frc.robot.commands.ChargeStationBalance;
 import frc.robot.commands.MultiStepArm;
+import frc.robot.commands.RedMidConePark;
+import frc.robot.commands.RedRightCone;
+import frc.robot.commands.RedRightCube;
+import frc.robot.commands.RedLeftCone;
+import frc.robot.commands.RedLeftCube;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -147,7 +152,10 @@ public class RobotContainer {
   private enum CommandsToChoose {
     BlueRightCone,
     BlueMidConePark,
-    BlueLeftCone
+    BlueLeftCone,
+    RedRightCone,
+    RedMidConePark,
+    RedLeftCone
   }
 
   // Create Command variables here for auto
@@ -155,6 +163,9 @@ public class RobotContainer {
   public Command blueRightCone;
   public Command blueMidConePark;
   public Command blueLeftCone;
+  public Command redRightCone;
+  public Command redMidConePark;
+  public Command redLeftCone;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -174,12 +185,18 @@ public class RobotContainer {
     m_selectCommand = new SelectCommand(Map.ofEntries(
         entry(CommandsToChoose.BlueRightCone, blueRightCone),
         entry(CommandsToChoose.BlueMidConePark, blueMidConePark),
-        entry(CommandsToChoose.BlueLeftCone, blueLeftCone)
+        entry(CommandsToChoose.BlueLeftCone, blueLeftCone),
+        entry(CommandsToChoose.RedRightCone, redRightCone),
+        entry(CommandsToChoose.RedMidConePark, redMidConePark),
+        entry(CommandsToChoose.RedLeftCone, redLeftCone)
         ), m_chooser::getSelected);
 
     m_chooser.setDefaultOption("Blue: Right Cone", CommandsToChoose.BlueRightCone);
     m_chooser.addOption("Blue: Mid Cone and Balance", CommandsToChoose.BlueMidConePark);
     m_chooser.addOption("Blue: Left Cone", CommandsToChoose.BlueLeftCone);
+    m_chooser.addOption("Red: Right Cone", CommandsToChoose.RedRightCone);
+    m_chooser.addOption("Red: Mid Cone and Balance", CommandsToChoose.RedMidConePark);
+    m_chooser.addOption("Red: Left Cone", CommandsToChoose.RedLeftCone);
 
     Shuffleboard.getTab("Auto").add(m_chooser)
         .withPosition(0, 0)
@@ -333,6 +350,11 @@ public class RobotContainer {
     blueRightCone = new BlueRightCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
     blueMidConePark = new BlueMidConePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
     blueLeftCone = new BlueLeftCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    redRightCone = new RedRightCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    redMidConePark = new RedMidConePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    redLeftCone = new RedLeftCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+
+  
   }
 
   public void zeroOdo() {

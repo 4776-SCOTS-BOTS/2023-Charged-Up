@@ -29,12 +29,12 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class RedLeftCone extends SequentialCommandGroup {
+public class RedLeftCube extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
-  public RedLeftCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+  public RedLeftCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
     // Field width = 315.5in
-    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new Rotation2d(0));
-    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(279.5), new Rotation2d(Math.toRadians(-5)));
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(273.5), new Rotation2d(0));
+    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(279.5), new Rotation2d(Math.toRadians(0)));
 
     // Create config for trajectory
     // RectangularRegionConstraint bumpConstraint = new
@@ -58,7 +58,7 @@ public class RedLeftCone extends SequentialCommandGroup {
         // Start position
         startPose,
         // Drive to cube
-        List.of(new Translation2d(2.1, Units.inchesToMeters(274)),
+        List.of(new Translation2d(2.1, Units.inchesToMeters(290)),
             new Translation2d(3.86, Units.inchesToMeters(290))),
         // End end at the cube, facing forward
         pickupPose,

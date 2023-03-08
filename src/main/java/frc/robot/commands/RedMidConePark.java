@@ -33,7 +33,9 @@ public class RedMidConePark extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
     public RedMidConePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(229.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(231), new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(180)));
+
 
         // Create config for trajectory
         // RectangularRegionConstraint bumpConstraint = new
@@ -43,17 +45,17 @@ public class RedMidConePark extends SequentialCommandGroup {
 
         RectangularRegionConstraint rampConstraint = new RectangularRegionConstraint(new Translation2d(2.4, Units.inchesToMeters(154)),
                 new Translation2d(3.5, Units.inchesToMeters(256)),
-                new MaxVelocityConstraint(0.5));
+                new MaxVelocityConstraint(0.9));
 
         TrajectoryConfig config = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
+                1.4,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
                 .addConstraint(rampConstraint);
 
         TrajectoryConfig configBalance = new TrajectoryConfig(
-                0.5,
+                1.3,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
@@ -62,21 +64,21 @@ public class RedMidConePark extends SequentialCommandGroup {
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(2.1, Units.inchesToMeters(207.5)),
-                        new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(207.5)),
-                        new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(207.5))),
+                List.of(new Translation2d(2.2, Units.inchesToMeters(220)),
+                        new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(200)),
+                        new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(200))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
 
         Trajectory driveToBalanceTraj = TrajectoryGenerator.generateTrajectory(
                 // Start position
-                pickupPose,
+                pickupPoseFlipped,
                 // Drive to Center of Charging Station
-                List.of(new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(207.5))),
+                List.of(new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(200))),
                 // End end at the cube, facing forward
-                new Pose2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(207.5),
-                        new Rotation2d(Math.toRadians(0))),
+                new Pose2d(Units.inchesToMeters(165), Units.inchesToMeters(200),
+                        new Rotation2d(Math.toRadians(180))),
                 configBalance);
 
         var thetaController = new ProfiledPIDController(
@@ -108,24 +110,19 @@ public class RedMidConePark extends SequentialCommandGroup {
                 drive);
 
         addCommands(
-                new PlaceFirstCone(drive, arm, gripper, intake, startPose),
-
-                // Drive over line
-                new ParallelCommandGroup(
-                        driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
-                        new WaitCommand(2)
-                                .andThen(new InstantCommand(intake::intakeExtend))
-                                .andThen(new InstantCommand(intake::intakeIn))),
-                new InstantCommand(intake::intakeOff),
-                new InstantCommand(intake::intakeOff),
-
-                // Drive back
-                new ParallelCommandGroup(
-                        new InstantCommand(intake::intakeRetract),
-                        driveToBalance.andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false)))),
-
+                new InstantCommand(() -> drive.resetOdometry(startPose)),
+                new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+                // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        
+                driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
+                new InstantCommand(() -> {
+                  drive.turnByAngle(179.99);
+                }, drive),
+        
+                driveToBalance.andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
+        
+                new ChargeStationBalance(drive, 1, 5),
                 new InstantCommand(drive::setXModuleState)
-
         );
 
     }

@@ -29,12 +29,12 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class RedLeftCone extends SequentialCommandGroup {
+public class RedRightCube extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
-  public RedLeftCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+  public RedRightCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
     // Field width = 315.5in
-    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new Rotation2d(0));
-    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(279.5), new Rotation2d(Math.toRadians(-5)));
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(163.5 - 22.0), new Rotation2d(0));
+    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(146), new Rotation2d(Math.toRadians(0)));
 
     // Create config for trajectory
     // RectangularRegionConstraint bumpConstraint = new
@@ -45,7 +45,7 @@ public class RedLeftCone extends SequentialCommandGroup {
     RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
         new Translation2d(3.295, Units.inchesToMeters(256)),
         new Translation2d(4.46, Units.inchesToMeters(315.5)),
-        new MaxVelocityConstraint(1.0));
+        new MaxVelocityConstraint(0.5));
 
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -58,8 +58,8 @@ public class RedLeftCone extends SequentialCommandGroup {
         // Start position
         startPose,
         // Drive to cube
-        List.of(new Translation2d(2.1, Units.inchesToMeters(274)),
-            new Translation2d(3.86, Units.inchesToMeters(290))),
+        List.of(new Translation2d(2.1, Units.inchesToMeters(140)),
+            new Translation2d(3.86, Units.inchesToMeters(140))),
         // End end at the cube, facing forward
         pickupPose,
         config);

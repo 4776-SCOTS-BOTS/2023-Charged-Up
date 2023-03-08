@@ -33,7 +33,7 @@ public class BlueLeftCone extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
   public BlueLeftCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
     Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
-    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(180), new Rotation2d(Math.toRadians(0)));
+    Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(172), new Rotation2d(Math.toRadians(0)));
 
 
     // Create config for trajectory
@@ -44,7 +44,7 @@ public class BlueLeftCone extends SequentialCommandGroup {
 
     RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(new Translation2d(3.295, 0),
         new Translation2d(4.46, 1.524),
-        new MaxVelocityConstraint(0.5));
+        new MaxVelocityConstraint(1.0));
 
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -85,11 +85,12 @@ public class BlueLeftCone extends SequentialCommandGroup {
         // Drive over line
         new ParallelCommandGroup(
             driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
-            new WaitCommand(1)
+            new WaitCommand(0.25)
                 .andThen(new InstantCommand(intake::intakeExtend))
                 .andThen(new InstantCommand(intake::intakeIn))),
         new InstantCommand(intake::intakeOff),
-        new InstantCommand(intake::intakeOff));
+        new InstantCommand(intake::intakeOff),
+        new InstantCommand(intake::intakeRetract));
 
   }
 }

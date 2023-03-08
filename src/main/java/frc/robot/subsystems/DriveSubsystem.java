@@ -392,12 +392,12 @@ public class DriveSubsystem extends SubsystemBase {
   public void turnByAngle(double turnByDegrees){
     double goal = Math.toRadians(-m_gyro.getAngle() + turnByDegrees);
     Timer timer = new Timer();
-    double timeout = 3.0;
+    double timeout = 2.0;
 
-    var thetaController = new ProfiledPIDController(2.5, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+    var thetaController = new ProfiledPIDController(3.5, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    thetaController.setTolerance(Math.toRadians(1));
+    thetaController.setTolerance(Math.toRadians(5));
     thetaController.setGoal(goal);
 
     timer.reset();
@@ -405,7 +405,7 @@ public class DriveSubsystem extends SubsystemBase {
     double rotation = 0;
 
     while (!thetaController.atGoal() && !timer.hasElapsed(timeout)) {
-      System.out.println("Target: " + goal + " / Current: " + Math.toRadians(-m_gyro.getAngle()) + " / Time: " + timer.get());
+      //System.out.println("Target: " + goal + " / Current: " + Math.toRadians(-m_gyro.getAngle()) + " / Time: " + timer.get());
       rotation = thetaController.calculate(Math.toRadians(-m_gyro.getAngle()));
       drive(0, 0, rotation, false);
 

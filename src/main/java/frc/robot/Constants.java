@@ -155,7 +155,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3.0;// was 3
+    public static final double kMaxSpeedMetersPerSecond = 2.5;// was 3
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;// was 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
@@ -261,7 +261,7 @@ public final class Constants {
 
   // Solenoid Constants RAAAAAAA
   public static class PneumaticsConstants {
-    public static int phCanID = 10;
+    public static int phCanID = 1;
     public static int gripperSolenoidPort = 2;
     public static int intakeSolenoidPort = 0;
     public static int kickerSolenoidPort = 4;
@@ -292,7 +292,7 @@ public final class Constants {
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
       case CompBot: {
-        ConfigConstants.hasCamera = true;
+        ConfigConstants.hasCamera = false;
 
         // Swerve Module Alignment
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162-180));
