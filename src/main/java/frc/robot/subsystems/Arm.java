@@ -31,10 +31,10 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class Arm extends SubsystemBase {
   private final double rotKeepOut = 20; // Rotational keepout (degrees) to limit extension
-  private final double shoulderLength = 19.25; // inches
-  private final double elbowLength = 31.5; // inches
+  private final double SHOULDER_LENGTH = 19.25; // inches
+  private final double ELBOW_LENGTH = 31.5; // inches
   private final double SAFETY_FACTOR = 4; // inches
-  private final double SHOULDER_HEIGHT = 28.5; // Need to verify
+  private final double SHOULDER_HEIGHT = 28.5;
   private final double MAX_HEIGHT = 6 * 12 + 6 - SAFETY_FACTOR - SHOULDER_HEIGHT;
   private final double MAX_EXTENSION = 48 - SAFETY_FACTOR;
 
@@ -119,9 +119,6 @@ public class Arm extends SubsystemBase {
 
     Shuffleboard.getTab("Arm").addNumber("Elbow", this::getElbowPositionDeg);
     Shuffleboard.getTab("Arm").addNumber("Shoulder", this::getShoulderPositionDeg);
-
-    Shuffleboard.getTab("Arm").addNumber("Height", this::shuffArmHeight);
-    //Shuffleboard.getTab("Arm").addBoolean("Height", () -> {heightDanger(shoulderPosition, elbowPosition);});
 
     // display PID coefficients on SmartDashboard
     // Comment out once tuning is done
@@ -251,88 +248,85 @@ public class Arm extends SubsystemBase {
   }
 
   public double getArmHeight(double shoulderPos, double elbowPos) {
-    return -shoulderLength * Math.cos(shoulderPos) - elbowLength * Math.cos(shoulderPos + elbowPos - Math.PI);
-  }
+    return -SHOULDER_LENGTH * Math.cos(shoulderPos) - ELBOW_LENGTH * Math.cos(shoulderPos + elbowPos - Math.PI);
+}
 
-  public double shuffArmHeight(){
-    return getArmHeight(shoulderPosition, elbowPosition);
-  }
+public double getArmExtension(double shoulderPos, double elbowPos) {
+    return SHOULDER_LENGTH * Math.sin(shoulderPos) + ELBOW_LENGTH * Math.cos(shoulderPos + elbowPos - 3 * Math.PI / 2);
+}
 
-  public double getArmExtension(double shoulderPos, double elbowPos) {
-    return shoulderLength * Math.sin(shoulderPos) + elbowLength * Math.cos(shoulderPos + elbowPos - 3 * Math.PI / 4);
-  }
+public boolean heightDanger(double shoulderPos, double elbowPos) {
+    return getArmHeight(shoulderPos, elbowPos) >= MAX_HEIGHT;
+}
 
-  public boolean heightDanger(double shoulderPos, double elbowPos) {
-    return getArmExtension(shoulderPos, elbowPos) >= MAX_HEIGHT;
-  }
-
-  public boolean extensionDanger(double shoulderPos, double elbowPos) {
+public boolean extensionDanger(double shoulderPos, double elbowPos) {
     // Checking for negative values here as critical extension is behind robot.
-    return getArmExtension(shoulderPos, elbowPos) <= MAX_EXTENSION;
-  }
+    return getArmExtension(shoulderPos, elbowPos) <= -MAX_EXTENSION;
+}
 
-  public double heightSensShoulder(double shoulderPos, double elbowPos) {
-    return shoulderLength * Math.sin(shoulderPos) - elbowLength * Math.sin(shoulderPos + elbowPos);
-  }
+public double heightSensShoulder(double shoulderPos, double elbowPos) {
+    return SHOULDER_LENGTH * Math.sin(shoulderPos) - ELBOW_LENGTH * Math.sin(shoulderPos + elbowPos);
+}
 
-  public boolean heightSensShoulderIsPositive(double shoulderPos, double elbowPos) {
+public boolean heightSensShoulderIsPositive(double shoulderPos, double elbowPos) {
     return heightSensShoulder(shoulderPos, elbowPos) >= 0;
-  }
+}
 
-  public double heightSensElbow(double shoulderPos, double elbowPos) {
-    return -elbowLength * Math.sin(shoulderPos + elbowPos);
-  }
+public double heightSensElbow(double shoulderPos, double elbowPos) {
+    return -ELBOW_LENGTH * Math.sin(shoulderPos + elbowPos);
+}
 
-  public boolean heightSensElowIsPositive(double shoulderPos, double elbowPos) {
+public boolean heightSensElowIsPositive(double shoulderPos, double elbowPos) {
     return heightSensElbow(shoulderPos, elbowPos) >= 0;
-  }
+}
 
-  public double extensionSensShoulder(double shoulderPos, double elbowPos) {
-    return shoulderLength * Math.cos(shoulderPos) - elbowLength * Math.cos(shoulderPos + elbowPos);
-  }
+public double extensionSensShoulder(double shoulderPos, double elbowPos) {
+    return SHOULDER_LENGTH * Math.cos(shoulderPos) - ELBOW_LENGTH * Math.cos(shoulderPos + elbowPos);
+}
 
-  public boolean extensionSensShoulderIsPositive(double shoulderPos, double elbowPos) {
+public boolean extensionSensShoulderIsPositive(double shoulderPos, double elbowPos) {
     // Extension critical value is negative. Need to check of decreasing value in
     // critical regions
     return extensionSensShoulder(shoulderPos, elbowPos) >= 0;
-  }
+}
 
-  public double extensionSensElbow(double shoulderPos, double elbowPos) {
-    return -elbowLength * Math.cos(shoulderPos + elbowPos);
-  }
+public double extensionSensElbow(double shoulderPos, double elbowPos) {
+    return -ELBOW_LENGTH * Math.cos(shoulderPos + elbowPos);
+}
 
-  public boolean extensionSensElbowIsPositive(double shoulderPos, double elbowPos) {
+public boolean extensionSensElbowIsPositive(double shoulderPos, double elbowPos) {
     // Extension critical value is negative. Need to check of decreasing value in
     // critical regions
     return extensionSensElbow(shoulderPos, elbowPos) >= 0;
-  }
+}
 
-  public boolean elbowPowerOk(double elbowPower, double shoulderPos, double elbowPos) {
+public boolean elbowPowerOk(double elbowPower, double shoulderPos, double elbowPos) {
     boolean powerOk;
 
     if (heightDanger(shoulderPos, elbowPos)) {
-      powerOk = (Math.signum(elbowPower) * Math.signum(heightSensElbow(shoulderPos, elbowPos))) <= 0;
+        powerOk = (Math.signum(elbowPower) * Math.signum(heightSensElbow(shoulderPos, elbowPos))) <= 0;
     } else if (extensionDanger(shoulderPos, elbowPos)) {
-      powerOk = (Math.signum(elbowPower) * Math.signum(extensionSensElbow(shoulderPos, elbowPos))) >= 0;
+        powerOk = (Math.signum(elbowPower) * Math.signum(extensionSensElbow(shoulderPos, elbowPos))) >= 0;
     } else {
-      powerOk = true;
+        powerOk = true;
     }
 
     return powerOk;
-  }
+}
 
-  public boolean shoulderPowerOk(double shoulderPower, double shoulderPos, double elbowPos) {
+public boolean shoulderPowerOk(double shoulderPower, double shoulderPos, double elbowPos) {
     boolean powerOk;
 
     if (heightDanger(shoulderPos, elbowPos)) {
-      powerOk = (Math.signum(shoulderPower) * Math.signum(heightSensShoulder(shoulderPos, elbowPos))) <= 0;
+        powerOk = (Math.signum(shoulderPower) * Math.signum(heightSensShoulder(shoulderPos, elbowPos))) <= 0;
     } else if (extensionDanger(shoulderPos, elbowPos)) {
-      powerOk = (Math.signum(shoulderPower) * Math.signum(extensionSensShoulder(shoulderPos, elbowPos))) >= 0;
+        powerOk = (Math.signum(shoulderPower) * Math.signum(extensionSensShoulder(shoulderPos, elbowPos))) >= 0;
     } else {
-      powerOk = true;
+        powerOk = true;
     }
 
     return powerOk;
-  }
+}
+
 
 }
