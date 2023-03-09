@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
@@ -31,14 +32,14 @@ public class PlaceFirstCone extends SequentialCommandGroup {
       // Drive against wall and ready arm
       new ParallelCommandGroup(
           arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
-          new InstantCommand(() -> drive.drive(-0.2, 0, 0, true)),
-          new InstantCommand(() -> drive.drive(-0.2, 0, 0, true)), //Set it twice to fix spinning?
+          new InstantCommand(() -> drive.drive(-0.2, 0, 0, false)).repeatedly(),
           new WaitCommand(1)),
 
       // Stop drive and let arm finish
-      new InstantCommand(() -> drive.drive(0, 0, 0, false)),
+      new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
       new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CONE,
       Constants.ArmConstants.READY_POSITION_CONE),
+      new WaitCommand(1),
 
       // Extend arm and release
       new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,

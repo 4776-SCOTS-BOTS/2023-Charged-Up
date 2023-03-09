@@ -45,6 +45,8 @@ public class ChargeStationBalance extends CommandBase {
     } else if (holdStart == 1000){
       holdStart = Timer.getFPGATimestamp();
       drive.drive(0, 0, 0, false);
+    } else {
+      drive.setXModuleState();
     }
   }
 
@@ -57,8 +59,6 @@ public class ChargeStationBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-
-    //return (Timer.getFPGATimestamp() - holdStart > holdTime) || (Timer.getFPGATimestamp() - startTime > timeout);
+    return ((Timer.getFPGATimestamp() - holdStart) > holdTime) || ((Timer.getFPGATimestamp() - startTime) > timeout);
   }
 }

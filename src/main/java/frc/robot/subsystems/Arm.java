@@ -31,10 +31,10 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 
 public class Arm extends SubsystemBase {
   private final double rotKeepOut = 20; // Rotational keepout (degrees) to limit extension
-  private final double shoulderLength = 18; // inches
-  private final double elbowLength = 18; // inches
-  private final double SAFETY_FACTOR = 2; // inches
-  private final double SHOULDER_HEIGHT = 24; // Need to verify
+  private final double shoulderLength = 19.25; // inches
+  private final double elbowLength = 31.5; // inches
+  private final double SAFETY_FACTOR = 4; // inches
+  private final double SHOULDER_HEIGHT = 28.5; // Need to verify
   private final double MAX_HEIGHT = 6 * 12 + 6 - SAFETY_FACTOR - SHOULDER_HEIGHT;
   private final double MAX_EXTENSION = 48 - SAFETY_FACTOR;
 
@@ -119,6 +119,9 @@ public class Arm extends SubsystemBase {
 
     Shuffleboard.getTab("Arm").addNumber("Elbow", this::getElbowPositionDeg);
     Shuffleboard.getTab("Arm").addNumber("Shoulder", this::getShoulderPositionDeg);
+
+    Shuffleboard.getTab("Arm").addNumber("Height", this::shuffArmHeight);
+    //Shuffleboard.getTab("Arm").addBoolean("Height", () -> {heightDanger(shoulderPosition, elbowPosition);});
 
     // display PID coefficients on SmartDashboard
     // Comment out once tuning is done
@@ -249,6 +252,10 @@ public class Arm extends SubsystemBase {
 
   public double getArmHeight(double shoulderPos, double elbowPos) {
     return -shoulderLength * Math.cos(shoulderPos) - elbowLength * Math.cos(shoulderPos + elbowPos - Math.PI);
+  }
+
+  public double shuffArmHeight(){
+    return getArmHeight(shoulderPosition, elbowPosition);
   }
 
   public double getArmExtension(double shoulderPos, double elbowPos) {

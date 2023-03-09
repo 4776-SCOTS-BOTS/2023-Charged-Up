@@ -352,13 +352,13 @@ public final class Constants {
     
         ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
         ArmConstants.HIGH_POSITION_START = new ArmPosition(180, 225.0);
-        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(180, 245.0);
+        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(180, 240.0);
         ArmConstants.MID_POSITION = new ArmPosition(290.0, 195.0);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
         ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
-        ArmConstants.CUBE_MID_POSITION = new ArmPosition(180, 235.0);
-        ArmConstants.CUBE_LOW_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.CUBE_MID_POSITION = new ArmPosition(290.0, 195.0);
+        ArmConstants.CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
 
       }
         break;
