@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class BlueLeftCube extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
   public BlueLeftCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(174), new Rotation2d(0));
     Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(172), new Rotation2d(Math.toRadians(0)));
 
 
@@ -80,7 +80,7 @@ public class BlueLeftCube extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        new PlaceFirstCube(drive, arm, gripper, intake, startPose),
 
         // Drive over line
         new ParallelCommandGroup(

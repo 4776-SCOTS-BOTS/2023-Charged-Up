@@ -55,7 +55,7 @@ public class BlueMidConePark extends SequentialCommandGroup {
         .addConstraint(rampConstraint);
 
     TrajectoryConfig configBalance = new TrajectoryConfig(
-        1.2,
+        1.3,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
@@ -77,7 +77,7 @@ public class BlueMidConePark extends SequentialCommandGroup {
         // Drive to Center of Charging Station
         List.of(new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(108))),
         // End end at the cube, facing forward
-        new Pose2d(Units.inchesToMeters(190), Units.inchesToMeters(108),
+        new Pose2d(Units.inchesToMeters(170), Units.inchesToMeters(108),
             new Rotation2d(Math.toRadians(180))),
         configBalance);
 
@@ -110,9 +110,9 @@ public class BlueMidConePark extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new InstantCommand(() -> drive.resetOdometry(startPose)),
-        new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
-        // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        // new InstantCommand(() -> drive.resetOdometry(startPose)),
+        // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
         driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
         new InstantCommand(() -> {

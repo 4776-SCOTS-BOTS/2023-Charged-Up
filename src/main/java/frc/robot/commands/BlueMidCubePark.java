@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class BlueMidCubePark extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
   public BlueMidCubePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(86.0), new Rotation2d(0));
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(108), new Rotation2d(0));
     Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
     Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(180)));
 
@@ -55,7 +55,7 @@ public class BlueMidCubePark extends SequentialCommandGroup {
         .addConstraint(rampConstraint);
 
     TrajectoryConfig configBalance = new TrajectoryConfig(
-        1.2,
+        1.3,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
@@ -64,7 +64,7 @@ public class BlueMidCubePark extends SequentialCommandGroup {
         // Start position
         startPose,
         // Drive to cube
-        List.of(new Translation2d(2.1, Units.inchesToMeters(108)),
+        List.of(new Translation2d(2.2, Units.inchesToMeters(108)),
             new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(108)),
             new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(108))),
         // End end at the cube, facing forward
@@ -77,7 +77,7 @@ public class BlueMidCubePark extends SequentialCommandGroup {
         // Drive to Center of Charging Station
         List.of(new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(108))),
         // End end at the cube, facing forward
-        new Pose2d(Units.inchesToMeters(190), Units.inchesToMeters(108),
+        new Pose2d(Units.inchesToMeters(170), Units.inchesToMeters(108),
             new Rotation2d(Math.toRadians(180))),
         configBalance);
 
@@ -110,9 +110,9 @@ public class BlueMidCubePark extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new InstantCommand(() -> drive.resetOdometry(startPose)),
-        new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
-        // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        // new InstantCommand(() -> drive.resetOdometry(startPose)),
+        // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        new PlaceFirstCube(drive, arm, gripper, intake, startPose),
 
         driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
         new InstantCommand(() -> {

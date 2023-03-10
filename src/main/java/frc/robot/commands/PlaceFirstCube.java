@@ -31,8 +31,7 @@ public class PlaceFirstCube extends SequentialCommandGroup {
       // Drive against wall and ready arm
       new ParallelCommandGroup(
           arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE),
-          new InstantCommand(() -> drive.drive(-0.2, 0, 0, false), drive).repeatedly(),
-          new WaitCommand(1)),
+          new DriveToWall(drive, 0.75)),
 
       // Stop drive and let arm finish
       new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),

@@ -121,12 +121,12 @@ public final class Constants {
     // public static final int kTurningEncoderCPR = 415;
     // public static final double kWheelDiameterMeters = 0.15;
     // public static final double kDriveEncoderDistancePerPulse =
-    //     // Assumes the encoders are directly mounted on the wheel shafts
-    //     (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+    // // Assumes the encoders are directly mounted on the wheel shafts
+    // (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
 
     // public static final double kTurningEncoderDistancePerPulse =
-    //     // Assumes the encoders are on a 1:1 reduction with the module shaft.
-    //     (2 * Math.PI) / (double) kTurningEncoderCPR;
+    // // Assumes the encoders are on a 1:1 reduction with the module shaft.
+    // (2 * Math.PI) / (double) kTurningEncoderCPR;
 
     public static final double kMaxRPM = 5700;
     public static final double kWheelDiameter = 0.102;
@@ -137,7 +137,7 @@ public final class Constants {
     public static double kPModuleTurningController = 2.5;
     public static double kDModuleTurningController = 0;
 
-    public static final double kPModuleDriveController = 2.0;  //0.6
+    public static final double kPModuleDriveController = 2.0; // 0.6
     private static final double kDriveP = 15.0;
     private static final double kDriveI = 0.01;
     private static final double kDriveD = 0.1;
@@ -176,12 +176,13 @@ public final class Constants {
     public static final boolean kShoulder2Inv = false;
     public static final int kElbowPort = 22;
 
+    public static ArmPosition PICKUP_STANDING_CONE = new ArmPosition(90, 160);
     public static ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
     public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
-    
+
     public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION_START = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION_FINAL = new ArmPosition(180, 235.0);
@@ -191,8 +192,6 @@ public final class Constants {
     public static ArmPosition CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
     public static ArmPosition CUBE_MID_POSITION = new ArmPosition(290.0, 195.0);
     public static ArmPosition CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
-
-
 
     // Elbow Constants
 
@@ -280,7 +279,7 @@ public final class Constants {
     // Magic Carpet Constants
     public static int kMagicCarpetPort = 24;
     public static boolean kMagicCarpetInv = false;
-    public static double kMagicCarpetPower = 0.40;
+    public static double kMagicCarpetPower = 0.50;
 
   }
 
@@ -293,11 +292,11 @@ public final class Constants {
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
       case CompBot: {
-        ConfigConstants.hasCamera = false;
+        ConfigConstants.hasCamera = true;
 
         // Swerve Module Alignment
-        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162-180));
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5+180));
+        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5 + 180));
         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(60.7));
         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(149.0));
 
@@ -327,7 +326,7 @@ public final class Constants {
         ModuleConstants.kDModuleTurningController = 0;
 
         // Distance between centers of right and left wheels on robot
-        double kTrackWidth = DriveConstants.kTrackWidth = 0.552; //21.75in
+        double kTrackWidth = DriveConstants.kTrackWidth = 0.552; // 21.75in
         // Distance between front and back wheels on robot
         double kWheelBase = DriveConstants.kWheelBase = 0.521; // 20.5
 
@@ -344,12 +343,13 @@ public final class Constants {
             Elbow.kLowerLimit,
             Elbow.trapConstraints, Elbow.kOffset, 0);
 
+        ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(90, 160);
         ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
         ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 300);
-    
+
         ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
         ArmConstants.HIGH_POSITION_START = new ArmPosition(180, 225.0);
         ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(180, 240.0);

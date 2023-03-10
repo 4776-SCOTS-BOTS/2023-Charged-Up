@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -31,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class BlueRightCube extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
   public BlueRightCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-    Pose2d startPose = new Pose2d(1.905, 1.626, new Rotation2d(0));
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(42), new Rotation2d(0));
 
     // Create config for trajectory
     // RectangularRegionConstraint bumpConstraint = new
@@ -78,7 +79,7 @@ public class BlueRightCube extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        new PlaceFirstCube(drive, arm, gripper, intake, startPose),
 
         // Drive over line
         new ParallelCommandGroup(

@@ -33,7 +33,7 @@ public class RedRightCube extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
   public RedRightCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
     // Field width = 315.5in
-    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(163.5 - 22.0), new Rotation2d(0));
+    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(141.5), new Rotation2d(0));
     Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(146), new Rotation2d(Math.toRadians(0)));
 
     // Create config for trajectory

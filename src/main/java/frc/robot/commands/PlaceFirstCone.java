@@ -32,19 +32,16 @@ public class PlaceFirstCone extends SequentialCommandGroup {
       // Drive against wall and ready arm
       new ParallelCommandGroup(
           arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
-          new InstantCommand(() -> drive.drive(-0.2, 0, 0, false)).repeatedly(),
-          new WaitCommand(1)),
+          new DriveToWall(drive, 0.5)),
 
       // Stop drive and let arm finish
       new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
       new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CONE,
       Constants.ArmConstants.READY_POSITION_CONE),
-      new WaitCommand(1),
 
       // Extend arm and release
       new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
-          Constants.ArmConstants.HIGH_POSITION),
-      arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION_FINAL),
+         Constants.ArmConstants.HIGH_POSITION),
       new InstantCommand(gripper::openGripper, gripper),
 
       // Pack the arm

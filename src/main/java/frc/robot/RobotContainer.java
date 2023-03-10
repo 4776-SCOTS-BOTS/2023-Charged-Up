@@ -33,6 +33,7 @@ import frc.robot.commands.RedMidConePark;
 import frc.robot.commands.RedMidCubePark;
 import frc.robot.commands.RedRightCone;
 import frc.robot.commands.RedRightCube;
+import frc.robot.commands.StandingCone;
 import frc.robot.commands.RedLeftCone;
 import frc.robot.commands.RedLeftCube;
 import frc.robot.subsystems.DriveSubsystem;
@@ -62,6 +63,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+
 import java.util.List;
 import java.util.Map;
 
@@ -129,6 +132,7 @@ public class RobotContainer {
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final POVButton pickupPositionButton = new POVButton(m_manipulatorController, 90);
   final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
+  final POVButton standingConePickupButton = new POVButton(m_manipulatorController, 180);
   final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kBack.value);
   final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController,
@@ -153,7 +157,7 @@ public class RobotContainer {
   private final SlewRateLimiter elbowPowerLimiter = new SlewRateLimiter(2.0);
   private final SlewRateLimiter shoulderPowerLimiter = new SlewRateLimiter(2.0);
 
-  final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+  final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kY.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
@@ -210,6 +214,8 @@ public class RobotContainer {
    */
   public RobotContainer(LED led) {
     SmartDashboard.putString("Robot Type", Constants.robotType.toString());
+    Shuffleboard.getTab("SmartDashboard").addDouble("Remaining Time", () -> DriverStation.getMatchTime());
+
 
     m_Led = led;
 
@@ -328,6 +334,8 @@ public class RobotContainer {
     readyPositionCubeButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION_CUBE,
         Constants.ArmConstants.READY_POSITION_CUBE)
         .andThen(new InstantCommand(()-> {conePositions = false;})));
+
+        standingConePickupButton.onTrue(new StandingCone(m_Arm, m_gripper, m_Intake));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
