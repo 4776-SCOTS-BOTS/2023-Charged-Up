@@ -13,7 +13,7 @@ import frc.robot.subsystems.Gripper;
 
 public class StandingCone extends CommandBase {
   /** Creates a new StandingCone. */
-  private double carpetTime = 0.5;
+  private double carpetTime = 0.4;
   private double startTime;
   private Arm arm;
   private Intake intake;

@@ -92,12 +92,13 @@ public class Arm extends SubsystemBase {
     shoulderEncoder.setVelocityConversionFactor((2 * Math.PI) / 60.0);
     shoulderEncoder.setZeroOffset(Constants.ArmConstants.shoulder.kOffset);
 
+    //Not getting valid position during init, so hard coding initial positions.
     elbowTrapController = new ElbowSubsystem(elbowPIDController, Constants.ArmConstants.elbow,
-        readElbowCurrentPos(), elbowEncoder, shoulderEncoder);
+        Math.toRadians(40), elbowEncoder, shoulderEncoder);
     elbowTrapController.disable();
 
     shoulderTrapController = new ShoulderSubsystem(shoulderPIDController, Constants.ArmConstants.shoulder,
-        readShoulderCurrentPos(), shoulderEncoder, elbowEncoder);
+        Math.toRadians(180.0), shoulderEncoder, elbowEncoder);
     shoulderTrapController.disable();
 
     // Set the PID gains for the elbow motor. These values are set in the Trapezoid
@@ -234,6 +235,8 @@ public class Arm extends SubsystemBase {
     return Commands.runOnce(() -> {
       setShoulderPosition(position.shoulderRadians);
       setElbowPosition(position.elbowRadians);
+      SmartDashboard.putNumber("Elbow Target", position.elbowDegrees);
+      SmartDashboard.putNumber("Shoulder Target", position.shoulderDegrees);
     }, this);
   }
 

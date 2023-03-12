@@ -33,9 +33,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class BlueMidConePark extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
   public BlueMidConePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-    Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(86.0), new Rotation2d(0));
-    Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
-    Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(180)));
+    Pose2d startPose = new Pose2d(Units.inchesToMeters(75), Units.inchesToMeters(86.0), new Rotation2d(0));
+    //Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
+    //Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(180)));
+    Pose2d balancePose = new Pose2d(Units.inchesToMeters(140), Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
 
     // Create config for trajectory
     // RectangularRegionConstraint bumpConstraint = new
@@ -43,16 +44,15 @@ public class BlueMidConePark extends SequentialCommandGroup {
     // new Translation2d(4.46, 0),
     // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
 
-    RectangularRegionConstraint rampConstraint = new RectangularRegionConstraint(new Translation2d(2.6, 1.524),
-        new Translation2d(3.5, 4),
-        new MaxVelocityConstraint(0.8));
+    // RectangularRegionConstraint rampConstraint = new RectangularRegionConstraint(new Translation2d(2.6, 1.524),
+    //     new Translation2d(3.5, 4),
+    //     new MaxVelocityConstraint(1.2));
 
     TrajectoryConfig config = new TrajectoryConfig(
-        1.4,
+        2.2,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-        .addConstraint(rampConstraint);
+        .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
 
     TrajectoryConfig configBalance = new TrajectoryConfig(
         1.3,
@@ -60,26 +60,37 @@ public class BlueMidConePark extends SequentialCommandGroup {
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics).setReversed(false);
 
-    Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
-        // Start position
-        startPose,
-        // Drive to cube
-        List.of(new Translation2d(2.1, Units.inchesToMeters(108)),
-            new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(108)),
-            new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(108))),
-        // End end at the cube, facing forward
-        pickupPose,
-        config);
+        // Use this for full motion
+    // Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
+    //     // Start position
+    //     startPose,
+    //     // Drive to cube
+    //     List.of(new Translation2d(2.1, Units.inchesToMeters(108)),
+    //         new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(108)),
+    //         new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(108))),
+    //     // End end at the cube, facing forward
+    //     pickupPose,
+    //     config);
 
-    Trajectory driveToBalanceTraj = TrajectoryGenerator.generateTrajectory(
-        // Start position
-        pickupPoseFlipped,
-        // Drive to Center of Charging Station
-        List.of(new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(108))),
-        // End end at the cube, facing forward
-        new Pose2d(Units.inchesToMeters(170), Units.inchesToMeters(108),
-            new Rotation2d(Math.toRadians(180))),
-        configBalance);
+        Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
+            // Start position
+            startPose,
+            // Drive to cube
+            List.of(new Translation2d(Units.inchesToMeters(88), Units.inchesToMeters(100)),
+                new Translation2d(Units.inchesToMeters(120), Units.inchesToMeters(108))),
+            // End end at the cube, facing forward
+            balancePose,
+            config);
+
+    // Trajectory driveToBalanceTraj = TrajectoryGenerator.generateTrajectory(
+    //     // Start position
+    //     pickupPoseFlipped,
+    //     // Drive to Center of Charging Station
+    //     List.of(new Translation2d(Units.inchesToMeters(240), Units.inchesToMeters(108))),
+    //     // End end at the cube, facing forward
+    //     new Pose2d(Units.inchesToMeters(170), Units.inchesToMeters(108),
+    //         new Rotation2d(Math.toRadians(180))),
+    //     configBalance);
 
     var thetaController = new ProfiledPIDController(
         2, 0, 0, AutoConstants.kThetaControllerConstraints);
@@ -97,17 +108,17 @@ public class BlueMidConePark extends SequentialCommandGroup {
         drive::setModuleStates,
         drive);
 
-    SwerveControllerCommand driveToBalance = new SwerveControllerCommand(
-        driveToBalanceTraj,
-        drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+    // SwerveControllerCommand driveToBalance = new SwerveControllerCommand(
+    //     driveToBalanceTraj,
+    //     drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
+    //     DriveConstants.kDriveKinematics,
 
-        // Position controllers
-        new PIDController(2, 0, 0),
-        new PIDController(2, 0, 0),
-        thetaController,
-        drive::setModuleStates,
-        drive);
+    //     // Position controllers
+    //     new PIDController(2, 0, 0),
+    //     new PIDController(2, 0, 0),
+    //     thetaController,
+    //     drive::setModuleStates,
+    //     drive);
 
     addCommands(
         // new InstantCommand(() -> drive.resetOdometry(startPose)),
@@ -115,13 +126,13 @@ public class BlueMidConePark extends SequentialCommandGroup {
         new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
         driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
-        new InstantCommand(() -> {
-          drive.turnByAngle(179.99);
-        }, drive),
+        // new InstantCommand(() -> {
+        //   drive.turnByAngle(179.99);
+        // }, drive),
 
-        driveToBalance.andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
+        //driveToBalance.andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
 
-        new ChargeStationBalance(drive, 1, 5),
+        new ChargeStationBalance(drive, 1, 10),
         new InstantCommand(drive::setXModuleState)
 
     );

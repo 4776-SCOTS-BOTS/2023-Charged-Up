@@ -36,6 +36,7 @@ public class ShoulderSubsystem extends TrapezoidProfileSubsystem {
     super(
         jointConstants.trapConstraints,
         initPosition);
+        //System.out.println("Shoulder init = " + initPosition);
 
     m_feedforward = new ShoulderFeedFowardController(
         jointConstants.kSVolts, jointConstants.kGVolts, jointConstants.kgBeta,

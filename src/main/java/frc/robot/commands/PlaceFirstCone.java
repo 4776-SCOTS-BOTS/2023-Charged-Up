@@ -25,28 +25,37 @@ public class PlaceFirstCone extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      // Reset odometry to the starting pose of the trajectory.
-      new InstantCommand(() -> drive.resetOdometry(startPose)),
-      new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        // Reset odometry to the starting pose of the trajectory.
+        new InstantCommand(() -> drive.resetOdometry(startPose)),
+        new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
 
-      // Drive against wall and ready arm
-      new ParallelCommandGroup(
-          arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
-          new DriveToWall(drive, 0.5)),
+        //Set initial arm position
+        new InstantCommand(intake::intakeExtend),
+        new WaitCommand(0.5), 
+        arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
 
-      // Stop drive and let arm finish
-      new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-      new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CONE,
-      Constants.ArmConstants.READY_POSITION_CONE),
+        // Drive against wall and ready arm
+        new DriveToWall(drive, 0.25),
 
-      // Extend arm and release
-      new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
-         Constants.ArmConstants.HIGH_POSITION),
-      new InstantCommand(gripper::openGripper, gripper),
+        
+        // Stop drive
+        new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+        // new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CONE,
+        //     Constants.ArmConstants.READY_POSITION_CONE),
+        new WaitCommand(1.0),
+        new InstantCommand(intake::intakeRetract),
 
-      // Pack the arm
-      arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION)
+        // Extend arm and release
+        new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
+            Constants.ArmConstants.HIGH_POSITION),
+            arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION_FINAL),
+        new WaitCommand(0.5),
+        new InstantCommand(gripper::openGripper, gripper),
 
+        // Pack the arm
+        arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
+        new WaitCommand(0.1),
+        arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION)
     );
   }
 }

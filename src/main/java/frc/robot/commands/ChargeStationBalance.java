@@ -13,8 +13,8 @@ public class ChargeStationBalance extends CommandBase {
   /** Creates a new ChargeStationBalance. */
   private DriveSubsystem drive;
   private double startTime, holdStart, timeout, holdTime;
-  private double drivePower = 0.5;
-  private double lastPitch = 0;
+  private double drivePower;
+  private double lastPitch;
 
 
   public ChargeStationBalance(DriveSubsystem drive, double holdTime, double timeout) {
@@ -23,6 +23,8 @@ public class ChargeStationBalance extends CommandBase {
     this.drive = drive;
     this.timeout = timeout;
     this.holdTime = holdTime;
+    this.drivePower = 0.6;
+    this.lastPitch = 0;
   }
 
   // Called when the command is initially scheduled.
@@ -39,14 +41,14 @@ public class ChargeStationBalance extends CommandBase {
     
     if(pitch > 5){
       if(lastPitch == -1){
-        drivePower = drivePower - 0.05;
+        drivePower = drivePower - 0.1;
       }
       holdStart = 1000; // Arbitrarily large value
       lastPitch = +1;
       drive.drive(drivePower, 0, 0, false);
     } else if (pitch < -5){
       if(lastPitch == 1){
-        drivePower = drivePower - 0.05;
+        drivePower = drivePower - 0.1;
       }
       holdStart = 1000; // Arbitrarily large value1
       lastPitch = -1;

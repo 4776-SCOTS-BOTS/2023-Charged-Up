@@ -112,6 +112,7 @@ public class RobotContainer {
   // Drive controllers
   final JoystickButton brakeButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+  final TriggerButton reallylowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kLeftTrigger);
   final JoystickButton signalCubeButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
   final JoystickButton signalConeButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
@@ -214,8 +215,7 @@ public class RobotContainer {
    */
   public RobotContainer(LED led) {
     SmartDashboard.putString("Robot Type", Constants.robotType.toString());
-    Shuffleboard.getTab("SmartDashboard").addDouble("Remaining Time", () -> DriverStation.getMatchTime());
-
+    // SmartDashboard.putNumber("Remaining Time", DriverStation.getMatchTime());
 
     m_Led = led;
 
@@ -306,39 +306,46 @@ public class RobotContainer {
 
     safePositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION));
     pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
-    
-    // highPositionButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
-    //      Constants.ArmConstants.HIGH_POSITION));
+
+    // highPositionButton.onTrue(new MultiStepArm(m_Arm,
+    // Constants.ArmConstants.HIGH_POSITION_START,
+    // Constants.ArmConstants.HIGH_POSITION));
     // midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     // lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
 
     highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-      Map.entry(true, new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
-      Constants.ArmConstants.HIGH_POSITION)),
-      Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION))), 
-      () -> conePositions));
+        Map.entry(true, new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
+            Constants.ArmConstants.HIGH_POSITION)),
+        Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION))),
+        () -> conePositions));
 
     midPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-      Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION)),
-      Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_MID_POSITION))), 
-      () -> conePositions));
+        Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION)),
+        Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_MID_POSITION))),
+        () -> conePositions));
 
     lowPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-      Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION)),
-      Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_LOW_POSITION))), 
-      () -> conePositions));
-    
+        Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION)),
+        Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_LOW_POSITION))),
+        () -> conePositions));
+
     readyPositionConeButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION_CONE,
         Constants.ArmConstants.READY_POSITION_CONE)
-        .andThen(new InstantCommand(()-> {conePositions = true;})));
+        .andThen(new InstantCommand(() -> {
+          conePositions = true;
+        })));
     readyPositionCubeButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION_CUBE,
         Constants.ArmConstants.READY_POSITION_CUBE)
-        .andThen(new InstantCommand(()-> {conePositions = false;})));
+        .andThen(new InstantCommand(() -> {
+          conePositions = false;
+        })));
 
-        standingConePickupButton.onTrue(new StandingCone(m_Arm, m_gripper, m_Intake));
+    standingConePickupButton.onTrue(new StandingCone(m_Arm, m_gripper, m_Intake)
+        .andThen(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_STANDING_CONE)));
 
     Runnable Control = () -> {
       if (m_robotDrive != null) {
+        SmartDashboard.putNumber("Remaining Time", DriverStation.getMatchTime());
         // SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
         // SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
         // SmartDashboard.putNumber("RightX", m_driverController.getRightX());
@@ -387,6 +394,9 @@ public class RobotContainer {
     m_Arm.setDefaultCommand(new RunCommand(ControlArm, m_Arm));
 
     lowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
+        .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
+
+    reallylowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setReallySlowDrive, m_robotDrive))
         .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
 
     resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));

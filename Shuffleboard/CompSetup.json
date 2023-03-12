@@ -197,8 +197,8 @@
           },
           "6,0": {
             "size": [
-              26,
-              18
+              21,
+              16
             ],
             "content": {
               "_type": "Camera Stream",
@@ -681,12 +681,51 @@
           "0,0": {
             "size": [
               2,
-              1
+              2
             ],
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Pitch",
               "_title": "Pitch",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Remaining Time",
+              "_title": "Remaining Time",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "27,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elbow Target",
+              "_title": "Elbow Target",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "29,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shoulder Target",
+              "_title": "Shoulder Target",
               "_glyph": 148,
               "_showGlyph": false
             }

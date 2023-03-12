@@ -29,9 +29,11 @@ public class PlaceFirstCube extends SequentialCommandGroup {
       new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
 
       // Drive against wall and ready arm
+      new InstantCommand(intake::intakeExtend),
+      new WaitCommand(1.0),
       new ParallelCommandGroup(
           arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE),
-          new DriveToWall(drive, 0.75)),
+          new DriveToWall(drive, 0.5)),
 
       // Stop drive and let arm finish
       new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
@@ -44,6 +46,8 @@ public class PlaceFirstCube extends SequentialCommandGroup {
       new InstantCommand(gripper::openGripper, gripper),
 
       // Pack the arm
+      arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE),
+      new WaitCommand(0.5),
       arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION)
 
     );

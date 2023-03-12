@@ -56,7 +56,7 @@ public final class Constants {
     // Non-final constants are initialized with the values of the practice bot
     // below.
 
-    public static final double driveNormalPercentScale = 0.8;
+    public static final double driveNormalPercentScale = 0.85;
     public static final double rotNormalRateModifier = 1.5;
     public static final double driveLowPercentScale = 0.5;
     public static final double rotLowRateModifier = 0.75;
@@ -343,21 +343,21 @@ public final class Constants {
             Elbow.kLowerLimit,
             Elbow.trapConstraints, Elbow.kOffset, 0);
 
-        ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(90, 160);
+        ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(65, 125);
         ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
-        ArmConstants.SAFE_POSITION = new ArmPosition(40, 190.0);
+        ArmConstants.SAFE_POSITION = new ArmPosition(40, 175.0);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 300);
 
-        ArmConstants.HIGH_POSITION = new ArmPosition(180, 235.0);
-        ArmConstants.HIGH_POSITION_START = new ArmPosition(180, 225.0);
-        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(180, 240.0);
-        ArmConstants.MID_POSITION = new ArmPosition(290.0, 195.0);
+        ArmConstants.HIGH_POSITION = new ArmPosition(180, 225.0);
+        ArmConstants.HIGH_POSITION_START = new ArmPosition(180, 215.0);
+        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 225);
+        ArmConstants.MID_POSITION = new ArmPosition(250, 180);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
         ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
-        ArmConstants.CUBE_MID_POSITION = new ArmPosition(290.0, 195.0);
+        ArmConstants.CUBE_MID_POSITION = new ArmPosition(250.0, 180.0);
         ArmConstants.CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
 
       }
