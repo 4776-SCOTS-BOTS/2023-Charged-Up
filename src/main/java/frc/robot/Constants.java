@@ -212,8 +212,8 @@ public final class Constants {
       public static final double kMaxOutput = 0.8;
       public static final double kUpperLimit = Math.toRadians(330);
       public static final double kLowerLimit = Math.toRadians(10);
-      public static final double kMaxVelocityRadPerSecond = Math.toRadians(220);
-      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(360);
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(180);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(90);
       public static double kOffset = 0; // Radians
       public static final int kCurrentLimit = 60;
       public static final double kManualScale = 0.5;
@@ -244,8 +244,8 @@ public final class Constants {
       public static final double kMaxOutput = 0.8;
       public static final double kUpperLimit = Math.toRadians(340);
       public static final double kLowerLimit = Math.toRadians(20);
-      public static final double kMaxVelocityRadPerSecond = Math.toRadians(450);
-      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(540);
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(360);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
       public static final double kOffset = 0.71; // Adjusted to zero degrees straight
                                                                                    // down
       public static final int kCurrentLimit = 30;

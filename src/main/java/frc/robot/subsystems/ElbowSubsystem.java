@@ -97,4 +97,7 @@ public class ElbowSubsystem extends TrapezoidProfileSubsystem {
   public void setOffsetAngleRads(double offsetAngleRads) {
     this.offsetAngleRads = offsetAngleRads - Math.PI/2; //Need to compensate for shoulder zero point
   }
+
+  
+
 }

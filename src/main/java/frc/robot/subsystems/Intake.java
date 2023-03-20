@@ -64,6 +64,7 @@ public class Intake extends SubsystemBase {
     
     magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kMagicCarpetPort, MotorType.kBrushless);
     magicCarpetMotor.setInverted(Constants.IntakeConstants.kMagicCarpetInv);
+    magicCarpetMotor.setIdleMode(IdleMode.kCoast);
 
     intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
     tipperServoLeft = new Servo(Constants.IntakeConstants.tipperServoPinLeft);

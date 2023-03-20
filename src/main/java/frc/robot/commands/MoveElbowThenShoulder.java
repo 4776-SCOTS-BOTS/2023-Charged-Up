@@ -11,32 +11,31 @@ import frc.robot.subsystems.Arm;
 import frc.robot.Constants;
 import frc.robot.customClass.ArmPosition;
 
-public class MultiStepArm extends CommandBase {
+public class MoveElbowThenShoulder extends CommandBase {
   /** Creates a new MultiStepArm. */
   private Arm m_Arm;
   private ArmPosition position1, position2;
   private boolean inStage1 = false;
   private double startTime, timeout;
 
-  public MultiStepArm(Arm arm, ArmPosition position1, ArmPosition position2, double timeout) {
+  public MoveElbowThenShoulder(Arm arm, ArmPosition position1, double timeout) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_Arm = arm;
     addRequirements(m_Arm);
 
     this.position1 = position1;
-    this.position2 = position2;
+    this.position2 = position1;
     this.timeout = timeout;
   }
 
-  public MultiStepArm(Arm arm, ArmPosition position1, ArmPosition position2) {
+  public MoveElbowThenShoulder(Arm arm, ArmPosition position1) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this(arm, position1, position2, 2);
+    this(arm, position1, 2);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_Arm.setShoulderPosition(position1.shoulderRadians);
     m_Arm.setElbowPosition(position1.elbowRadians);
     inStage1 = true;
     startTime = Timer.getFPGATimestamp();
@@ -46,11 +45,9 @@ public class MultiStepArm extends CommandBase {
   @Override
   public void execute() {
     if (inStage1) {
-      double shoulderPos = m_Arm.getShoulderPositionDeg();
       double elbowPos = m_Arm.getElbowPositionDeg();
-      if (Math.abs(shoulderPos - position1.shoulderDegrees) < 10 && Math.abs(elbowPos - position1.elbowDegrees) < 10) {
-        m_Arm.setShoulderPosition(position2.shoulderRadians);
-        m_Arm.setElbowPosition(position2.elbowRadians);
+      if (Math.abs(elbowPos - position1.elbowDegrees) < 10) {
+        m_Arm.setShoulderPosition(position1.shoulderRadians);
         inStage1 = false;
       }
     }
@@ -59,8 +56,8 @@ public class MultiStepArm extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Arm.setShoulderPosition(position2.shoulderRadians);
-    m_Arm.setElbowPosition(position2.elbowRadians);
+    m_Arm.setShoulderPosition(position1.shoulderRadians);
+    m_Arm.setElbowPosition(position1.elbowRadians);
   }
 
   // Returns true when the command should end.
@@ -68,7 +65,7 @@ public class MultiStepArm extends CommandBase {
   public boolean isFinished() {
     double shoulderPos = m_Arm.getShoulderPositionDeg();
     return (
-      (Math.abs(shoulderPos - position2.shoulderDegrees) < 5) && !inStage1)
+      (Math.abs(shoulderPos - position1.shoulderDegrees) < 5) && !inStage1)
       || (Timer.getFPGATimestamp() - startTime > timeout);
   }
 }

@@ -331,5 +331,4 @@ public boolean shoulderPowerOk(double shoulderPower, double shoulderPos, double 
     return powerOk;
 }
 
-
 }
