@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -80,7 +81,8 @@ public class BlueLeftCone extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+    new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Blue;}),  
+    new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
         // Drive over line
         new ParallelCommandGroup(

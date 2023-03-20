@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -34,6 +31,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   private final LimeLightPoseEstimator limelight;
   private final DriveSubsystem drive;
+  private TimestampedBotPose3d currentLimeLightPose;
   // private final AprilTagFieldLayout aprilTagFieldLayout;
 
   // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
@@ -57,7 +55,14 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
    * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
    * radians.
    */
-  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(10));
+  private Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(10));
+  private static final Vector<N3> visionMeasurementStdDevsClose = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(10));
+  private static final Vector<N3> visionMeasurementStdDevsMid = VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(10));
+  private static final Vector<N3> visionMeasurementStdDevsFar = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+
+  //Range Definitions if less than these values (meters)
+  private static final double RANGE_CLOSE = 1.5;
+  private static final double RANGE_MEDIUM = 4;
 
   private final SwerveDrivePoseEstimator poseEstimator;
 
@@ -66,7 +71,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   private double previousPipelineTimestamp = 0;
   private Pose2d previousPose = new Pose2d();
   private Translation2d previousTrans = new Translation2d();
-  private double distance = 0;
+  private double distancePrev = 0;
+  private double tagDistance = 0;
 
   public PoseEstimatorSubsystem(String limelightName, DriveSubsystem drive) {
     this.limelight = new LimeLightPoseEstimator(limelightName);
@@ -97,13 +103,15 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         stateStdDevs,
         visionMeasurementStdDevs);
 
-    tab.addString("Pose", this::getFomattedPose).withPosition(0, 0).withSize(2, 0);
-    tab.add("Field", field2d).withPosition(2, 0).withSize(6, 4);
+    tab.addString("Pose", this::getFormattedPose).withPosition(0, 0).withSize(4, 2);
+    tab.addString("LimePose", this::getFormattedLimePose).withPosition(0, 3).withSize(4, 2);
+    tab.addDouble("Tag Distance", this::getTagDistance).withPosition(0, 6).withSize(4, 2);
+    tab.add("Field", field2d).withPosition(5, 0).withSize(10, 8);
   }
 
   @Override
   public void periodic() {
-
+    double distanceLimit = 0.5;
     // Update pose estimator with drivetrain sensors
     poseEstimator.update(
         drive.getGyroRotation(),
@@ -112,12 +120,27 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     TimestampedBotPose3d[] timestampedPoses3d = limelight.getBotPose3d();
 
     // for (TimestampedBotPose3d pose : timestampedPoses3d) {
-    TimestampedBotPose3d pose = timestampedPoses3d[0];
-    distance = previousTrans.getDistance(pose.pose3d.toPose2d().getTranslation());
+    currentLimeLightPose = timestampedPoses3d[0];
+    distancePrev = previousTrans.getDistance(currentLimeLightPose.pose3d.toPose2d().getTranslation());
+    tagDistance = currentLimeLightPose.tagDistance;
+    //System.out.println("Target Distance = " + tagDistance);
     
+    if(tagDistance <= RANGE_CLOSE){
+      visionMeasurementStdDevs = visionMeasurementStdDevsClose;
+      distanceLimit = 10; //Trust the limelight pose even if odometry disagrees
+    } else if(tagDistance <= RANGE_MEDIUM){
+      visionMeasurementStdDevs = visionMeasurementStdDevsMid;
+      distanceLimit = 0.1; //Gets jumpy in this range and need to filter.  Only using good agreement
+    } else {
+      visionMeasurementStdDevs = visionMeasurementStdDevsFar;
+      distanceLimit = 0.1; //Want to have some ability to override bad odom and should have megatTag at this range for good accuracy
+    }
 
-    if (pose.timestamp != previousPipelineTimestamp && pose.tagID != 0 && distance <= 0.5){
-      previousPipelineTimestamp = pose.timestamp;
+    boolean validPoint = currentLimeLightPose.pose3d.getX() != 0 && currentLimeLightPose.pose3d.getY() != 0;
+
+    if (currentLimeLightPose.timestamp != previousPipelineTimestamp && currentLimeLightPose.tagID != 0 
+    && distancePrev <= distanceLimit && validPoint){
+      previousPipelineTimestamp = currentLimeLightPose.timestamp;
       previousTrans = getCurrentPose().getTranslation();
       // var target = pipelineResult.getBestTarget();
       // var fiducialId = pose.tagID;
@@ -140,15 +163,23 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
       // SmartDashboard.putNumber("PoseY", pose.pose3d.toPose2d().getY());
       // SmartDashboard.putNumber("PoseRot", pose.pose3d.toPose2d().getRotation().getDegrees());
       // SmartDashboard.putNumber("Pose TS", pose.timestamp);
-      poseEstimator.addVisionMeasurement(pose.pose3d.toPose2d(),
-          pose.timestamp);
+      poseEstimator.addVisionMeasurement(currentLimeLightPose.pose3d.toPose2d(),
+          currentLimeLightPose.timestamp);
     }
 
     field2d.setRobotPose(getCurrentPose());
   }
 
-  private String getFomattedPose() {
+  private String getFormattedPose() {
     var pose = getCurrentPose();
+    return String.format("(%.2f, %.2f) %.2f degrees",
+        pose.getX(),
+        pose.getY(),
+        pose.getRotation().getDegrees());
+  }
+
+  private String getFormattedLimePose() {
+    var pose = currentLimeLightPose.pose3d.toPose2d();
     return String.format("(%.2f, %.2f) %.2f degrees",
         pose.getX(),
         pose.getY(),
@@ -182,5 +213,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   public void resetFieldPosition() {
     setCurrentPose(new Pose2d());
   }
+
+  public void setAllPoseToLimeLight(){
+    setCurrentPose(currentLimeLightPose.pose3d.toPose2d());
+    drive.resetOdometry(currentLimeLightPose.pose3d.toPose2d());
+  }
+
+  public double getTagDistance(){
+    return tagDistance;
+  }
+
+
 
 }

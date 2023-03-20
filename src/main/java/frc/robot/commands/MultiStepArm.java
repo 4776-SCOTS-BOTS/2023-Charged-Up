@@ -30,7 +30,7 @@ public class MultiStepArm extends CommandBase {
 
   public MultiStepArm(Arm arm, ArmPosition position1, ArmPosition position2) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this(arm, position1, position2, 5);
+    this(arm, position1, position2, 2);
   }
 
   // Called when the command is initially scheduled.
@@ -47,7 +47,8 @@ public class MultiStepArm extends CommandBase {
   public void execute() {
     if (inStage1) {
       double shoulderPos = m_Arm.getShoulderPositionDeg();
-      if (Math.abs(shoulderPos - position1.shoulderDegrees) < 5) {
+      double elbowPos = m_Arm.getElbowPositionDeg();
+      if (Math.abs(shoulderPos - position1.shoulderDegrees) < 10 && Math.abs(elbowPos - position1.elbowDegrees) < 10) {
         m_Arm.setShoulderPosition(position2.shoulderRadians);
         m_Arm.setElbowPosition(position2.elbowRadians);
         inStage1 = false;
@@ -58,6 +59,8 @@ public class MultiStepArm extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_Arm.setShoulderPosition(position2.shoulderRadians);
+    m_Arm.setElbowPosition(position2.elbowRadians);
   }
 
   // Returns true when the command should end.

@@ -11,16 +11,19 @@ public class TimestampedBotPose3d {
     public double timestamp;
     public Pose3d pose3d;
     public int tagID;
+    public double tagDistance;
 
     public TimestampedBotPose3d() {
         this.timestamp = 0;
         this.pose3d = new Pose3d();
         this.tagID = 0;
+        this.tagDistance = 0;
     }
 
-    public TimestampedBotPose3d(double timestamp, Pose3d pose3d, int tagID) {
+    public TimestampedBotPose3d(double timestamp, Pose3d pose3d, int tagID, double tagDistance) {
         this.timestamp = timestamp;
         this.pose3d = pose3d;
         this.tagID = tagID;
+        this.tagDistance = tagDistance;
     }
 }

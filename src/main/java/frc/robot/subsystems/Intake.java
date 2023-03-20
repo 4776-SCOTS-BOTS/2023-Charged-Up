@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -20,6 +21,9 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+
+import java.io.Serial;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
@@ -40,6 +44,8 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor;
   private final CANSparkMax magicCarpetMotor;
   private Solenoid intakeSolenoid;
+  private Servo tipperServoLeft; 
+  private Servo tipperServoRight; 
   private boolean isRunning = false;
   private double intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCone;
 
@@ -60,6 +66,10 @@ public class Intake extends SubsystemBase {
     magicCarpetMotor.setInverted(Constants.IntakeConstants.kMagicCarpetInv);
 
     intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
+    tipperServoLeft = new Servo(Constants.IntakeConstants.tipperServoPinLeft);
+    tipperServoRight = new Servo(Constants.IntakeConstants.tipperServoPinRight); 
+
+
   }
 
   public void setIntakePowerCone(){
@@ -108,6 +118,7 @@ public class Intake extends SubsystemBase {
     magicCarpetMotor.stopMotor();
     isRunning = false;
   }
+ 
   public void intakeExtend(){
     intakeSolenoid.set(true);
   }
@@ -116,6 +127,14 @@ public class Intake extends SubsystemBase {
   }
   public boolean getIsRunning(){
     return isRunning;
+  }
+  public void tipperUse(){
+    tipperServoLeft.set(Constants.IntakeConstants.tipperUsePosLeft);
+    tipperServoRight.set(Constants.IntakeConstants.tipperUsePostRight);
+  }
+  public void tipperSafe (){
+    tipperServoLeft.set(Constants.IntakeConstants.tipperSafePosLeft);
+    tipperServoRight.set(Constants.IntakeConstants.tipperSafePosRight);
   }
 }
 

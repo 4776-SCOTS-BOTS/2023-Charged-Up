@@ -194,4 +194,8 @@ public class SwerveModuleAbs {
     public double getRawVolts(){
       return m_turningEncoder.getRawVolts();
     }
+
+    public double getDriveMotorCurrent(){
+      return m_driveMotor.getOutputCurrent();
+    }
 }

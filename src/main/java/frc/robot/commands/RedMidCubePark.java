@@ -26,6 +26,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -34,8 +35,8 @@ public class RedMidCubePark extends SequentialCommandGroup {
     public RedMidCubePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(207.5), new Rotation2d(0));
         Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(0)));
-        Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(180)));
-
+        Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(200),
+                new Rotation2d(Math.toRadians(180)));
 
         // Create config for trajectory
         // RectangularRegionConstraint bumpConstraint = new
@@ -43,7 +44,8 @@ public class RedMidCubePark extends SequentialCommandGroup {
         // new Translation2d(4.46, 0),
         // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
 
-        RectangularRegionConstraint rampConstraint = new RectangularRegionConstraint(new Translation2d(2.4, Units.inchesToMeters(154)),
+        RectangularRegionConstraint rampConstraint = new RectangularRegionConstraint(
+                new Translation2d(2.4, Units.inchesToMeters(154)),
                 new Translation2d(3.5, Units.inchesToMeters(256)),
                 new MaxVelocityConstraint(0.9));
 
@@ -65,8 +67,10 @@ public class RedMidCubePark extends SequentialCommandGroup {
                 startPose,
                 // Drive to cube
                 List.of(new Translation2d(2.2, Units.inchesToMeters(202)),
-                        new Translation2d(Units.inchesToMeters(96.75 + 54), Units.inchesToMeters(200)),
-                        new Translation2d(Units.inchesToMeters(96.75 + 54 + 36), Units.inchesToMeters(200))),
+                        new Translation2d(Units.inchesToMeters(96.75 + 54),
+                                Units.inchesToMeters(200)),
+                        new Translation2d(Units.inchesToMeters(96.75 + 54 + 36),
+                                Units.inchesToMeters(200))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
@@ -110,20 +114,20 @@ public class RedMidCubePark extends SequentialCommandGroup {
                 drive);
 
         addCommands(
-                // new InstantCommand(() -> drive.resetOdometry(startPose)),
-                // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+                new InstantCommand(() -> {
+                    Constants.ConfigConstants.alliance = Alliance.Red;
+                }),
                 new PlaceFirstCube(drive, arm, gripper, intake, startPose),
-        
+
                 driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
                 new InstantCommand(() -> {
-                  drive.turnByAngle(179.99);
+                    drive.turnByAngle(179.99);
                 }, drive),
-        
+
                 driveToBalance.andThen(new InstantCommand(() -> drive.drive(0, 0, 0, false))),
-        
+
                 new ChargeStationBalance(drive, 1, 5),
-                new InstantCommand(drive::setXModuleState)
-        );
+                new InstantCommand(drive::setXModuleState));
 
     }
 }

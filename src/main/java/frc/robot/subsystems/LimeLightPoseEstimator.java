@@ -20,15 +20,21 @@ import edu.wpi.first.networktables.TimestampedDouble;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-
+import frc.robot.Constants;
 import frc.robot.customClass.TimestampedBotPose3d;
 
 public class LimeLightPoseEstimator extends SubsystemBase {
   private NetworkTable table;
-  private DoubleArraySubscriber poseSub;
+  private DoubleArraySubscriber poseRedSub;
+  private DoubleArraySubscriber poseBlueSub;
+  private DoubleArraySubscriber poseTargetSpace;
   private DoubleSubscriber tidSub;
   private DriverStation.Alliance alliance = Alliance.Invalid;
+
+  private String poseNameRed = "botpose_wpired";
+  private String poseNameBlue = "botpose_wpiblue";
 
   private Translation3d botTran3d;
   private Rotation3d botRot3d;
@@ -36,27 +42,27 @@ public class LimeLightPoseEstimator extends SubsystemBase {
   public LimeLightPoseEstimator(String limelightName) {
     String botPoseName;
 
-    this.alliance = DriverStation.getAlliance();
-    if (this.alliance == Alliance.Red) {
-      botPoseName = "botpose_wpired";
-    } else {
-      this.alliance = Alliance.Blue;
-      botPoseName = "botpose_wpiblue";
-    }
+    // this.alliance = DriverStation.getAlliance();
 
     Shuffleboard.getTab("Auto")
-      .add("Alliance", DriverStation.getAlliance().toString())
-      .withPosition(0, 0)
-      .withSize(4, 2);
+        .add("Alliance", DriverStation.getAlliance().toString())
+        .withPosition(0, 0)
+        .withSize(4, 2);
 
     table = NetworkTableInstance.getDefault().getTable(limelightName);
-    poseSub = table.getDoubleArrayTopic(botPoseName).subscribe(new double[] {});
+    poseRedSub = table.getDoubleArrayTopic(poseNameRed).subscribe(new double[] {});
+    poseBlueSub = table.getDoubleArrayTopic(poseNameBlue).subscribe(new double[] {});
+    poseTargetSpace = table.getDoubleArrayTopic("botpose_targetspace").subscribe(new double[] {});
     tidSub = table.getDoubleTopic("tid").subscribe(0.0);
   }
 
   public TimestampedBotPose3d[] getBotPose3d() {
     // Not using multiple poses, but keeping the array version in case we want to
-    double[] result = poseSub.get(); // This would change to .get
+    double[] result = (Constants.ConfigConstants.alliance == Alliance.Red) ? poseRedSub.get() : poseBlueSub.get();
+    double[] targetPose = poseTargetSpace.get();
+    Translation2d distanceTran = new Translation2d(targetPose[0], targetPose[2]);
+    double distance = distanceTran.getDistance(new Translation2d(0,0));
+                                                                                                                
     TimestampedBotPose3d[] timestampedPoses3D = new TimestampedBotPose3d[1];
     int tagID = getAprilTagID();
     if (tagID != 0) {
@@ -67,14 +73,18 @@ public class LimeLightPoseEstimator extends SubsystemBase {
 
       double timestamp = Timer.getFPGATimestamp() - (result[6] / 1000.0);
       Translation3d botTran3d = new Translation3d(result[0], result[1], result[2]);
-      Rotation3d botRot3d = new Rotation3d(Math.toRadians(result[3]), Math.toRadians(result[4]), Math.toRadians(result[5]));
+      Rotation3d botRot3d = new Rotation3d(Math.toRadians(result[3]), Math.toRadians(result[4]),
+          Math.toRadians(result[5]));
       Pose3d pose3d = new Pose3d(botTran3d, botRot3d);
       // timestampedPoses3D[0].tagID = getAprilTagID();
 
-      timestampedPoses3D[0] = new TimestampedBotPose3d(timestamp, pose3d, tagID);
+      
+      timestampedPoses3D[0] = new TimestampedBotPose3d(timestamp, pose3d, tagID, distance);
     } else {
       timestampedPoses3D[0] = new TimestampedBotPose3d();
     }
+
+    //System.out.println("Pose = " + timestampedPoses3D[0].pose3d.toPose2d().getX() + "," + timestampedPoses3D[0].pose3d.toPose2d().getY());
 
     // Array based code
     // int i = 0;

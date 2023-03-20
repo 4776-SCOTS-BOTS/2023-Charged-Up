@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.ArmConstants.Elbow;
 import frc.robot.customClass.ArmJointConstants;
 import frc.robot.customClass.CRGB;
@@ -39,6 +41,7 @@ public final class Constants {
   public static final class ConfigConstants {
     public static boolean fullShuffleBoardOutput = false;
     public static boolean hasCamera = true;
+    public static Alliance alliance = Alliance.Invalid;
 
   }
 
@@ -178,7 +181,8 @@ public final class Constants {
 
     public static ArmPosition PICKUP_STANDING_CONE = new ArmPosition(90, 160);
     public static ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
-    public static ArmPosition SAFE_POSITION = new ArmPosition(30, 205.0);
+    public static ArmPosition SAFE1_POSITION = new ArmPosition(30, 220);
+    public static ArmPosition SAFE_POSITION = new ArmPosition(30, 180);
     public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
@@ -196,23 +200,23 @@ public final class Constants {
     // Elbow Constants
 
     public static class Elbow {
-      public static final double kSVolts = 0;
+      public static final double kSVolts = 0.3;
       public static final double kGVolts = 0.4;
       public static final double kVVoltSecondPerRad = 2.92;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.3;
-      public static final double kI = 0;
-      public static final double kD = 0.06;
+      public static final double kP = 0.45;
+      public static final double kI = 0.0;
+      public static final double kD = 0.05;
       public static final double kFF = 0;
-      public static final double kMinOutput = -0.6;
-      public static final double kMaxOutput = 0.6;
+      public static final double kMinOutput = -0.8;
+      public static final double kMaxOutput = 0.8;
       public static final double kUpperLimit = Math.toRadians(330);
       public static final double kLowerLimit = Math.toRadians(10);
-      public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
-      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static double kOffset = 4.60 - Math.toRadians(55); // Radians
-      public static final int kCurrentLimit = 10;
-      public static final double kManualScale = 0.3;
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(220);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(360);
+      public static double kOffset = 0; // Radians
+      public static final int kCurrentLimit = 60;
+      public static final double kManualScale = 0.5;
 
       public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
           kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared);
@@ -228,21 +232,21 @@ public final class Constants {
     // Shoulder Constants
     public static final class Shoulder {
       public static final double kSVolts = 0;
-      public static final double kGAplhaVolts = 0.35;
+      public static final double kGAplhaVolts = 0.4;
       public static final double kGBetaVolts = 0.50;
       public static final double kVVoltSecondPerRad = 1.95;
       public static final double kAVoltSecondSquaredPerRad = 0;
-      public static final double kP = 0.4;
+      public static final double kP = 0.8;
       public static final double kI = 0;
-      public static final double kD = 0.06;
+      public static final double kD = 0.15;
       public static final double kFF = 0;
-      public static final double kMinOutput = -0.6;
-      public static final double kMaxOutput = 0.6;
+      public static final double kMinOutput = -0.8;
+      public static final double kMaxOutput = 0.8;
       public static final double kUpperLimit = Math.toRadians(340);
       public static final double kLowerLimit = Math.toRadians(20);
-      public static final double kMaxVelocityRadPerSecond = Math.toRadians(90);
-      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 1.88 - Math.PI / 2 + Math.toRadians(0); // Adjusted to zero degrees straight
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(450);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(540);
+      public static final double kOffset = 0.71; // Adjusted to zero degrees straight
                                                                                    // down
       public static final int kCurrentLimit = 30;
       public static final double kManualScale = 0.4;
@@ -264,7 +268,7 @@ public final class Constants {
     public static int phCanID = 1;
     public static int gripperSolenoidPort = 2;
     public static int intakeSolenoidPort = 0;
-    public static int kickerSolenoidPort = 4;
+    public static int kickerSolenoidPort = 3;
   }
 
   // Intake Constants
@@ -280,6 +284,13 @@ public final class Constants {
     public static int kMagicCarpetPort = 24;
     public static boolean kMagicCarpetInv = false;
     public static double kMagicCarpetPower = 0.50;
+    public static int tipperServoPinLeft = 3;
+    public static int tipperServoPinRight = 4;
+    public static double  tipperSafePosLeft = .5;
+    public static double tipperUsePosLeft = 1;
+    public static double  tipperSafePosRight =1;
+    public static double tipperUsePostRight = .5; 
+
 
   }
 
@@ -291,6 +302,7 @@ public final class Constants {
 
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
+
       case CompBot: {
         ConfigConstants.hasCamera = true;
 
@@ -336,7 +348,7 @@ public final class Constants {
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         // Arm Constants
-        Elbow.kOffset = Math.toRadians(134);
+        Elbow.kOffset = Math.toRadians(298-180);
         ArmConstants.elbow = new ArmJointConstants(Elbow.kSVolts, Elbow.kGVolts,
             Elbow.kVVoltSecondPerRad, Elbow.kAVoltSecondSquaredPerRad,
             Elbow.kP, Elbow.kI, Elbow.kD, Elbow.kFF, Elbow.kMinOutput, Elbow.kMaxOutput, Elbow.kUpperLimit,
@@ -345,14 +357,15 @@ public final class Constants {
 
         ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(65, 125);
         ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
-        ArmConstants.SAFE_POSITION = new ArmPosition(40, 175.0);
+        ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
+        ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
-        ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 300);
+        ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 290);
 
-        ArmConstants.HIGH_POSITION = new ArmPosition(180, 225.0);
-        ArmConstants.HIGH_POSITION_START = new ArmPosition(180, 215.0);
-        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 225);
+        ArmConstants.HIGH_POSITION = new ArmPosition(190, 240);
+        ArmConstants.HIGH_POSITION_START = new ArmPosition(160,240);
+        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 250);
         ArmConstants.MID_POSITION = new ArmPosition(250, 180);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 

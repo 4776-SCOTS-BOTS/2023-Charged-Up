@@ -27,6 +27,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
 import frc.robot.commands.PlaceFirstCone;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -121,8 +122,7 @@ public class BlueMidConePark extends SequentialCommandGroup {
     //     drive);
 
     addCommands(
-        // new InstantCommand(() -> drive.resetOdometry(startPose)),
-        // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Blue;}), 
         new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
         driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),

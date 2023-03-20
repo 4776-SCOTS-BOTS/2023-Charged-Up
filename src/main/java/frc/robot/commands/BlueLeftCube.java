@@ -26,6 +26,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -80,7 +81,8 @@ public class BlueLeftCube extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        new PlaceFirstCube(drive, arm, gripper, intake, startPose),
+    new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Blue;}),     
+    new PlaceFirstCube(drive, arm, gripper, intake, startPose),
 
         // Drive over line
         new ParallelCommandGroup(

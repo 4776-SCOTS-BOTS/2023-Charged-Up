@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
+  //private Compressor phCompressor = new Compressor(10, PneumaticsModuleType.REVPH);
 
   private RobotContainer m_robotContainer;
   private LED m_led;
@@ -49,7 +49,6 @@ public class Robot extends TimedRobot {
     m_led.setColor(Constants.kRGB_green);
     m_led.setDisplay();
 
-    phCompressor.enableDigital();
   }
 
   /**

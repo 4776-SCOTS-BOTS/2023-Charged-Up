@@ -26,6 +26,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -79,6 +80,7 @@ public class BlueRightCube extends SequentialCommandGroup {
         drive);
 
     addCommands(
+        new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Blue;}), 
         new PlaceFirstCube(drive, arm, gripper, intake, startPose),
 
         // Drive over line

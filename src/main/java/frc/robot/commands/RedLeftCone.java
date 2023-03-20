@@ -26,6 +26,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -81,8 +82,7 @@ public class RedLeftCone extends SequentialCommandGroup {
         drive);
 
     addCommands(
-        // new InstantCommand(() -> drive.resetOdometry(startPose)),
-        // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
+        new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Red;}),         
         new PlaceFirstCone(drive, arm, gripper, intake, startPose),
 
         // Drive over line
