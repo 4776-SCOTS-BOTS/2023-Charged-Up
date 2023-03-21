@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Gripper;
@@ -31,31 +32,20 @@ public class PlaceFirstCone extends SequentialCommandGroup {
 
         //Set initial arm position
         new InstantCommand(intake::intakeExtend),
-        new WaitCommand(0.5), 
+        // new WaitCommand(0.5), 
         arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
 
         // Drive against wall and ready arm
         new DriveToWall(drive, 0.25),
 
         
-        // Stop drive
+        // Stop drive, extend and drop
         new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-        // new MultiStepArm(arm, Constants.ArmConstants.READY_POSITION_CONE,
-        //     Constants.ArmConstants.READY_POSITION_CONE),
-        new WaitCommand(1.0),
+        new MultiStepArm(arm, ArmConstants.HIGH_POSITION, ArmConstants.HIGH_POSITION),
         new InstantCommand(intake::intakeRetract),
-
-        // Extend arm and release
-        new MultiStepArm(arm, Constants.ArmConstants.HIGH_POSITION_START,
-            Constants.ArmConstants.HIGH_POSITION),
-            arm.setArmPositionCommand(Constants.ArmConstants.HIGH_POSITION_FINAL),
-        new WaitCommand(0.5),
         new InstantCommand(gripper::openGripper, gripper),
+        new WaitCommand(0.5)
 
-        // Pack the arm
-        arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
-        new WaitCommand(0.1),
-        arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION)
     );
   }
 }

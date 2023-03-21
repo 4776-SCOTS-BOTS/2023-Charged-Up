@@ -180,14 +180,15 @@ public final class Constants {
     public static final int kElbowPort = 22;
 
     public static ArmPosition PICKUP_STANDING_CONE = new ArmPosition(90, 160);
-    public static ArmPosition PICKUP_POSITION = new ArmPosition(75, 145);
+    public static ArmPosition PICKUP_POSITION1 = new ArmPosition(60, 130);
+    public static ArmPosition PICKUP_POSITION = new ArmPosition(60, 130);
     public static ArmPosition SAFE1_POSITION = new ArmPosition(30, 220);
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 180);
     public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
 
-    public static ArmPosition HIGH_POSITION = new ArmPosition(180, 235.0);
+    public static ArmPosition HIGH_POSITION = new ArmPosition(180, 225.0);
     public static ArmPosition HIGH_POSITION_START = new ArmPosition(180, 235.0);
     public static ArmPosition HIGH_POSITION_FINAL = new ArmPosition(180, 235.0);
     public static ArmPosition MID_POSITION = new ArmPosition(290.0, 195.0);
@@ -212,10 +213,10 @@ public final class Constants {
       public static final double kMaxOutput = 0.8;
       public static final double kUpperLimit = Math.toRadians(330);
       public static final double kLowerLimit = Math.toRadians(10);
-      public static final double kMaxVelocityRadPerSecond = Math.toRadians(180);
-      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(90);
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(150);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(100);
       public static double kOffset = 0; // Radians
-      public static final int kCurrentLimit = 60;
+      public static final int kCurrentLimit = 20;
       public static final double kManualScale = 0.5;
 
       public static final TrapezoidProfile.Constraints trapConstraints = new TrapezoidProfile.Constraints(
@@ -356,14 +357,15 @@ public final class Constants {
             Elbow.trapConstraints, Elbow.kOffset, 0);
 
         ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(65, 125);
-        ArmConstants.PICKUP_POSITION = new ArmPosition(67.5, 115);
+        ArmConstants.PICKUP_POSITION1 = new ArmPosition(50, 145);
+        ArmConstants.PICKUP_POSITION = new ArmPosition(60, 125);
         ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
         ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 290);
 
-        ArmConstants.HIGH_POSITION = new ArmPosition(190, 240);
+        ArmConstants.HIGH_POSITION = new ArmPosition(180, 235);
         ArmConstants.HIGH_POSITION_START = new ArmPosition(160,240);
         ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 250);
         ArmConstants.MID_POSITION = new ArmPosition(250, 180);

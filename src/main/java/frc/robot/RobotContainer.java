@@ -30,6 +30,7 @@ import frc.robot.commands.BlueRightCone;
 import frc.robot.commands.BlueRightConeCube;
 import frc.robot.commands.BlueRightCube;
 import frc.robot.commands.ChargeStationBalance;
+import frc.robot.commands.MoveElbowThenShoulder;
 import frc.robot.commands.MultiStepArm;
 import frc.robot.commands.RedMidConePark;
 import frc.robot.commands.RedMidCubePark;
@@ -314,8 +315,15 @@ public class RobotContainer {
     // kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker,
     // m_Kicker));
 
-    safePositionButton.onTrue(new MultiStepArm(m_Arm, ArmConstants.SAFE1_POSITION, ArmConstants.SAFE_POSITION));
-    pickupPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_POSITION));
+    safePositionButton.onTrue(new InstantCommand(m_gripper::closeGripper)
+      .andThen(new MoveElbowThenShoulder(m_Arm, ArmConstants.SAFE_POSITION)));
+
+      pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
+      .andThen(new MultiStepArm(m_Arm, Constants.ArmConstants.PICKUP_POSITION1,
+      Constants.ArmConstants.PICKUP_POSITION
+      )));
+    // pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
+    //   .andThen(new MoveElbowThenShoulder(m_Arm, Constants.ArmConstants.PICKUP_POSITION)));
 
     // highPositionButton.onTrue(new MultiStepArm(m_Arm,
     // Constants.ArmConstants.HIGH_POSITION_START,
