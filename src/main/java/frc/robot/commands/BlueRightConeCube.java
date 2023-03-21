@@ -122,10 +122,17 @@ public class BlueRightConeCube extends SequentialCommandGroup {
 
                 // Drive over line
                 new ParallelCommandGroup(
-                        driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
-                        new WaitCommand(1.5)
-                                .andThen(new InstantCommand(intake::intakeExtend))
-                                .andThen(new InstantCommand(intake::intakeIn))),
+                        new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                        new SequentialCommandGroup(
+                                driveToCube,
+                                new InstantCommand(() -> drive.drive(0, 0, 0, false)
+                        ),
+                        new SequentialCommandGroup(
+                                new WaitCommand(1.5),
+                                new InstantCommand(intake::intakeExtend),
+                                new InstantCommand(intake::intakeIn))
+                        )
+                ),
 
                 new WaitCommand(1),
                 new InstantCommand(intake::intakeOff),
@@ -133,20 +140,22 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 new InstantCommand(intake::intakeRetract),
 
                 new ParallelCommandGroup(
-                        driveToPlace.andThen(new DriveToWall(drive, 0.5),
-                        new MultiStepArm(arm, Constants.ArmConstants.PICKUP_POSITION1,
-                            Constants.ArmConstants.PICKUP_POSITION)
-                            .andThen(new WaitCommand(0.5)
-                            .andThen(new InstantCommand(gripper::closeGripper)))
-                            .andThen(arm.setArmPositionCommand(ArmConstants.READY_POSITION_CONE))
-                )),
+                        new SequentialCommandGroup(
+                                driveToPlace,
+                                new DriveToWall(drive, 0.5)
+                        ),
+                        new GrabAndReadyCube(arm, intake, gripper)
+                ),
 
                 new InstantCommand(() -> drive.drive(0, 0, 0, false)),
                 new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION,ArmConstants.CUBE_HIGH_POSITION),
                 new InstantCommand(gripper::openGripper),
+                new InstantCommand(gripper::extendKicker),
+                new WaitCommand(0.25),
+                new InstantCommand(gripper::retractKicker),
 
-                new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION)
-
+                new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                new InstantCommand(intake::intakeRetract)
         );
 
     }

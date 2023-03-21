@@ -93,9 +93,10 @@ public class RobotContainer {
   private boolean elbowInManual = false;
   private boolean shoulderInManual = false;
   private int armInvert = 1;
-  private final Gripper m_gripper = new Gripper(true);
-
   private final Kicker m_Kicker = new Kicker(false);
+  private final Gripper m_gripper = new Gripper(true, m_Kicker);
+
+  
 
   private Intake m_Intake = new Intake();
   private LED m_Led;

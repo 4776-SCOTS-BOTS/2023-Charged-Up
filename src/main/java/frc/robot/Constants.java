@@ -371,7 +371,7 @@ public final class Constants {
         ArmConstants.MID_POSITION = new ArmPosition(250, 180);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
-        ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(180, 235.0);
+        ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(190, 235.0);
         ArmConstants.CUBE_MID_POSITION = new ArmPosition(250.0, 180.0);
         ArmConstants.CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
 

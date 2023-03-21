@@ -11,26 +11,35 @@ import frc.robot.Constants.PneumaticsConstants;
 
 public class Gripper extends SubsystemBase {
   private Solenoid gripSolenoid;
-  
+  private Kicker kicker;
+
   /** Creates a new Gripper. */
-  public Gripper(boolean gripClosed) {
-    gripSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.gripperSolenoidPort);
-    if(gripClosed){
+  public Gripper(boolean gripClosed, Kicker kicker) {
+    this.kicker = kicker;
+    gripSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,
+        PneumaticsConstants.gripperSolenoidPort);
+    if (gripClosed) {
       closeGripper();
     } else {
       openGripper();
     }
   }
-  
-  
-  /** Creates a new Gripper. */
-  
 
-  public void closeGripper(){
+  /** Creates a new Gripper. */
+
+  public void closeGripper() {
     gripSolenoid.set(false);
   }
 
-  public void openGripper(){
+  public void openGripper() {
     gripSolenoid.set(true);
+  }
+
+  public void extendKicker(){
+    kicker.extendKicker();
+  }
+
+  public void retractKicker(){
+    kicker.retractKicker();
   }
 }
