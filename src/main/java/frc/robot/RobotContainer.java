@@ -124,29 +124,24 @@ public class RobotContainer {
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
   final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
-
-  // final POVButton intakePowerCubeButton = new
-  // POVButton(m_manipulatorController, 180);
-  // final POVButton intakePowerConeButton = new
-  // POVButton(m_manipulatorController, 0);
-  final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
-  // final POVButton kickerButtonRetract = new POVButton(m_manipulatorController,
-  // 180);
+  
+  
 
   // Arm Position Buttons
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
-  final POVButton pickupPositionButton = new POVButton(m_manipulatorController, 90);
-  final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
-  //final POVButton standingConePickupButton = new POVButton(m_manipulatorController, 180);
+  final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
+  final POVButton readyPositionButton = new POVButton(m_manipulatorController, 90);
   final POVButton tipperButton = new POVButton(m_manipulatorController, 180);
+  final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
+
   final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kBack.value);
-  final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController,
-      XboxController.Button.kStart.value);
-  final JoystickButton readyPositionConeButton = new JoystickButton(m_manipulatorController,
+  final JoystickButton pickupPositionConeButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kLeftStick.value);
-  final JoystickButton readyPositionCubeButton = new JoystickButton(m_manipulatorController,
+  final JoystickButton pickupPositionCubeButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kRightStick.value);
+  // final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController,
+  //     XboxController.Button.kStart.value);
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
@@ -167,7 +162,7 @@ public class RobotContainer {
   // AUTO LEVEL BUTTON BINDING
   // final JoystickButton testCommandButton = new
   // JoystickButton(m_driverController, XboxController.Button.kY.value);
-  final JoystickButton testPoseSetButton = new JoystickButton(m_driverController, XboxController.Button.kBack.value);
+  //final JoystickButton testPoseSetButton = new JoystickButton(m_driverController, XboxController.Button.kBack.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
@@ -333,10 +328,10 @@ public class RobotContainer {
     safePositionButton.onTrue(new InstantCommand(m_gripper::closeGripper)
       .andThen(new MoveElbowThenShoulder(m_Arm, ArmConstants.SAFE_POSITION)));
 
-      pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
-      .andThen(new MultiStepArm(m_Arm, Constants.ArmConstants.PICKUP_POSITION1,
-      Constants.ArmConstants.PICKUP_POSITION
-      )));
+      // pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
+      // .andThen(new MultiStepArm(m_Arm, Constants.ArmConstants.PICKUP_POSITION1,
+      // Constants.ArmConstants.PICKUP_POSITION
+      // )));
     // pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
     //   .andThen(new MoveElbowThenShoulder(m_Arm, Constants.ArmConstants.PICKUP_POSITION)));
 
@@ -346,6 +341,13 @@ public class RobotContainer {
     // midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     // lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
 
+    readyPositionButton.onTrue(new SelectCommand(Map.ofEntries(
+        Map.entry(true,
+            m_Arm.setArmPositionCommand(ArmConstants.READY_POSITION_CONE)),
+        Map.entry(false,
+            m_Arm.setArmPositionCommand(ArmConstants.READY_POSITION_CUBE))),
+        () -> conePositions));
+
     highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
         Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
         new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
@@ -353,24 +355,19 @@ public class RobotContainer {
         Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION))),
         () -> conePositions));
         
-
     midPositionButton.onTrue(new SelectCommand(Map.ofEntries(
         Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION)),
         Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_MID_POSITION))),
         () -> conePositions));
 
-    lowPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-        Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION)),
-        Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_LOW_POSITION))),
-        () -> conePositions));
-
-    readyPositionConeButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION_CONE,
-        Constants.ArmConstants.READY_POSITION_CONE)
+    pickupPositionConeButton.onTrue(new InstantCommand(m_gripper::openGripper)
+        .andThen(new MultiStepArm(m_Arm, Constants.ArmConstants.PICKUP_POSITION1,
+            Constants.ArmConstants.PICKUP_POSITION))
         .andThen(new InstantCommand(() -> {
           conePositions = true;
         })));
-    readyPositionCubeButton.onTrue(new MultiStepArm(m_Arm, Constants.ArmConstants.READY_POSITION_CUBE,
-        Constants.ArmConstants.READY_POSITION_CUBE)
+    pickupPositionCubeButton.onTrue(new InstantCommand(m_gripper::openGripper)
+        .andThen(new MoveElbowThenShoulder(m_Arm, ArmConstants.PICKUP_POSITION_CUBE, 1))
         .andThen(new InstantCommand(() -> {
           conePositions = false;
         })));
@@ -447,7 +444,7 @@ public class RobotContainer {
     // m_robotDrive.coastModuleTurn();
     // }, m_robotDrive));
 
-    testPoseSetButton.onTrue(new InstantCommand(()-> {m_robotDrive.poseEstimator.setAllPoseToLimeLight();}));
+    //testPoseSetButton.onTrue(new InstantCommand(()-> {m_robotDrive.poseEstimator.setAllPoseToLimeLight();}));
 
   }
 

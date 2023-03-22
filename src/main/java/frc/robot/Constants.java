@@ -59,8 +59,8 @@ public final class Constants {
     // Non-final constants are initialized with the values of the practice bot
     // below.
 
-    public static final double driveNormalPercentScale = 0.85;
-    public static final double rotNormalRateModifier = 1.5;
+    public static final double driveNormalPercentScale = 1.0;
+    public static final double rotNormalRateModifier = 1.0;
     public static final double driveLowPercentScale = 0.5;
     public static final double rotLowRateModifier = 0.75;
 
@@ -112,7 +112,7 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     public static final boolean kGyroReversed = true;
-    public static final double kMaxSpeedMetersPerSecond = 4.9; // Was 1 021222
+    public static final double kMaxSpeedMetersPerSecond = 4.8; // Theoretically 5.  Need to leave headroom for compensation
 
   }
 
@@ -140,11 +140,12 @@ public final class Constants {
     public static double kPModuleTurningController = 2.5;
     public static double kDModuleTurningController = 0;
 
-    public static final double kPModuleDriveController = 2.0; // 0.6
-    private static final double kDriveP = 15.0;
-    private static final double kDriveI = 0.01;
-    private static final double kDriveD = 0.1;
-    private static final double kDriveF = 0.2;
+    //public static final double kPModuleDriveController = 2.0; // 0.6
+    public static boolean useSparkMaxPID = false;
+    public static double kDriveP = 15.0;
+    public static double kDriveI = 0.01;
+    public static double kDriveD = 0.1;
+    public static double kDriveFF = 0.2;
 
     public static final double kFrontLeftTurningEncoderCounts = 2 * Math.PI / 415.1;
     public static final double kFrontRightTurningEncoderCounts = 2 * Math.PI / 415.6;
@@ -182,6 +183,7 @@ public final class Constants {
     public static ArmPosition PICKUP_STANDING_CONE = new ArmPosition(90, 160);
     public static ArmPosition PICKUP_POSITION1 = new ArmPosition(60, 130);
     public static ArmPosition PICKUP_POSITION = new ArmPosition(60, 130);
+    public static ArmPosition PICKUP_POSITION_CUBE = new ArmPosition(60, 130);
     public static ArmPosition SAFE1_POSITION = new ArmPosition(30, 220);
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 180);
     public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
@@ -329,6 +331,8 @@ public final class Constants {
         DriveConstants.kFrontRightDriveEncoderReversed = true;
         DriveConstants.kRearRightDriveEncoderReversed = true;
 
+        
+        //Swerve Module Constants
         ModuleConstants.kMotorGearsToWheelGears = 6.12;
         ModuleConstants.kRevolutionsToMeters = Math.PI * ModuleConstants.kWheelDiameter
             / ModuleConstants.kMotorGearsToWheelGears;
@@ -337,6 +341,13 @@ public final class Constants {
 
         ModuleConstants.kPModuleTurningController = 0.4;
         ModuleConstants.kDModuleTurningController = 0;
+
+        ModuleConstants.useSparkMaxPID = true;
+        ModuleConstants.kDriveP = 1.0;
+        ModuleConstants.kDriveI = 0;
+        ModuleConstants.kDriveD = 0;
+        ModuleConstants.kDriveFF = 0.4;  // = maxV / 12v as a starting point
+
 
         // Distance between centers of right and left wheels on robot
         double kTrackWidth = DriveConstants.kTrackWidth = 0.552; // 21.75in
@@ -359,6 +370,7 @@ public final class Constants {
         ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(65, 125);
         ArmConstants.PICKUP_POSITION1 = new ArmPosition(50, 145);
         ArmConstants.PICKUP_POSITION = new ArmPosition(60, 125);
+        ArmConstants.PICKUP_POSITION_CUBE = new ArmPosition(60, 125);
         ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
         ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
@@ -368,11 +380,11 @@ public final class Constants {
         ArmConstants.HIGH_POSITION = new ArmPosition(180, 235);
         ArmConstants.HIGH_POSITION_START = new ArmPosition(160,240);
         ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 250);
-        ArmConstants.MID_POSITION = new ArmPosition(250, 180);
+        ArmConstants.MID_POSITION = new ArmPosition(260, 200);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
         ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(190, 235.0);
-        ArmConstants.CUBE_MID_POSITION = new ArmPosition(250.0, 180.0);
+        ArmConstants.CUBE_MID_POSITION = new ArmPosition(260, 200);
         ArmConstants.CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
 
       }

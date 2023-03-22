@@ -380,17 +380,17 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setNormalDrive(){
     DriveConstants.drivePercentScale = DriveConstants.driveNormalPercentScale;
-    DriveConstants.rotRateModifier = DriveConstants.driveNormalPercentScale;
+    DriveConstants.rotRateModifier = DriveConstants.rotNormalRateModifier;
   }
 
   public void setSlowDrive(){
     DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale;
-    DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
+    DriveConstants.rotRateModifier = DriveConstants.rotLowRateModifier;
   }
 
   public void setReallySlowDrive(){
     DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale*0.5;
-    DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
+    DriveConstants.rotRateModifier = DriveConstants.rotLowRateModifier;
   }
   
 

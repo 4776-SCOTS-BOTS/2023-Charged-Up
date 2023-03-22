@@ -22,9 +22,11 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController;
 
 public class SwerveModuleCANcoder {
   private final CANSparkMax m_driveMotor;
@@ -33,6 +35,7 @@ public class SwerveModuleCANcoder {
   private final boolean InvertBack;
   private final RelativeEncoder m_driveEncoder;
   private final WPI_CANCoder m_turningEncoder;
+  private final SparkMaxPIDController m_drivePID;
   public CANCoderConfiguration swerveCANCoderConfig;
   private double turningEncoderCounts;
   private int turningMotorChannel;
@@ -78,6 +81,13 @@ public class SwerveModuleCANcoder {
     this.m_driveEncoder = m_driveMotor.getEncoder();
     // m_driveEncoder.setInverted(is_invertedLeft);
     this.m_turningEncoder = new WPI_CANCoder(turningEncoderPort, "rio");
+
+    m_drivePID = m_driveMotor.getPIDController();
+    m_drivePID.setP(ModuleConstants.kDriveP);
+    m_drivePID.setI(ModuleConstants.kDriveI);
+    m_drivePID.setD(ModuleConstants.kDriveD);
+    m_drivePID.setFF(ModuleConstants.kDriveFF);
+    m_drivePID.setOutputRange(-1, 1);
 
     /* Swerve CANCoder Configuration */
     this.swerveCANCoderConfig = new CANCoderConfiguration();
@@ -167,12 +177,14 @@ public class SwerveModuleCANcoder {
         state = desiredState;
       }
       
-      // Calculate the drive output from the drive PID controller.
+      // Calculate the drive output based on purely percent scaling of max speed.
        final double driveOutput = (InvertLeft ? -1 : 1) * state.speedMetersPerSecond
            / DriveConstants.kMaxSpeedMetersPerSecond;
 
-      // final double driveOutput = (InvertLeft ? -1 : 1) * m_drivePIDController.calculate(getDriveVelocity(),
-      // state.speedMetersPerSecond);
+
+      //Apply inversion to state if needed
+      state.speedMetersPerSecond = (InvertLeft ? -1 : 1) * state.speedMetersPerSecond;
+
 
       // Calculate the turning motor output from the turning PID controller.
       // Turning power is always negated because + motor power is clockwise regardless of module
@@ -190,12 +202,13 @@ public class SwerveModuleCANcoder {
 
       //turningPID.calculate(measurement)
 
-      m_driveMotor.set(driveOutput);
-      // m_turningMotor.set(VictorSPXControlMode., demand);
-      //SmartDashboard.putNumber("SwerveModuleTurning" + turningMotorChannel, turnOutput);
+      // Set drive output
+      if (ModuleConstants.useSparkMaxPID) {
+        m_drivePID.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+      } else {
+        m_driveMotor.set(driveOutput);
+      }
       m_turningMotor.set(turnOutput);
-
-      // System.out.println(state.angle.getRadians()+","+getAngleRadians()+","+error);
     }
   }
 
