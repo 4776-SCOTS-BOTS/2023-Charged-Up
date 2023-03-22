@@ -120,6 +120,7 @@ public class Intake extends SubsystemBase {
     isRunning = false;
   }
  
+ 
   public void intakeExtend(){
     intakeSolenoid.set(true);
   }

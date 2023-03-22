@@ -294,8 +294,22 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    tipperButton.whileTrue(new InstantCommand(m_Intake::tipperUse, m_Intake));
-    tipperButton.whileFalse(new InstantCommand(m_Intake::tipperSafe, m_Intake));
+    tipperButton.onTrue(new InstantCommand(
+            //ADD ARM TO NEW SAFE POS
+              )
+            .andThen(m_Intake::tipperUse,m_Intake)
+            .andThen(new InstantCommand(m_Intake:: magicCarpetOut, m_Intake))
+            .andThen(new WaitCommand(2))
+            .andThen(new InstantCommand(m_Intake::magicCarpetIn,m_Intake))
+            .andThen(new WaitCommand(1.5))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOff,m_Intake))
+            .andThen(new InstantCommand(m_Intake::tipperSafe,m_Intake))
+            .andThen(new WaitCommand(2))
+            .andThen(new InstantCommand(
+              //ADD ARM TO PICK UP 
+            ))
+            );
+   // tipperButton.whileFalse(new InstantCommand(m_Intake::tipperSafe, m_Intake));
 
     // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube,
     // m_Intake)
