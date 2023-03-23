@@ -23,31 +23,26 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class BlueRightConeCube extends SequentialCommandGroup {
+public class RedLeftConeCube extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
-    public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        Pose2d pickupPose = new Pose2d(7.4, 1.0, new Rotation2d(Math.toRadians(0)));
-        Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0));
-        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(40), new Rotation2d(0));
-
-        // Create config for trajectory
-        // RectangularRegionConstraint bumpConstraint = new
-        // RectangularRegionConstraint(new Translation2d(3.295, 1.524),
-        // new Translation2d(4.46, 0),
-        // new SwerveDriveKinematicsConstraint(DriveConstants.kDriveKinematics, 0.25));
+    public RedLeftConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+        // Field width = 315.5in
+        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(279.5), new Rotation2d(Math.toRadians(-5)));
+        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(273.5), new Rotation2d(0));
 
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
-                new Translation2d(3.295, 0),
-                new Translation2d(4.46, 1.524),
-                new MaxVelocityConstraint(1.5));
+                new Translation2d(3.295, Units.inchesToMeters(256)),
+                new Translation2d(4.46, Units.inchesToMeters(315.5)),
+                new MaxVelocityConstraint(1.0));
 
         TrajectoryConfig config = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
@@ -67,8 +62,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(2.1, 0.914),
-                        new Translation2d(3.86, 0.762)),
+                List.of(new Translation2d(2.1, Units.inchesToMeters(274)),
+                        new Translation2d(3.86, Units.inchesToMeters(290))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
@@ -78,8 +73,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 pickupPose,
                 // Drive to cube
                 List.of(
-                        new Translation2d(3.86, 0.762),
-                        new Translation2d(2.2, 0.914)),
+                        new Translation2d(3.86, Units.inchesToMeters(290)),
+                        new Translation2d(2.2, Units.inchesToMeters(274))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);
@@ -114,7 +109,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
 
         addCommands(
                 new InstantCommand(() -> {
-                    Constants.ConfigConstants.alliance = Alliance.Blue;
+                    Constants.ConfigConstants.alliance = Alliance.Red;
                 }),
                 new PlaceFirstCone(drive, arm, gripper, intake, startPose),
                 // new InstantCommand(() -> drive.resetOdometry(startPose)),

@@ -26,10 +26,10 @@ public class GrabAndReadyCube extends SequentialCommandGroup {
     this.gripper = gripper;
 
     addCommands(
-      new MultiStepArm(arm, Constants.ArmConstants.PICKUP_POSITION1, Constants.ArmConstants.PICKUP_POSITION),
-                                new InstantCommand(gripper::closeGripper),
-                                new InstantCommand(intake::intakeExtend),
-                                arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE)
-    );
+        new InstantCommand(gripper::openGripper),
+        new MultiStepArm(arm, Constants.ArmConstants.PICKUP_POSITION_CUBE, Constants.ArmConstants.PICKUP_POSITION_CUBE),
+        new InstantCommand(gripper::closeGripper),
+        new InstantCommand(intake::intakeExtend),
+        arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE));
   }
 }

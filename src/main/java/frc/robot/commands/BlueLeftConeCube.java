@@ -17,26 +17,26 @@ import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.*;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class BlueRightConeCube extends SequentialCommandGroup {
+public class BlueLeftConeCube extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
-    public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        Pose2d pickupPose = new Pose2d(7.4, 1.0, new Rotation2d(Math.toRadians(0)));
-        Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0));
-        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(40), new Rotation2d(0));
+    public BlueLeftConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(172), new Rotation2d(Math.toRadians(0)));
+        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(174), new Rotation2d(0));
 
         // Create config for trajectory
         // RectangularRegionConstraint bumpConstraint = new
@@ -47,7 +47,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
                 new Translation2d(3.295, 0),
                 new Translation2d(4.46, 1.524),
-                new MaxVelocityConstraint(1.5));
+                new MaxVelocityConstraint(1.0));
 
         TrajectoryConfig config = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
@@ -67,8 +67,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(2.1, 0.914),
-                        new Translation2d(3.86, 0.762)),
+                List.of(new Translation2d(2.1, Units.inchesToMeters(170)),
+                        new Translation2d(3.86, Units.inchesToMeters(185))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
@@ -78,8 +78,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 pickupPose,
                 // Drive to cube
                 List.of(
-                        new Translation2d(3.86, 0.762),
-                        new Translation2d(2.2, 0.914)),
+                        new Translation2d(3.86, Units.inchesToMeters(185)),
+                        new Translation2d(2.2, Units.inchesToMeters(170))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);
@@ -125,14 +125,12 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
                         new SequentialCommandGroup(
                                 driveToCube,
-                                new InstantCommand(() -> drive.drive(0, 0, 0, false)
-                        ),
-                        new SequentialCommandGroup(
-                                new WaitCommand(1.5),
-                                new InstantCommand(intake::intakeExtend),
-                                new InstantCommand(intake::intakeIn))
-                        )
-                ),
+                                new InstantCommand(() -> drive.drive(0, 0, 0, false)),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1.5),
+                                        new InstantCommand(
+                                                intake::intakeExtend),
+                                        new InstantCommand(intake::intakeIn)))),
 
                 new WaitCommand(1),
                 new InstantCommand(intake::intakeOff),
@@ -142,21 +140,18 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                         new SequentialCommandGroup(
                                 driveToPlace,
-                                new DriveToWall(drive, 0.5)
-                        ),
-                        new GrabAndReadyCube(arm, intake, gripper)
-                ),
+                                new DriveToWall(drive, 0.5)),
+                        new GrabAndReadyCube(arm, intake, gripper)),
 
                 new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-                new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION,ArmConstants.CUBE_HIGH_POSITION),
+                new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION, ArmConstants.CUBE_HIGH_POSITION),
                 new InstantCommand(gripper::openGripper),
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
                 new InstantCommand(gripper::retractKicker),
 
                 new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                new InstantCommand(intake::intakeRetract)
-        );
+                new InstantCommand(intake::intakeRetract));
 
     }
 }

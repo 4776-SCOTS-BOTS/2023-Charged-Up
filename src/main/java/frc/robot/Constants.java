@@ -186,6 +186,7 @@ public final class Constants {
     public static ArmPosition PICKUP_POSITION_CUBE = new ArmPosition(60, 130);
     public static ArmPosition SAFE1_POSITION = new ArmPosition(30, 220);
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 180);
+    public static ArmPosition SAFE_TIPPER = new ArmPosition(SAFE_POSITION.elbowDegrees + 15, SAFE_POSITION.shoulderDegrees);
     public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
@@ -343,10 +344,10 @@ public final class Constants {
         ModuleConstants.kDModuleTurningController = 0;
 
         ModuleConstants.useSparkMaxPID = true;
-        ModuleConstants.kDriveP = 1.0;
+        ModuleConstants.kDriveP = 0.5;
         ModuleConstants.kDriveI = 0;
         ModuleConstants.kDriveD = 0;
-        ModuleConstants.kDriveFF = 0.4;  // = maxV / 12v as a starting point
+        ModuleConstants.kDriveFF = 0.3;  // = maxV / 12v as a starting point
 
 
         // Distance between centers of right and left wheels on robot
@@ -373,6 +374,7 @@ public final class Constants {
         ArmConstants.PICKUP_POSITION_CUBE = new ArmPosition(60, 125);
         ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
         ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
+        ArmConstants.SAFE_TIPPER = new ArmPosition(ArmConstants.SAFE_POSITION.elbowDegrees + 15, ArmConstants.SAFE_POSITION.shoulderDegrees);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 290);

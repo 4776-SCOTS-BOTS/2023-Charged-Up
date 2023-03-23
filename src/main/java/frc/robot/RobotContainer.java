@@ -22,23 +22,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.BlueLeftCone;
-import frc.robot.commands.BlueLeftCube;
-import frc.robot.commands.BlueMidConePark;
-import frc.robot.commands.BlueMidCubePark;
-import frc.robot.commands.BlueRightCone;
-import frc.robot.commands.BlueRightConeCube;
-import frc.robot.commands.BlueRightCube;
-import frc.robot.commands.ChargeStationBalance;
-import frc.robot.commands.MoveElbowThenShoulder;
-import frc.robot.commands.MultiStepArm;
-import frc.robot.commands.RedMidConePark;
-import frc.robot.commands.RedMidCubePark;
-import frc.robot.commands.RedRightCone;
-import frc.robot.commands.RedRightCube;
-import frc.robot.commands.StandingCone;
-import frc.robot.commands.RedLeftCone;
-import frc.robot.commands.RedLeftCube;
+import frc.robot.commands.*;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -73,6 +57,7 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+import frc.robot.customClass.ArmPosition;
 import frc.robot.customClass.CRGB;
 import frc.robot.customClass.TriggerButton;
 import frc.robot.subsystems.*;
@@ -178,7 +163,11 @@ public class RobotContainer {
     BlueLeftCube,
     RedRightCube,
     RedMidCubePark,
-    RedLeftCube
+    RedLeftCube,
+    BlueRightConeCube,
+    BlueLeftConeCube,
+    RedRightConeCube,
+    RedLeftConeCube
   }
 
   private enum AllianceToChoose {
@@ -210,6 +199,10 @@ public class RobotContainer {
   public Command redRightCube;
   public Command redMidCubePark;
   public Command redLeftCube;
+  public Command blueRightConeCube;
+  public Command blueLeftConeCube;
+  public Command redRightConeCube;
+  public Command redLeftConeCube;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -239,17 +232,30 @@ public class RobotContainer {
         entry(CommandsToChoose.BlueLeftCube, blueLeftCube),
         entry(CommandsToChoose.RedRightCube, redRightCube),
         entry(CommandsToChoose.RedMidCubePark, redMidCubePark),
-        entry(CommandsToChoose.RedLeftCube, redLeftCube)), m_chooser::getSelected);
+        entry(CommandsToChoose.RedLeftCube, redLeftCube),
+        entry(CommandsToChoose.BlueRightConeCube, blueRightConeCube),
+        entry(CommandsToChoose.BlueLeftConeCube, blueLeftConeCube),
+        entry(CommandsToChoose.RedRightConeCube, redRightConeCube),
+        entry(CommandsToChoose.RedLeftConeCube, redLeftConeCube)), m_chooser::getSelected);
 
-    m_chooser.setDefaultOption("Blue: Right Cone", CommandsToChoose.BlueRightCone);
+    m_chooser.setDefaultOption("Blue: Right Cone+Cube", CommandsToChoose.BlueRightConeCube);
     m_chooser.addOption("Blue: Mid Cone and Balance", CommandsToChoose.BlueMidConePark);
+    m_chooser.addOption("Blue: Left Cone+Cube", CommandsToChoose.BlueLeftConeCube);
+
+    m_chooser.addOption("Blue: Right Cone", CommandsToChoose.BlueRightCone);    
     m_chooser.addOption("Blue: Left Cone", CommandsToChoose.BlueLeftCone);
-    m_chooser.addOption("Red: Right Cone", CommandsToChoose.RedRightCone);
+
+    m_chooser.addOption("Red: Right Cone+Cube", CommandsToChoose.RedRightConeCube);
     m_chooser.addOption("Red: Mid Cone and Balance", CommandsToChoose.RedMidConePark);
+    m_chooser.addOption("Red: Left Cone+Cube", CommandsToChoose.RedLeftConeCube);
+
+    m_chooser.addOption("Red: Right Cone", CommandsToChoose.RedRightCone);
     m_chooser.addOption("Red: Left Cone", CommandsToChoose.RedLeftCone);
+
     m_chooser.addOption("Blue: Right Cube", CommandsToChoose.BlueRightCube);
     m_chooser.addOption("Blue: Mid Cube and Balance", CommandsToChoose.BlueMidCubePark);
     m_chooser.addOption("Blue: Left Cube", CommandsToChoose.BlueLeftCube);
+
     m_chooser.addOption("Red: Right Cube", CommandsToChoose.RedRightCube);
     m_chooser.addOption("Red: Mid Cube and Balance", CommandsToChoose.RedMidCubePark);
     m_chooser.addOption("Red: Left Cube", CommandsToChoose.RedLeftCube);
@@ -289,21 +295,16 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    tipperButton.onTrue(new InstantCommand(
-            //ADD ARM TO NEW SAFE POS
-              )
-            .andThen(m_Intake::tipperUse,m_Intake)
-            .andThen(new InstantCommand(m_Intake:: magicCarpetOut, m_Intake))
+    tipperButton.onTrue(
+        m_Arm.setArmPositionCommand(ArmConstants.SAFE_TIPPER)
+            .andThen(new InstantCommand(m_Intake::tipperUse, m_Intake))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOut, m_Intake))
             .andThen(new WaitCommand(2))
-            .andThen(new InstantCommand(m_Intake::magicCarpetIn,m_Intake))
-            .andThen(new WaitCommand(1.5))
-            .andThen(new InstantCommand(m_Intake::magicCarpetOff,m_Intake))
-            .andThen(new InstantCommand(m_Intake::tipperSafe,m_Intake))
-            .andThen(new WaitCommand(2))
-            .andThen(new InstantCommand(
-              //ADD ARM TO PICK UP 
-            ))
-            );
+            .andThen(new InstantCommand(m_Intake::magicCarpetIn, m_Intake))
+            .andThen(new WaitCommand(0.5))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
+            .andThen(new InstantCommand(m_Intake::tipperSafe, m_Intake)));
    // tipperButton.whileFalse(new InstantCommand(m_Intake::tipperSafe, m_Intake));
 
     // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube,
@@ -479,6 +480,12 @@ public class RobotContainer {
     redRightCube = new RedRightCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
     redMidCubePark = new RedMidCubePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
     redLeftCube = new RedLeftCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+
+    blueRightConeCube = new BlueRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    blueLeftConeCube = new BlueLeftConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+
+    redRightConeCube = new RedRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    redLeftConeCube = new RedLeftConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
   }
 
   public void zeroOdo() {
