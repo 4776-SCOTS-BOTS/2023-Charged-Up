@@ -125,8 +125,8 @@ public class RobotContainer {
       XboxController.Button.kLeftStick.value);
   final JoystickButton pickupPositionCubeButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kRightStick.value);
-  // final JoystickButton lowPositionButton = new JoystickButton(m_manipulatorController,
-  //     XboxController.Button.kStart.value);
+  final JoystickButton armStopButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kStart.value);
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
@@ -145,8 +145,8 @@ public class RobotContainer {
 
   // Test Buttons
   // AUTO LEVEL BUTTON BINDING
-  // final JoystickButton testCommandButton = new
-  // JoystickButton(m_driverController, XboxController.Button.kY.value);
+  final JoystickButton testCommandButton = new
+  JoystickButton(m_driverController, XboxController.Button.kY.value);
   //final JoystickButton testPoseSetButton = new JoystickButton(m_driverController, XboxController.Button.kBack.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
@@ -295,16 +295,16 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    tipperButton.onTrue(
-        m_Arm.setArmPositionCommand(ArmConstants.SAFE_TIPPER)
-            .andThen(new InstantCommand(m_Intake::tipperUse, m_Intake))
-            .andThen(new InstantCommand(m_Intake::magicCarpetOut, m_Intake))
-            .andThen(new WaitCommand(2))
-            .andThen(new InstantCommand(m_Intake::magicCarpetIn, m_Intake))
-            .andThen(new WaitCommand(0.5))
-            .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
-            .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
-            .andThen(new InstantCommand(m_Intake::tipperSafe, m_Intake)));
+    // tipperButton.onTrue(
+    //     m_Arm.setArmPositionCommand(ArmConstants.SAFE_TIPPER)
+    //         .andThen(new InstantCommand(m_Intake::tipperUse, m_Intake))
+    //         .andThen(new InstantCommand(m_Intake::magicCarpetOut, m_Intake))
+    //         .andThen(new WaitCommand(3))
+    //         .andThen(new InstantCommand(m_Intake::magicCarpetIn, m_Intake))
+    //         .andThen(new WaitCommand(0.5))
+    //         .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
+    //         .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
+    //         .andThen(new InstantCommand(m_Intake::tipperSafe, m_Intake)));
    // tipperButton.whileFalse(new InstantCommand(m_Intake::tipperSafe, m_Intake));
 
     // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube,
@@ -340,7 +340,13 @@ public class RobotContainer {
     // Constants.ArmConstants.HIGH_POSITION_START,
     // Constants.ArmConstants.HIGH_POSITION));
     // midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
-    // lowPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.LOW_POSITION));
+    
+    armStopButton.onTrue(new InstantCommand( ()->{
+      shoulderInManual = true;
+      m_Arm.runShoulder(0);
+      elbowInManual = true;
+        m_Arm.runElbow(0);
+    }));
 
     readyPositionButton.onTrue(new SelectCommand(Map.ofEntries(
         Map.entry(true,
@@ -436,7 +442,7 @@ public class RobotContainer {
 
     brakeButton.whileTrue(new RunCommand(m_robotDrive::setXModuleState, m_robotDrive));
     // AUTO BALANCE COMMAND
-    // testCommandButton.onTrue(new ChargeStationBalance(m_robotDrive, 3, 10));
+    testCommandButton.onTrue(new ChargeStationBalance(m_robotDrive, 3, 10));
 
     // m_robotDrive.turnByAngle(179.9);
     // }, m_robotDrive));
@@ -468,7 +474,7 @@ public class RobotContainer {
 
   // Generate auto routines
   public void generateAutoRoutines() {
-    blueRightCone = new BlueRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    blueRightCone = new BlueRightCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
     blueMidConePark = new BlueMidConePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
     blueLeftCone = new BlueLeftCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
     redRightCone = new RedRightCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
@@ -524,6 +530,7 @@ public class RobotContainer {
     // .and(m_manipCommandController.axisLessThan(XboxController.Axis.kRightTrigger.value,
     // 0.5))
     // .onTrue(new InstantCommand(m_Arm::holdElbowPosition, m_Arm));
+
 
   };
 

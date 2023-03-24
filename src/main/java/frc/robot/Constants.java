@@ -159,7 +159,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2.5;// was 3
+    public static final double kMaxSpeedMetersPerSecond = 2.8;// was 3
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;// was 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
@@ -250,7 +250,7 @@ public final class Constants {
       public static final double kLowerLimit = Math.toRadians(20);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(360);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
-      public static final double kOffset = 0.71; // Adjusted to zero degrees straight
+      public static final double kOffset = Math.toRadians(43); // Adjusted to zero degrees straight
                                                                                    // down
       public static final int kCurrentLimit = 30;
       public static final double kManualScale = 0.4;
@@ -311,16 +311,20 @@ public final class Constants {
         ConfigConstants.hasCamera = true;
 
         // Swerve Module Alignment
-        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5 + 180));
-        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(60.7));
-        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(149.0));
+        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-120));//-180
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-32));//-180
+        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(171));
+        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-44));
+        // DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));
+        // DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5 + 180));
+        // DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(60.7));
+        // DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(149.0));
 
         // Encoder Ports
-        DriveConstants.kFrontLeftTurningAnalogPort = 55;
-        DriveConstants.kRearLeftTurningAnalogPort = 59;
-        DriveConstants.kFrontRightTurningAnalogPort = 53;
-        DriveConstants.kRearRightTurningAnalogPort = 57;
+        DriveConstants.kFrontLeftTurningAnalogPort = 53;
+        DriveConstants.kRearLeftTurningAnalogPort = 57;
+        DriveConstants.kFrontRightTurningAnalogPort = 55;
+        DriveConstants.kRearRightTurningAnalogPort = 59;
 
         DriveConstants.kFrontLeftTurningEncoderReversed = true;
         DriveConstants.kRearLeftTurningEncoderReversed = true;
@@ -344,10 +348,10 @@ public final class Constants {
         ModuleConstants.kDModuleTurningController = 0;
 
         ModuleConstants.useSparkMaxPID = true;
-        ModuleConstants.kDriveP = 0.5;
+        ModuleConstants.kDriveP = 0.05;
         ModuleConstants.kDriveI = 0;
-        ModuleConstants.kDriveD = 0;
-        ModuleConstants.kDriveFF = 0.3;  // = maxV / 12v as a starting point
+        ModuleConstants.kDriveD = 0.005;
+        ModuleConstants.kDriveFF = 0.2;  // = maxV / 12v as a starting point
 
 
         // Distance between centers of right and left wheels on robot
@@ -371,7 +375,7 @@ public final class Constants {
         ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(65, 125);
         ArmConstants.PICKUP_POSITION1 = new ArmPosition(50, 145);
         ArmConstants.PICKUP_POSITION = new ArmPosition(60, 125);
-        ArmConstants.PICKUP_POSITION_CUBE = new ArmPosition(60, 125);
+        ArmConstants.PICKUP_POSITION_CUBE = new ArmPosition(50, 125);
         ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
         ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
         ArmConstants.SAFE_TIPPER = new ArmPosition(ArmConstants.SAFE_POSITION.elbowDegrees + 15, ArmConstants.SAFE_POSITION.shoulderDegrees);

@@ -48,7 +48,7 @@ public class PlaceFirstCube extends SequentialCommandGroup {
       // Pack the arm
       arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CUBE),
       new WaitCommand(0.5),
-      arm.setArmPositionCommand(Constants.ArmConstants.SAFE_POSITION)
+      new MoveElbowThenShoulder(arm,Constants.ArmConstants.SAFE_POSITION)
 
     );
   }

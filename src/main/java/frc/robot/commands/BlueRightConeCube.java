@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class BlueRightConeCube extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
     public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        Pose2d pickupPose = new Pose2d(7.4, 1.0, new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPose = new Pose2d(7.4, 1.2, new Rotation2d(Math.toRadians(0)));
         Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(40), new Rotation2d(0));
 
@@ -123,40 +123,39 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 // Drive over line
                 new ParallelCommandGroup(
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                        new SequentialCommandGroup(
-                                driveToCube,
-                                new InstantCommand(() -> drive.drive(0, 0, 0, false)
-                        ),
+                        driveToCube,
                         new SequentialCommandGroup(
                                 new WaitCommand(1.5),
                                 new InstantCommand(intake::intakeExtend),
-                                new InstantCommand(intake::intakeIn))
-                        )
-                ),
+                                new InstantCommand(intake::intakeIn))),
 
-                new WaitCommand(1),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                
+                new WaitCommand(0.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeRetract),
 
                 new ParallelCommandGroup(
-                        new SequentialCommandGroup(
-                                driveToPlace,
-                                new DriveToWall(drive, 0.5)
-                        ),
-                        new GrabAndReadyCube(arm, intake, gripper)
-                ),
+                        new GrabAndReadyCube(arm, intake, gripper),
+                        driveToPlace),
+
+                new ParallelCommandGroup(
+                        new DriveToWall(drive, 0.5),
+                        new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION, ArmConstants.CUBE_HIGH_POSITION)),
 
                 new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-                new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION,ArmConstants.CUBE_HIGH_POSITION),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false)),
                 new InstantCommand(gripper::openGripper),
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
-                new InstantCommand(gripper::retractKicker),
+                new InstantCommand(gripper::retractKicker)
 
-                new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                new InstantCommand(intake::intakeRetract)
-        );
+                // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                // new InstantCommand(intake::intakeRetract)
+                
+                );
 
     }
 }

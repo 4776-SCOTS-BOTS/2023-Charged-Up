@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Gripper;
@@ -26,6 +27,7 @@ public class GrabAndReadyCube extends SequentialCommandGroup {
     this.gripper = gripper;
 
     addCommands(
+        new WaitCommand(1.0),
         new InstantCommand(gripper::openGripper),
         new MultiStepArm(arm, Constants.ArmConstants.PICKUP_POSITION_CUBE, Constants.ArmConstants.PICKUP_POSITION_CUBE),
         new InstantCommand(gripper::closeGripper),

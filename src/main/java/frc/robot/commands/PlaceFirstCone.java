@@ -36,10 +36,11 @@ public class PlaceFirstCone extends SequentialCommandGroup {
         arm.setArmPositionCommand(Constants.ArmConstants.READY_POSITION_CONE),
 
         // Drive against wall and ready arm
-        new DriveToWall(drive, 0.25),
+        new DriveToWall(drive, 0.5),
 
         
         // Stop drive, extend and drop
+        new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
         new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
         new MultiStepArm(arm, ArmConstants.HIGH_POSITION, ArmConstants.HIGH_POSITION),
         new InstantCommand(intake::intakeRetract),
