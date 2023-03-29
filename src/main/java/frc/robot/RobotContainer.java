@@ -116,7 +116,7 @@ public class RobotContainer {
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
   final POVButton readyPositionButton = new POVButton(m_manipulatorController, 90);
-  final POVButton tipperButton = new POVButton(m_manipulatorController, 180);
+  final POVButton armStopButton = new POVButton(m_manipulatorController, 180);
   final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
 
   final JoystickButton midPositionButton = new JoystickButton(m_manipulatorController,
@@ -125,8 +125,8 @@ public class RobotContainer {
       XboxController.Button.kLeftStick.value);
   final JoystickButton pickupPositionCubeButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kRightStick.value);
-  final JoystickButton armStopButton = new JoystickButton(m_manipulatorController,
-      XboxController.Button.kStart.value);
+  // final JoystickButton armStopButton = new JoystickButton(m_manipulatorController,
+  //     XboxController.Button.kStart.value);
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
@@ -158,16 +158,16 @@ public class RobotContainer {
     RedRightCone,
     RedMidConePark,
     RedLeftCone,
-    BlueRightCube,
-    BlueMidCubePark,
-    BlueLeftCube,
-    RedRightCube,
-    RedMidCubePark,
-    RedLeftCube,
     BlueRightConeCube,
     BlueLeftConeCube,
     RedRightConeCube,
     RedLeftConeCube
+    // BlueRightCube,
+    // BlueMidCubePark,
+    // BlueLeftCube,
+    // RedRightCube,
+    // RedMidCubePark,
+    // RedLeftCube,
   }
 
   private enum AllianceToChoose {
@@ -193,16 +193,16 @@ public class RobotContainer {
   public Command redRightCone;
   public Command redMidConePark;
   public Command redLeftCone;
-  public Command blueRightCube;
-  public Command blueMidCubePark;
-  public Command blueLeftCube;
-  public Command redRightCube;
-  public Command redMidCubePark;
-  public Command redLeftCube;
   public Command blueRightConeCube;
   public Command blueLeftConeCube;
   public Command redRightConeCube;
   public Command redLeftConeCube;
+  // public Command blueRightCube;
+  // public Command blueMidCubePark;
+  // public Command blueLeftCube;
+  // public Command redRightCube;
+  // public Command redMidCubePark;
+  // public Command redLeftCube;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -227,12 +227,12 @@ public class RobotContainer {
         entry(CommandsToChoose.RedRightCone, redRightCone),
         entry(CommandsToChoose.RedMidConePark, redMidConePark),
         entry(CommandsToChoose.RedLeftCone, redLeftCone),
-        entry(CommandsToChoose.BlueRightCube, blueRightCube),
-        entry(CommandsToChoose.BlueMidCubePark, blueMidCubePark),
-        entry(CommandsToChoose.BlueLeftCube, blueLeftCube),
-        entry(CommandsToChoose.RedRightCube, redRightCube),
-        entry(CommandsToChoose.RedMidCubePark, redMidCubePark),
-        entry(CommandsToChoose.RedLeftCube, redLeftCube),
+        // entry(CommandsToChoose.BlueRightCube, blueRightCube),
+        // entry(CommandsToChoose.BlueMidCubePark, blueMidCubePark),
+        // entry(CommandsToChoose.BlueLeftCube, blueLeftCube),
+        // entry(CommandsToChoose.RedRightCube, redRightCube),
+        // entry(CommandsToChoose.RedMidCubePark, redMidCubePark),
+        // entry(CommandsToChoose.RedLeftCube, redLeftCube),
         entry(CommandsToChoose.BlueRightConeCube, blueRightConeCube),
         entry(CommandsToChoose.BlueLeftConeCube, blueLeftConeCube),
         entry(CommandsToChoose.RedRightConeCube, redRightConeCube),
@@ -252,13 +252,13 @@ public class RobotContainer {
     m_chooser.addOption("Red: Right Cone", CommandsToChoose.RedRightCone);
     m_chooser.addOption("Red: Left Cone", CommandsToChoose.RedLeftCone);
 
-    m_chooser.addOption("Blue: Right Cube", CommandsToChoose.BlueRightCube);
-    m_chooser.addOption("Blue: Mid Cube and Balance", CommandsToChoose.BlueMidCubePark);
-    m_chooser.addOption("Blue: Left Cube", CommandsToChoose.BlueLeftCube);
+    // m_chooser.addOption("Blue: Right Cube", CommandsToChoose.BlueRightCube);
+    // m_chooser.addOption("Blue: Mid Cube and Balance", CommandsToChoose.BlueMidCubePark);
+    // m_chooser.addOption("Blue: Left Cube", CommandsToChoose.BlueLeftCube);
 
-    m_chooser.addOption("Red: Right Cube", CommandsToChoose.RedRightCube);
-    m_chooser.addOption("Red: Mid Cube and Balance", CommandsToChoose.RedMidCubePark);
-    m_chooser.addOption("Red: Left Cube", CommandsToChoose.RedLeftCube);
+    // m_chooser.addOption("Red: Right Cube", CommandsToChoose.RedRightCube);
+    // m_chooser.addOption("Red: Mid Cube and Balance", CommandsToChoose.RedMidCubePark);
+    // m_chooser.addOption("Red: Left Cube", CommandsToChoose.RedLeftCube);
 
     Shuffleboard.getTab("Auto").add(m_chooser)
         .withPosition(0, 2)
@@ -474,24 +474,24 @@ public class RobotContainer {
 
   // Generate auto routines
   public void generateAutoRoutines() {
+    blueRightConeCube = new BlueRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    blueLeftConeCube = new BlueLeftConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+
+    redRightConeCube = new RedRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    redLeftConeCube = new RedLeftConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    
     blueRightCone = new BlueRightCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
     blueMidConePark = new BlueMidConePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
     blueLeftCone = new BlueLeftCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
     redRightCone = new RedRightCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
     redMidConePark = new RedMidConePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
     redLeftCone = new RedLeftCone(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    blueRightCube = new BlueRightCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    blueMidCubePark = new BlueMidCubePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    blueLeftCube = new BlueLeftCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    redRightCube = new RedRightCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    redMidCubePark = new RedMidCubePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    redLeftCube = new RedLeftCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-
-    blueRightConeCube = new BlueRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    blueLeftConeCube = new BlueLeftConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-
-    redRightConeCube = new RedRightConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
-    redLeftConeCube = new RedLeftConeCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    // blueRightCube = new BlueRightCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    // blueMidCubePark = new BlueMidCubePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    // blueLeftCube = new BlueLeftCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    // redRightCube = new RedRightCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    // redMidCubePark = new RedMidCubePark(m_robotDrive, m_Arm, m_gripper, m_Intake);
+    // redLeftCube = new RedLeftCube(m_robotDrive, m_Arm, m_gripper, m_Intake);
   }
 
   public void zeroOdo() {

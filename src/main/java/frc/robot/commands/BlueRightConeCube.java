@@ -36,7 +36,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
     public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
         Pose2d pickupPose = new Pose2d(7.4, 1.2, new Rotation2d(Math.toRadians(0)));
         Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0));
-        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(40), new Rotation2d(0));
+        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(42), new Rotation2d(0));
 
         // Create config for trajectory
         // RectangularRegionConstraint bumpConstraint = new
@@ -47,7 +47,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
                 new Translation2d(3.295, 0),
                 new Translation2d(4.46, 1.524),
-                new MaxVelocityConstraint(1.5));
+                new MaxVelocityConstraint(1.8));
 
         TrajectoryConfig config = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
@@ -90,7 +90,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
 
         SwerveControllerCommand driveToCube = new SwerveControllerCommand(
                 driveToCubeTraj,
-                drive.poseEstimator::getCurrentPose, // Functional interface to feed supplier
+                //drive::getPose, // Functional interface to feed supplier
+                drive.poseEstimator::getCurrentPose,
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
@@ -150,10 +151,18 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 new InstantCommand(gripper::openGripper),
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
-                new InstantCommand(gripper::retractKicker)
+                new InstantCommand(gripper::retractKicker),
+                new WaitCommand(0.25),
+                new InstantCommand(gripper::extendKicker),
+                new WaitCommand(0.25),
+                new InstantCommand(gripper::retractKicker),
+                new WaitCommand(0.25),
+                new InstantCommand(gripper::extendKicker),
+                new WaitCommand(0.25),
+                new InstantCommand(gripper::retractKicker),
 
                 // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                // new InstantCommand(intake::intakeRetract)
+                new InstantCommand(intake::intakeRetract)
                 
                 );
 

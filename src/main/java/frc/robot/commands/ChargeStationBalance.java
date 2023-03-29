@@ -24,12 +24,14 @@ public class ChargeStationBalance extends CommandBase {
     this.holdTime = holdTime;
     this.drivePower = 0.6;
     this.lastPitch = 0;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,34 +39,24 @@ public class ChargeStationBalance extends CommandBase {
   public void execute() {
     double pitch = drive.getPitch();
 
-    if (pitch > 5) {
-      if (lastPitch == -1) {
+    if(pitch > 5){
+      if(lastPitch == -1){
         drivePower = drivePower - 0.1;
-        pitch = 0;
-      } else {
-        holdStart = 1000; // Arbitrarily large value
-        lastPitch = +1;
-        drive.drive(drivePower, 0, 0, false);
       }
-    } else if (pitch < -5) {
-      if (lastPitch == 1) {
+      holdStart = 1000; // Arbitrarily large value
+      lastPitch = +1;
+      drive.drive(drivePower, 0, 0, false);
+    } else if (pitch < -5){
+      if(lastPitch == 1){
         drivePower = drivePower - 0.1;
-        pitch = 0;
-      } else {
-        holdStart = 1000; // Arbitrarily large value1
-        lastPitch = -1;
-        drive.drive(-drivePower, 0, 0, false);
       }
-    } 
-    
-    if (holdStart == 1000 && Math.abs(pitch) < 5) {
+      holdStart = 1000; // Arbitrarily large value1
+      lastPitch = -1;
+      drive.drive(-drivePower, 0, 0, false);
+    } else if (holdStart == 1000){
       holdStart = Timer.getFPGATimestamp();
       drive.drive(0, 0, 0, false);
-      //Wait half a second to see if we stabalize
-      while(Timer.getFPGATimestamp() - holdStart < 0.5){
-        drive.setXModuleState();
-      } 
-    } else if (Math.abs(pitch) < 5) {
+    } else {
       drive.setXModuleState();
     }
   }

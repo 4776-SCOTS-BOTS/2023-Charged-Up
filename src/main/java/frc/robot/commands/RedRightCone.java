@@ -86,6 +86,8 @@ public class RedRightCone extends SequentialCommandGroup {
                     Constants.ConfigConstants.alliance = Alliance.Red;
                 }),
                 new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+                new MoveElbowThenShoulder(arm, Constants.ArmConstants.SAFE_POSITION),
+
 
                 // Drive over line
                 new ParallelCommandGroup(

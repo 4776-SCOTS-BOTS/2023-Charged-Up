@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import java.util.List;
 
+import javax.xml.crypto.Data;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,6 +19,8 @@ import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -27,12 +31,16 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
 import frc.robot.commands.PlaceFirstCone;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class BlueMidConePark extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
+  DataLog log = DataLogManager.getLog();
+  StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
+
   public BlueMidConePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
     Pose2d startPose = new Pose2d(Units.inchesToMeters(75), Units.inchesToMeters(86.0), new Rotation2d(0));
     //Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
@@ -122,8 +130,12 @@ public class BlueMidConePark extends SequentialCommandGroup {
     //     drive);
 
     addCommands(
+        new InstantCommand(() -> statusLog.append("Starting Blue Mid Cone Park")),
+
         new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Blue;}), 
         new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+        new MoveElbowThenShoulder(arm, Constants.ArmConstants.SAFE_POSITION, 1),
+
 
         driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
         // new InstantCommand(() -> {

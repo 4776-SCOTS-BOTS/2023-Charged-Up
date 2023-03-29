@@ -17,6 +17,8 @@ import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -27,12 +29,16 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.*;
 import frc.robot.commands.PlaceFirstCone;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class BlueMidCubePark extends SequentialCommandGroup {
   /** Creates a new CubeAndLeaveAuto. */
+  DataLog log = DataLogManager.getLog();
+  StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
+
   public BlueMidCubePark(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
     Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(108), new Rotation2d(0));
     Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));

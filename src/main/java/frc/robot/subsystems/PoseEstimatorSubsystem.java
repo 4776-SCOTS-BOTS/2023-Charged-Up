@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -21,7 +22,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.customClass.TimestampedBotPose3d;
 import frc.robot.subsystems.LimeLightPoseEstimator;
@@ -66,6 +69,15 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   private final SwerveDrivePoseEstimator poseEstimator;
 
+  DataLog log = DataLogManager.getLog();
+  StringLogEntry limePoseLog = new StringLogEntry(log, "/my/LimePose");
+  StringLogEntry currentPoseLog = new StringLogEntry(log, "/my/CurrentPose");
+  DoubleLogEntry distancePrevLog = new DoubleLogEntry(log, "/my/DistancePrev");
+  DoubleLogEntry tagDistLog = new DoubleLogEntry(log, "/my/TagDist");
+  DoubleLogEntry tagIDLog = new DoubleLogEntry(log, "/my/TagID");
+  StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
+  
+
   private final Field2d field2d = new Field2d();
 
   private double previousPipelineTimestamp = 0;
@@ -77,17 +89,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   public PoseEstimatorSubsystem(String limelightName, DriveSubsystem drive) {
     this.limelight = new LimeLightPoseEstimator(limelightName);
     this.drive = drive;
-    // AprilTagFieldLayout layout;
-    // try {
-    //   layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-    //   var alliance = DriverStation.getAlliance();
-    //   layout.setOrigin(alliance == Alliance.Blue ? OriginPosition.kBlueAllianceWallRightSide
-    //       : OriginPosition.kRedAllianceWallRightSide);
-    // } catch (IOException e) {
-    //   DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
-    //   layout = null;
-    // }
-    // this.aprilTagFieldLayout = layout;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Vision");
 
@@ -123,11 +124,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     currentLimeLightPose = timestampedPoses3d[0];
     distancePrev = previousTrans.getDistance(currentLimeLightPose.pose3d.toPose2d().getTranslation());
     tagDistance = currentLimeLightPose.tagDistance;
+    
+    tagIDLog.append(currentLimeLightPose.tagID);
+    limePoseLog.append(getFormattedLimePose());
+    currentPoseLog.append(getFormattedPose());
+    distancePrevLog.append(distancePrev);
+    tagDistLog.append(tagDistance);
+
     //System.out.println("Target Distance = " + tagDistance);
     
     if(tagDistance <= RANGE_CLOSE){
       visionMeasurementStdDevs = visionMeasurementStdDevsClose;
-      distanceLimit = 10; //Trust the limelight pose even if odometry disagrees
+      distanceLimit = 2; //Trust the limelight pose even if odometry disagrees
     } else if(tagDistance <= RANGE_MEDIUM){
       visionMeasurementStdDevs = visionMeasurementStdDevsMid;
       distanceLimit = 0.1; //Gets jumpy in this range and need to filter.  Only using good agreement
@@ -138,31 +146,14 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     boolean validPoint = currentLimeLightPose.pose3d.getX() != 0 && currentLimeLightPose.pose3d.getY() != 0;
 
-    if (currentLimeLightPose.timestamp != previousPipelineTimestamp && currentLimeLightPose.tagID != 0 
+    //if (false){
+    if (currentLimeLightPose.timestamp != previousPipelineTimestamp && currentLimeLightPose.tagID > 0 
     && distancePrev <= distanceLimit && validPoint){
+      statusLog.append("Updating pose with Limelight");
+      
       previousPipelineTimestamp = currentLimeLightPose.timestamp;
       previousTrans = getCurrentPose().getTranslation();
-      // var target = pipelineResult.getBestTarget();
-      // var fiducialId = pose.tagID;
-      // Get the tag pose from field layout - consider that the layout will be null if
-      // it failed to load
-      // Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
-      //     : aprilTagFieldLayout.getTagPose(fiducialId);
-      // // if (fiducialId >= 0 && tagPose.isPresent()) {
-      // var targetPose = tagPose.get();
-      // // Transform3d camToTarget = target.getBestCameraToTarget();
-      // // Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
-      // // var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT);
-      // var visionMeasurement = pose.pose3d;
-
-      // SmartDashboard.putNumber("Timestamp", pose.timestamp);
-      // //poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(),
-      // pose.timestamp);
-      // }
-      // SmartDashboard.putNumber("PoseX", pose.pose3d.toPose2d().getX());
-      // SmartDashboard.putNumber("PoseY", pose.pose3d.toPose2d().getY());
-      // SmartDashboard.putNumber("PoseRot", pose.pose3d.toPose2d().getRotation().getDegrees());
-      // SmartDashboard.putNumber("Pose TS", pose.timestamp);
+      
       poseEstimator.addVisionMeasurement(currentLimeLightPose.pose3d.toPose2d(),
           currentLimeLightPose.timestamp);
     }
@@ -170,7 +161,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     field2d.setRobotPose(getCurrentPose());
   }
 
-  private String getFormattedPose() {
+  public String getFormattedPose() {
     var pose = getCurrentPose();
     return String.format("(%.2f, %.2f) %.2f degrees",
         pose.getX(),
@@ -178,7 +169,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         pose.getRotation().getDegrees());
   }
 
-  private String getFormattedLimePose() {
+  public String getFormattedLimePose() {
     var pose = currentLimeLightPose.pose3d.toPose2d();
     return String.format("(%.2f, %.2f) %.2f degrees",
         pose.getX(),

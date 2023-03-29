@@ -25,6 +25,10 @@ import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
 import frc.robot.customClass.TimestampedBotPose3d;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 public class LimeLightPoseEstimator extends SubsystemBase {
   private NetworkTable table;
   private DoubleArraySubscriber poseRedSub;
@@ -38,6 +42,9 @@ public class LimeLightPoseEstimator extends SubsystemBase {
 
   private Translation3d botTran3d;
   private Rotation3d botRot3d;
+
+  DataLog log = DataLogManager.getLog();
+  StringLogEntry allianceTypeLog = new StringLogEntry(log, "/my/allianceType");
 
   public LimeLightPoseEstimator(String limelightName) {
     String botPoseName;
@@ -58,6 +65,7 @@ public class LimeLightPoseEstimator extends SubsystemBase {
 
   public TimestampedBotPose3d[] getBotPose3d() {
     // Not using multiple poses, but keeping the array version in case we want to
+    allianceTypeLog.append(Constants.ConfigConstants.alliance.toString());
     double[] result = (Constants.ConfigConstants.alliance == Alliance.Red) ? poseRedSub.get() : poseBlueSub.get();
     double[] targetPose = poseTargetSpace.get();
     Translation2d distanceTran = new Translation2d(targetPose[0], targetPose[2]);

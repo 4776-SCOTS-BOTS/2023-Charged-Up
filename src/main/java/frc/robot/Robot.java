@@ -11,6 +11,7 @@ import frc.robot.Constants.ConfigConstants;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -35,6 +36,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Call the robot-specific constants settings
     Constants.GenerateConstants(Constants.robotType);
+    DataLogManager.start();
+
     
     // Start Camera Server
     if (ConfigConstants.hasCamera) {
@@ -78,7 +81,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.zeroOdo();
+    //m_robotContainer.zeroOdo();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -95,7 +98,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+  }
 
   @Override
   public void teleopInit() {

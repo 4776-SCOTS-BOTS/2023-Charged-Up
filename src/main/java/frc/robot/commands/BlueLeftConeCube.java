@@ -119,39 +119,43 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 new PlaceFirstCone(drive, arm, gripper, intake, startPose),
                 // new InstantCommand(() -> drive.resetOdometry(startPose)),
                 // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
-
+ 
                 // Drive over line
                 new ParallelCommandGroup(
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                        driveToCube,
                         new SequentialCommandGroup(
-                                driveToCube,
-                                new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1.5),
-                                        new InstantCommand(
-                                                intake::intakeExtend),
-                                        new InstantCommand(intake::intakeIn)))),
+                                new WaitCommand(1.5),
+                                new InstantCommand(intake::intakeExtend),
+                                new InstantCommand(intake::intakeIn))),
 
-                new WaitCommand(1),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                
+                new WaitCommand(0.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeRetract),
 
                 new ParallelCommandGroup(
-                        new SequentialCommandGroup(
-                                driveToPlace,
-                                new DriveToWall(drive, 0.5)),
-                        new GrabAndReadyCube(arm, intake, gripper)),
+                        new GrabAndReadyCube(arm, intake, gripper),
+                        driveToPlace),
+
+                new ParallelCommandGroup(
+                        new DriveToWall(drive, 0.5),
+                        new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION, ArmConstants.CUBE_HIGH_POSITION)),
 
                 new InstantCommand(() -> drive.drive(0, 0, 0, false)),
-                new MultiStepArm(arm, ArmConstants.CUBE_HIGH_POSITION, ArmConstants.CUBE_HIGH_POSITION),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false)),
                 new InstantCommand(gripper::openGripper),
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
                 new InstantCommand(gripper::retractKicker),
 
-                new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                new InstantCommand(intake::intakeRetract));
+                // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                new InstantCommand(intake::intakeRetract)
+                
+                );
 
     }
 }

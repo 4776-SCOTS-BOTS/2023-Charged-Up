@@ -41,7 +41,7 @@ public final class Constants {
   public static final class ConfigConstants {
     public static boolean fullShuffleBoardOutput = false;
     public static boolean hasCamera = true;
-    public static Alliance alliance = Alliance.Invalid;
+    public static Alliance alliance = Alliance.Blue;
 
   }
 
@@ -159,7 +159,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2.8;// was 3
+    public static final double kMaxSpeedMetersPerSecond = 3.2;// was 3
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;// was 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
@@ -249,7 +249,7 @@ public final class Constants {
       public static final double kUpperLimit = Math.toRadians(340);
       public static final double kLowerLimit = Math.toRadians(20);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(360);
-      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(180);
+      public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(230);
       public static final double kOffset = Math.toRadians(43); // Adjusted to zero degrees straight
                                                                                    // down
       public static final int kCurrentLimit = 30;
@@ -374,7 +374,7 @@ public final class Constants {
 
         ArmConstants.PICKUP_STANDING_CONE = new ArmPosition(65, 125);
         ArmConstants.PICKUP_POSITION1 = new ArmPosition(50, 145);
-        ArmConstants.PICKUP_POSITION = new ArmPosition(60, 125);
+        ArmConstants.PICKUP_POSITION = new ArmPosition(60, 120);
         ArmConstants.PICKUP_POSITION_CUBE = new ArmPosition(50, 125);
         ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
         ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
