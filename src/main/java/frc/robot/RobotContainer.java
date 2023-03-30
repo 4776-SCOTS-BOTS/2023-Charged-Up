@@ -136,6 +136,13 @@ public class RobotContainer {
   private final JoystickButton intakeRetractButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kRightBumper.value);
 
+  private static Trigger triggerButton(XboxController controller, XboxController.Axis axis) {
+    return new Trigger(() -> Math.abs(controller.getRawAxis(axis.value)) >= 0.1);
+  }
+
+  private final Trigger elbowStick = triggerButton(m_driverController, XboxController.Axis.kRightY);
+  private final Trigger shoulderStick = triggerButton(m_driverController, XboxController.Axis.kLeftY);
+
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
@@ -145,9 +152,9 @@ public class RobotContainer {
 
   // Test Buttons
   // AUTO LEVEL BUTTON BINDING
-  final JoystickButton testCommandButton = new
-  JoystickButton(m_driverController, XboxController.Button.kY.value);
-  //final JoystickButton testPoseSetButton = new JoystickButton(m_driverController, XboxController.Button.kBack.value);
+  final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kY.value);
+  // final JoystickButton testPoseSetButton = new
+  // JoystickButton(m_driverController, XboxController.Button.kBack.value);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
@@ -326,27 +333,15 @@ public class RobotContainer {
     // kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker,
     // m_Kicker));
 
-    safePositionButton.onTrue(new InstantCommand(m_gripper::closeGripper)
+    safePositionButton.onTrue(new InstantCommand(m_gripper::closeGripper, m_gripper)
       .andThen(new MoveElbowThenShoulder(m_Arm, ArmConstants.SAFE_POSITION)));
-
-      // pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
-      // .andThen(new MultiStepArm(m_Arm, Constants.ArmConstants.PICKUP_POSITION1,
-      // Constants.ArmConstants.PICKUP_POSITION
-      // )));
-    // pickupPositionButton.onTrue(new InstantCommand(m_gripper::openGripper)
-    //   .andThen(new MoveElbowThenShoulder(m_Arm, Constants.ArmConstants.PICKUP_POSITION)));
-
-    // highPositionButton.onTrue(new MultiStepArm(m_Arm,
-    // Constants.ArmConstants.HIGH_POSITION_START,
-    // Constants.ArmConstants.HIGH_POSITION));
-    // midPositionButton.onTrue(m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION));
     
     armStopButton.onTrue(new InstantCommand( ()->{
       shoulderInManual = true;
       m_Arm.runShoulder(0);
       elbowInManual = true;
         m_Arm.runElbow(0);
-    }));
+    }, m_Arm));
 
     readyPositionButton.onTrue(new SelectCommand(Map.ofEntries(
         Map.entry(true,
@@ -378,6 +373,9 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> {
           conePositions = false;
         })));
+
+    elbowStick.onTrue(new InstantCommand(ControlArm, m_Arm));
+    shoulderStick.onTrue(new InstantCommand(ControlArm, m_Arm));
 
     // standingConePickupButton.onTrue(new StandingCone(m_Arm, m_gripper, m_Intake)
     //     .andThen(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_STANDING_CONE)));
@@ -504,8 +502,8 @@ public class RobotContainer {
     // armInvert = (m_Arm.getShoulderPositionDeg() < 200.0) ? -1 : 1;
     // }
 
-    double shoulderPower = armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY()));
-    double elbowPower = armInvert * elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY()));
+    double shoulderPower = Math.pow(armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY())),3);
+    double elbowPower = Math.pow(armInvert * elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY())),3);
 
     // The following violates the intent of Command-based and should
     // be modified to use Commands

@@ -47,7 +47,7 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
                 new Translation2d(3.295, 0),
                 new Translation2d(4.46, 1.524),
-                new MaxVelocityConstraint(1.0));
+                new MaxVelocityConstraint(2.0));
 
         TrajectoryConfig config = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
