@@ -186,7 +186,7 @@ public final class Constants {
     public static ArmPosition PICKUP_POSITION_CUBE = new ArmPosition(60, 130);
     public static ArmPosition SAFE1_POSITION = new ArmPosition(30, 220);
     public static ArmPosition SAFE_POSITION = new ArmPosition(30, 180);
-    public static ArmPosition SAFE_TIPPER = new ArmPosition(SAFE_POSITION.elbowDegrees + 15, SAFE_POSITION.shoulderDegrees);
+    public static ArmPosition AUTO_TIPPER = new ArmPosition(SAFE_POSITION.elbowDegrees + 15, SAFE_POSITION.shoulderDegrees);
     public static ArmPosition READY_POSITION_CUBE = new ArmPosition(320, 100);
     public static ArmPosition READY_POSITION2 = new ArmPosition(190, 100);
     public static ArmPosition READY_POSITION_CONE = new ArmPosition(30, 205.0);
@@ -204,16 +204,16 @@ public final class Constants {
     // Elbow Constants
 
     public static class Elbow {
-      public static final double kSVolts = 0.3;
-      public static final double kGVolts = 0.4;
+      public static final double kSVolts = 0.2;
+      public static final double kGVolts = 0.5;//0.4
       public static final double kVVoltSecondPerRad = 2.92;
       public static final double kAVoltSecondSquaredPerRad = 0;
       public static final double kP = 0.45;
       public static final double kI = 0.0;
       public static final double kD = 0.05;
       public static final double kFF = 0;
-      public static final double kMinOutput = -0.8;
-      public static final double kMaxOutput = 0.8;
+      public static final double kMinOutput = -0.7;
+      public static final double kMaxOutput = 0.7;
       public static final double kUpperLimit = Math.toRadians(330);
       public static final double kLowerLimit = Math.toRadians(10);
       public static final double kMaxVelocityRadPerSecond = Math.toRadians(150);
@@ -248,7 +248,7 @@ public final class Constants {
       public static final double kMaxOutput = 0.8;
       public static final double kUpperLimit = Math.toRadians(340);
       public static final double kLowerLimit = Math.toRadians(20);
-      public static final double kMaxVelocityRadPerSecond = Math.toRadians(360);
+      public static final double kMaxVelocityRadPerSecond = Math.toRadians(400);
       public static final double kMaxAccelerationRadPerSecSquared = Math.toRadians(230);
       public static final double kOffset = Math.toRadians(43); // Adjusted to zero degrees straight
                                                                                    // down
@@ -378,19 +378,21 @@ public final class Constants {
         ArmConstants.PICKUP_POSITION_CUBE = new ArmPosition(50, 125);
         ArmConstants.SAFE1_POSITION = new ArmPosition(30, 260);
         ArmConstants.SAFE_POSITION = new ArmPosition(30, 180);
-        ArmConstants.SAFE_TIPPER = new ArmPosition(ArmConstants.SAFE_POSITION.elbowDegrees + 15, ArmConstants.SAFE_POSITION.shoulderDegrees);
+        ArmConstants.AUTO_TIPPER = new ArmPosition(50, 145);
         ArmConstants.READY_POSITION_CUBE = new ArmPosition(40, 230);
         ArmConstants.READY_POSITION2 = new ArmPosition(320, 100);
         ArmConstants.READY_POSITION_CONE = new ArmPosition(40, 290);
 
-        ArmConstants.HIGH_POSITION = new ArmPosition(180, 235);
+        ArmConstants.HIGH_POSITION = new ArmPosition(185, 230);
+
         ArmConstants.HIGH_POSITION_START = new ArmPosition(160,240);
         ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 250);
-        ArmConstants.MID_POSITION = new ArmPosition(260, 200);
+        // ArmConstants.MID_POSITION = new ArmPosition(280, 175);
+        ArmConstants.MID_POSITION = new ArmPosition(50, 315);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
         ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(190, 235.0);
-        ArmConstants.CUBE_MID_POSITION = new ArmPosition(260, 200);
+        ArmConstants.CUBE_MID_POSITION = new ArmPosition(260, 170);
         ArmConstants.CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
 
       }

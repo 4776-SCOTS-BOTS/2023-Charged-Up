@@ -125,8 +125,8 @@ public class RobotContainer {
       XboxController.Button.kLeftStick.value);
   final JoystickButton pickupPositionCubeButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kRightStick.value);
-  // final JoystickButton armStopButton = new JoystickButton(m_manipulatorController,
-  //     XboxController.Button.kStart.value);
+  final JoystickButton tipperButton = new JoystickButton(m_manipulatorController,
+      XboxController.Button.kStart.value);
 
   private final Trigger gripperButtonClose = m_manipCommandController.rightTrigger();
   private final Trigger gripperButtonOpen = m_manipCommandController.leftTrigger();
@@ -302,16 +302,15 @@ public class RobotContainer {
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));
     intakeOutButton.onTrue(new InstantCommand(m_Intake::intakeOut, m_Intake));
 
-    // tipperButton.onTrue(
-    //     m_Arm.setArmPositionCommand(ArmConstants.SAFE_TIPPER)
-    //         .andThen(new InstantCommand(m_Intake::tipperUse, m_Intake))
-    //         .andThen(new InstantCommand(m_Intake::magicCarpetOut, m_Intake))
-    //         .andThen(new WaitCommand(3))
-    //         .andThen(new InstantCommand(m_Intake::magicCarpetIn, m_Intake))
-    //         .andThen(new WaitCommand(0.5))
-    //         .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
-    //         .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
-    //         .andThen(new InstantCommand(m_Intake::tipperSafe, m_Intake)));
+    tipperButton.onTrue(
+        m_Arm.setArmPositionCommand(ArmConstants.AUTO_TIPPER)
+            .andThen(new WaitCommand(1))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOut, m_Intake))
+            .andThen(new WaitCommand(2))
+            .andThen(new InstantCommand(m_Intake::magicCarpetIn, m_Intake))
+            .andThen(new WaitCommand(1.5))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake))
+            .andThen(new InstantCommand(m_Intake::magicCarpetOff, m_Intake)));
    // tipperButton.whileFalse(new InstantCommand(m_Intake::tipperSafe, m_Intake));
 
     // intakePowerCubeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCube,
@@ -333,8 +332,8 @@ public class RobotContainer {
     // kickerButtonRetract.onTrue(new InstantCommand(m_Kicker::retractKicker,
     // m_Kicker));
 
-    safePositionButton.onTrue(new InstantCommand(m_gripper::closeGripper, m_gripper)
-      .andThen(new MoveElbowThenShoulder(m_Arm, ArmConstants.SAFE_POSITION)));
+    safePositionButton.onTrue(new MoveElbowThenShoulder(m_Arm, Constants.ArmConstants.SAFE_POSITION)
+      .andThen(new InstantCommand(m_gripper::closeGripper, m_gripper)));
     
     armStopButton.onTrue(new InstantCommand( ()->{
       shoulderInManual = true;
@@ -350,12 +349,18 @@ public class RobotContainer {
             m_Arm.setArmPositionCommand(ArmConstants.READY_POSITION_CUBE))),
         () -> conePositions));
 
-    highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-        Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
-        new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
-             Constants.ArmConstants.HIGH_POSITION)),
-        Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION))),
-        () -> conePositions));
+    // highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
+    //     Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
+    //     new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
+    //         Constants.ArmConstants.HIGH_POSITION)),
+    //     Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION))),
+    //     () -> conePositions));
+
+        highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
+          Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
+          new MoveShoulderThenElbow(m_Arm, Constants.ArmConstants.HIGH_POSITION)),
+          Map.entry(false, new MoveShoulderThenElbow(m_Arm, Constants.ArmConstants.CUBE_HIGH_POSITION))),
+          () -> conePositions));
         
     midPositionButton.onTrue(new SelectCommand(Map.ofEntries(
         Map.entry(true, m_Arm.setArmPositionCommand(Constants.ArmConstants.MID_POSITION)),
@@ -502,8 +507,8 @@ public class RobotContainer {
     // armInvert = (m_Arm.getShoulderPositionDeg() < 200.0) ? -1 : 1;
     // }
 
-    double shoulderPower = Math.pow(armInvert * shoulderPowerLimiter.calculate(new_deadzone(m_manipulatorController.getLeftY())),3);
-    double elbowPower = Math.pow(armInvert * elbowPowerLimiter.calculate(new_deadzone(m_manipulatorController.getRightY())),3);
+    double shoulderPower = Math.pow(armInvert * new_deadzone(m_manipulatorController.getLeftY()),5);
+    double elbowPower = Math.pow(armInvert * new_deadzone(m_manipulatorController.getRightY()),5);
 
     // The following violates the intent of Command-based and should
     // be modified to use Commands
@@ -512,6 +517,8 @@ public class RobotContainer {
       m_Arm.runShoulder(shoulderPower);
     } else if (shoulderInManual) {
       shoulderInManual = false;
+
+
       m_Arm.runShoulder(0); // Remove once hold function is stable
     }
 
