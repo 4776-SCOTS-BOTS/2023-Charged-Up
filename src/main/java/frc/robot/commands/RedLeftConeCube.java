@@ -30,12 +30,20 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 
 public class RedLeftConeCube extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
     public RedLeftConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
         // Field width = 315.5in
-        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new Rotation2d(0));
+        DataLog log = DataLogManager.getLog();
+        StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
+
+        //Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new Rotation2d(0));
+        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(295.5), new Rotation2d(0));
         Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(279.5), new Rotation2d(Math.toRadians(-5)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(273.5), new Rotation2d(0));
 
@@ -62,8 +70,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(2.1, Units.inchesToMeters(274)),
-                        new Translation2d(3.86, Units.inchesToMeters(290))),
+                List.of(new Translation2d(2.1, Units.inchesToMeters(290)),
+                        new Translation2d(3.86, Units.inchesToMeters(285))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
@@ -73,8 +81,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 pickupPose,
                 // Drive to cube
                 List.of(
-                        new Translation2d(3.86, Units.inchesToMeters(290)),
-                        new Translation2d(2.2, Units.inchesToMeters(274))),
+                        new Translation2d(3.86, Units.inchesToMeters(285)),
+                        new Translation2d(2.2, Units.inchesToMeters(285))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);
@@ -108,6 +116,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 drive);
 
         addCommands(
+                new InstantCommand(() -> statusLog.append("Starting " + this.getName())),
+
                 new InstantCommand(() -> {
                     Constants.ConfigConstants.alliance = Alliance.Red;
                 }),
@@ -126,7 +136,7 @@ public class RedLeftConeCube extends SequentialCommandGroup {
 
                 new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
                 new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-                
+
                 new WaitCommand(0.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
@@ -146,10 +156,10 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
                 new InstantCommand(gripper::retractKicker),
-
+                
                 // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
                 new InstantCommand(intake::intakeRetract)
-                
+
         );
 
     }

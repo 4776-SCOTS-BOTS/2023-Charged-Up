@@ -115,7 +115,7 @@ public class RobotContainer {
   // Arm Position Buttons
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
-  final POVButton readyPositionButton = new POVButton(m_manipulatorController, 90);
+  final POVButton currentSenseIntakeButton = new POVButton(m_manipulatorController, 90);
   final POVButton armStopButton = new POVButton(m_manipulatorController, 180);
   final POVButton highPositionButton = new POVButton(m_manipulatorController, 270);
 
@@ -136,12 +136,20 @@ public class RobotContainer {
   private final JoystickButton intakeRetractButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kRightBumper.value);
 
-  private static Trigger triggerButton(XboxController controller, XboxController.Axis axis) {
+  private static Trigger triggerStick(XboxController controller, XboxController.Axis axis) {
     return new Trigger(() -> Math.abs(controller.getRawAxis(axis.value)) >= 0.1);
   }
+  private static Trigger triggerStickPos(XboxController controller, XboxController.Axis axis) {
+    return new Trigger(() -> controller.getRawAxis(axis.value) >= 0.7);
+  }
+  private static Trigger triggerStickNeg(XboxController controller, XboxController.Axis axis) {
+    return new Trigger(() -> controller.getRawAxis(axis.value) <= -0.7);
+  }
 
-  private final Trigger elbowStick = triggerButton(m_driverController, XboxController.Axis.kRightY);
-  private final Trigger shoulderStick = triggerButton(m_driverController, XboxController.Axis.kLeftY);
+  private final Trigger elbowStick = triggerStick(m_manipulatorController, XboxController.Axis.kRightY);
+  private final Trigger shoulderStick = triggerStick(m_manipulatorController, XboxController.Axis.kLeftY);
+  private final Trigger cubeLowStick = triggerStickNeg(m_manipulatorController, XboxController.Axis.kRightX);
+  private final Trigger cubeHighStick = triggerStickPos(m_manipulatorController, XboxController.Axis.kRightX);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -342,19 +350,7 @@ public class RobotContainer {
         m_Arm.runElbow(0);
     }, m_Arm));
 
-    readyPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-        Map.entry(true,
-            m_Arm.setArmPositionCommand(ArmConstants.READY_POSITION_CONE)),
-        Map.entry(false,
-            m_Arm.setArmPositionCommand(ArmConstants.READY_POSITION_CUBE))),
-        () -> conePositions));
-
-    // highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
-    //     Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
-    //     new MultiStepArm(m_Arm, Constants.ArmConstants.HIGH_POSITION_START,
-    //         Constants.ArmConstants.HIGH_POSITION)),
-    //     Map.entry(false, m_Arm.setArmPositionCommand(Constants.ArmConstants.CUBE_HIGH_POSITION))),
-    //     () -> conePositions));
+    currentSenseIntakeButton.onTrue(new CurrentSenseIntake(m_Intake)); 
 
         highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
           Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
@@ -379,8 +375,19 @@ public class RobotContainer {
           conePositions = false;
         })));
 
-    elbowStick.onTrue(new InstantCommand(ControlArm, m_Arm));
-    shoulderStick.onTrue(new InstantCommand(ControlArm, m_Arm));
+    elbowStick.onTrue(new InstantCommand(() -> {
+      elbowInManual = true;
+      shoulderInManual = true;
+    }, m_Arm).andThen(
+        new InstantCommand(ControlArm, m_Arm)));
+    shoulderStick.onTrue(new InstantCommand(() -> {
+      elbowInManual = true;
+      shoulderInManual = true;
+    }, m_Arm).andThen(
+        new InstantCommand(ControlArm, m_Arm)));
+
+    cubeLowStick.onTrue(new InstantCommand(()->{m_Intake.runIntake(Constants.IntakeConstants.kSpitCubeLow);}));
+    cubeHighStick.onTrue(new InstantCommand(()->{m_Intake.runIntake(Constants.IntakeConstants.kSpitCubeHigh);}));
 
     // standingConePickupButton.onTrue(new StandingCone(m_Arm, m_gripper, m_Intake)
     //     .andThen(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_STANDING_CONE)));
@@ -459,7 +466,7 @@ public class RobotContainer {
   }
 
   double new_deadzone(double x) {
-    if (Math.abs(x) > 0.08) {
+    if (Math.abs(x) > 0.06) {
       return x;
     } else {
       return 0;

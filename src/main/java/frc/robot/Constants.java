@@ -137,8 +137,8 @@ public final class Constants {
     public static double kRevolutionsToMeters = Math.PI * kWheelDiameter / kMotorGearsToWheelGears;
     public static double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
 
-    public static double kPModuleTurningController = 2.5;
-    public static double kDModuleTurningController = 0;
+    public static double kPModuleTurningController = 2.9;//2.5
+    public static double kDModuleTurningController = 0.1;//0
 
     //public static final double kPModuleDriveController = 2.0; // 0.6
     public static boolean useSparkMaxPID = false;
@@ -284,6 +284,10 @@ public final class Constants {
     public static double kIntakePowerCone = 0.65;
     public static double kIntakePowerCube = 0.50;
 
+    public static final double kSpitCubeLow = -0.35;
+    public static final double kSpitCubeHigh = -0.8;
+
+
     // Magic Carpet Constants
     public static int kMagicCarpetPort = 24;
     public static boolean kMagicCarpetInv = false;
@@ -312,8 +316,8 @@ public final class Constants {
 
         // Swerve Module Alignment
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-120));//-180
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-32));//-180
-        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(171));
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-30));//-180
+        DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(-144));
         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-44));
         // DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));
         // DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5 + 180));
@@ -344,8 +348,8 @@ public final class Constants {
         ModuleConstants.kRPMToMetersPerSecond = Math.PI * ModuleConstants.kWheelDiameter
             / (60 * ModuleConstants.kMotorGearsToWheelGears);
 
-        ModuleConstants.kPModuleTurningController = 0.4;
-        ModuleConstants.kDModuleTurningController = 0;
+        ModuleConstants.kPModuleTurningController = 0.45;//0.4
+        ModuleConstants.kDModuleTurningController = 0.01;//0
 
         ModuleConstants.useSparkMaxPID = true;
         ModuleConstants.kDriveP = 0.05;
@@ -386,12 +390,12 @@ public final class Constants {
         ArmConstants.HIGH_POSITION = new ArmPosition(185, 230);
 
         ArmConstants.HIGH_POSITION_START = new ArmPosition(160,240);
-        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(190, 250);
+        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(185, 240);
         // ArmConstants.MID_POSITION = new ArmPosition(280, 175);
-        ArmConstants.MID_POSITION = new ArmPosition(50, 315);
+        ArmConstants.MID_POSITION = new ArmPosition(55, 315);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);
 
-        ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(190, 235.0);
+        ArmConstants.CUBE_HIGH_POSITION = new ArmPosition(190, 245.0);
         ArmConstants.CUBE_MID_POSITION = new ArmPosition(260, 170);
         ArmConstants.CUBE_LOW_POSITION = new ArmPosition(290, 270.0);
 

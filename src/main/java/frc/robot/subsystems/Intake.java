@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -49,6 +50,9 @@ public class Intake extends SubsystemBase {
   private boolean isRunning = false;
   private double intakePowerSetPoint = Constants.IntakeConstants.kIntakePowerCone;
 
+  private LinearFilter intakeCurrentFilter  = LinearFilter.movingAverage(5);
+  private double filteredCurrent, rawCurrent;
+
 
 
   private enum IntakeState {
@@ -65,12 +69,28 @@ public class Intake extends SubsystemBase {
     magicCarpetMotor = new CANSparkMax(Constants.IntakeConstants.kMagicCarpetPort, MotorType.kBrushless);
     magicCarpetMotor.setInverted(Constants.IntakeConstants.kMagicCarpetInv);
     magicCarpetMotor.setIdleMode(IdleMode.kCoast);
+    magicCarpetMotor.setSmartCurrentLimit(15);
 
     intakeSolenoid = new Solenoid(PneumaticsConstants.phCanID, PneumaticsModuleType.REVPH,PneumaticsConstants.intakeSolenoidPort);
     tipperServoLeft = new Servo(Constants.IntakeConstants.tipperServoPinLeft);
     tipperServoRight = new Servo(Constants.IntakeConstants.tipperServoPinRight); 
 
+    Shuffleboard.getTab("Arm").addNumber("RawCurrent", () -> { return rawCurrent;} );
+    Shuffleboard.getTab("Arm").addNumber("FilteredCurrent", () -> { return filteredCurrent;} );
+  }
 
+  @Override
+  public void periodic(){
+    rawCurrent = getIntakeCurrent();
+    filteredCurrent = intakeCurrentFilter.calculate(rawCurrent);
+  }
+
+  public double getIntakeCurrent(){
+    return intakeMotor.getOutputCurrent();
+  }
+
+  public double getFilteredCurrent(){
+    return filteredCurrent;
   }
 
   public void setIntakePowerCone(){

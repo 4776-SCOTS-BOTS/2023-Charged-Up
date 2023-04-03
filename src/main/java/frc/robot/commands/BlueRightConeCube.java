@@ -30,12 +30,19 @@ import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class BlueRightConeCube extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
     public BlueRightConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        Pose2d pickupPose = new Pose2d(7.4, 1.2, new Rotation2d(Math.toRadians(0)));
-        Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0));
+        DataLog log = DataLogManager.getLog();
+        StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
+
+        //Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0)); //Orig Values
+        Pose2d startPose = new Pose2d(1.8, Units.inchesToMeters(20), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.2, 1.2, new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(42), new Rotation2d(0));
 
         // Create config for trajectory
@@ -67,8 +74,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(2.1, 0.914),
-                        new Translation2d(3.86, 0.762)),
+                List.of(new Translation2d(2.1, Units.inchesToMeters(30)),
+                        new Translation2d(3.86, Units.inchesToMeters(30))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
@@ -78,8 +85,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 pickupPose,
                 // Drive to cube
                 List.of(
-                        new Translation2d(3.86, 0.762),
-                        new Translation2d(2.2, 0.914)),
+                        new Translation2d(3.86, Units.inchesToMeters(30)),
+                        new Translation2d(2.2, Units.inchesToMeters(30))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);
@@ -90,7 +97,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
 
         SwerveControllerCommand driveToCube = new SwerveControllerCommand(
                 driveToCubeTraj,
-                //drive::getPose, // Functional interface to feed supplier
+                // drive::getPose, // Functional interface to feed supplier
                 drive.poseEstimator::getCurrentPose,
                 DriveConstants.kDriveKinematics,
 
@@ -114,6 +121,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 drive);
 
         addCommands(
+                new InstantCommand(() -> statusLog.append("Starting " + this.getName())),
+
                 new InstantCommand(() -> {
                     Constants.ConfigConstants.alliance = Alliance.Blue;
                 }),
@@ -126,13 +135,13 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
                         driveToCube,
                         new SequentialCommandGroup(
-                                new WaitCommand(1.5),
+                                new WaitCommand(0.25),
                                 new InstantCommand(intake::intakeExtend),
                                 new InstantCommand(intake::intakeIn))),
 
                 new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
                 new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-                
+
                 new WaitCommand(0.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
@@ -152,19 +161,11 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
                 new InstantCommand(gripper::retractKicker),
-                new WaitCommand(0.25),
-                new InstantCommand(gripper::extendKicker),
-                new WaitCommand(0.25),
-                new InstantCommand(gripper::retractKicker),
-                new WaitCommand(0.25),
-                new InstantCommand(gripper::extendKicker),
-                new WaitCommand(0.25),
-                new InstantCommand(gripper::retractKicker),
-
+                
                 // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
                 new InstantCommand(intake::intakeRetract)
-                
-                );
+
+        );
 
     }
 }
