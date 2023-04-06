@@ -4,63 +4,54 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.*;
+import static java.util.Map.entry;
+
+import java.util.Map;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.commands.*;
-import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Map.entry;
-
-import frc.robot.customClass.ArmPosition;
-import frc.robot.customClass.CRGB;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.commands.BlueLeftCone;
+import frc.robot.commands.BlueLeftConeCube;
+import frc.robot.commands.BlueMidConePark;
+import frc.robot.commands.BlueRightCone;
+import frc.robot.commands.BlueRightConeCube;
+import frc.robot.commands.ChargeStationBalance;
+import frc.robot.commands.CurrentSenseIntake;
+import frc.robot.commands.MoveElbowThenShoulder;
+import frc.robot.commands.MoveShoulderThenElbow;
+import frc.robot.commands.MultiStepArm;
+import frc.robot.commands.RedLeftCone;
+import frc.robot.commands.RedLeftConeCube;
+import frc.robot.commands.RedMidConePark;
+import frc.robot.commands.RedRightCone;
+import frc.robot.commands.RedRightConeCube;
 import frc.robot.customClass.TriggerButton;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.LED;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -304,7 +295,7 @@ public class RobotContainer {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
 
     signalConeButton.onTrue(new InstantCommand(m_Led::setYellow, m_Led));
-    signalCubeButton.onTrue(new InstantCommand(m_Led::setPurple, m_Led));
+    signalCubeButton.onTrue(new InstantCommand(m_Led::setPurple, m_Led)); 
 
     intakeInButton.onTrue(new InstantCommand(m_Intake::intakeIn, m_Intake));
     intakeStopButton.onTrue(new InstantCommand(m_Intake::intakeOff, m_Intake));

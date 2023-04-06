@@ -61,11 +61,11 @@ public class PlaceFirstCone extends SequentialCommandGroup {
         new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
         //new MultiStepArm(arm, ArmConstants.HIGH_POSITION, ArmConstants.HIGH_POSITION),
         new InstantCommand(intake::intakeExtend),
-        new WaitCommand(2.0),
+        new WaitCommand(1.75),
         //new InstantCommand(gripper::extendKicker),
         //new InstantCommand(intake::intakeRetract),
         new InstantCommand(gripper::openGripper, gripper),
-        new WaitCommand(0.5),
+        new WaitCommand(0.2),
         //new InstantCommand(gripper::retractKicker),
 
         new InstantCommand(() -> statusLog.append("Leaving Place")),

@@ -48,5 +48,9 @@ public class LED extends SubsystemBase {
     setColor(Constants.kRGB_purple);
     setDisplay();
   }
+  public void setBlack(){
+    setColor(Constants.kRGB_black);
+    setDisplay();
+  }
   
 }

@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.customClass.ArmPosition;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -34,7 +35,6 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 
-
 public class RedLeftConeCube extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
     public RedLeftConeCube(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
@@ -42,10 +42,14 @@ public class RedLeftConeCube extends SequentialCommandGroup {
         DataLog log = DataLogManager.getLog();
         StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
 
-        //Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new Rotation2d(0));
+        // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new
+        // Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(295.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(279.5), new Rotation2d(Math.toRadians(-5)));
+        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(288), new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(273.5), new Rotation2d(0));
+
+        double pickupRange = 0.5;
+        Pose2d pickupStart = new Pose2d(pickupPose.getX() - pickupRange, pickupPose.getY(), pickupPose.getRotation());
 
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
                 new Translation2d(3.295, Units.inchesToMeters(256)),
@@ -58,6 +62,14 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
                 .addConstraint(bumpConstraint);
+
+        TrajectoryConfig configPickup = new TrajectoryConfig(
+                AutoConstants.kPickupSpeed,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                // Add kinematics to ensure max speed is actually obeyed
+                .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
+                .addConstraint(bumpConstraint)
+                .setStartVelocity(1.5);
 
         TrajectoryConfig configRev = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
@@ -75,6 +87,18 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
+
+        // Trajectory driveToCubeTrajFinish = TrajectoryGenerator.generateTrajectory(
+        // // Start position
+        // pickupStart,
+        // // Drive to cube
+        // List.of(new Translation2d(pickupStart.getX() + pickupRange / 2,
+        // pickupStart.getY())),
+        // // End end at the cube, facing forward
+        // pickupPose,
+        // configPickup);
+
+        // driveToCubeTraj = driveToCubeTraj.concatenate(driveToCubeTrajFinish);
 
         Trajectory driveToPlaceTraj = TrajectoryGenerator.generateTrajectory(
                 // Start position
@@ -130,7 +154,7 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
                         driveToCube,
                         new SequentialCommandGroup(
-                                new WaitCommand(1.5),
+                                new WaitCommand(0.25),
                                 new InstantCommand(intake::intakeExtend),
                                 new InstantCommand(intake::intakeIn))),
 
@@ -156,9 +180,9 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 new InstantCommand(gripper::extendKicker),
                 new WaitCommand(0.25),
                 new InstantCommand(gripper::retractKicker),
-                
-                // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                new InstantCommand(intake::intakeRetract)
+
+                arm.setArmPositionCommand(new ArmPosition(ArmConstants.CUBE_HIGH_POSITION.elbowDegrees - 30,
+                        ArmConstants.CUBE_HIGH_POSITION.shoulderDegrees))
 
         );
 

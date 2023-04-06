@@ -52,6 +52,8 @@ public final class Constants {
   public static final CRGB kRGB_purple = new CRGB(70, 0, 40);
   public static final CRGB kRGB_boaz = new CRGB(0, 59, 111);
   public static final CRGB kRGB_greenLow = new CRGB(0, 20, 0);
+  public static final CRGB kRGB_black = new CRGB(0, 0, 0);
+  
 
   public static final class DriveConstants {
     // Any constants that are not final can and should be update in
@@ -391,7 +393,7 @@ public final class Constants {
         ArmConstants.HIGH_POSITION = new ArmPosition(185, 230);
 
         ArmConstants.HIGH_POSITION_START = new ArmPosition(160,240);
-        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(185, 240);
+        ArmConstants.HIGH_POSITION_FINAL = new ArmPosition(185, 235);
         // ArmConstants.MID_POSITION = new ArmPosition(280, 175);
         ArmConstants.MID_POSITION = new ArmPosition(55, 315);
         ArmConstants.LOW_POSITION = new ArmPosition(290, 270.0);

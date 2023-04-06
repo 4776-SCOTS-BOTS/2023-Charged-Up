@@ -38,7 +38,7 @@ public class RedMidConePark extends SequentialCommandGroup {
         Pose2d startPose = new Pose2d(Units.inchesToMeters(75), Units.inchesToMeters(229.5), new Rotation2d(0));
         //Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(0)));
         //Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(200), new Rotation2d(Math.toRadians(180)));
-        Pose2d balancePose = new Pose2d(Units.inchesToMeters(170), Units.inchesToMeters(200), new Rotation2d(Math.toRadians(0)));
+        Pose2d balancePose = new Pose2d(Units.inchesToMeters(205), Units.inchesToMeters(210), new Rotation2d(Math.toRadians(0)));
 
 
 
@@ -115,8 +115,9 @@ public class RedMidConePark extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Red;}),         
                 new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+                new MoveElbowThenShoulder(arm, Constants.ArmConstants.SAFE_POSITION, 2.0),
                 new InstantCommand(intake::intakeRetract),
-                new MoveElbowThenShoulder(arm, Constants.ArmConstants.SAFE_POSITION, 1),
+                
 
 
         

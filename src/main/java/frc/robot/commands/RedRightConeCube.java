@@ -45,7 +45,7 @@ public class RedRightConeCube extends SequentialCommandGroup {
         // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(163.5), new
         // Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(119.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(148.3), new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPose = new Pose2d(6.9, Units.inchesToMeters(168), new Rotation2d(Math.toRadians(2)));
         Pose2d scoringPose = new Pose2d(2.1, Units.inchesToMeters(141.5), new Rotation2d(0));
 
         double pickupRange = 0.5;
@@ -57,19 +57,22 @@ public class RedRightConeCube extends SequentialCommandGroup {
                 new MaxVelocityConstraint(1.0));
 
         TrajectoryConfig config = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                3.6,
+                // AutoConstants.kMaxSpeedMetersPerSecond,
+                2.0)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-                .addConstraint(bumpConstraint)
-                .setEndVelocity(1.5);
+                .addConstraint(bumpConstraint);
+        // .setEndVelocity(1.5);
 
         TrajectoryConfig configPickup = new TrajectoryConfig(
                 AutoConstants.kPickupSpeed,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-                .addConstraint(bumpConstraint);
+                .addConstraint(bumpConstraint)
+                .setStartVelocity(1.5);
+
 
         TrajectoryConfig configRev = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
@@ -85,32 +88,32 @@ public class RedRightConeCube extends SequentialCommandGroup {
                 List.of(new Translation2d(2.1, Units.inchesToMeters(125.0)),
                         new Translation2d(3.86, Units.inchesToMeters(129.0))),
                 // End end at the cube, facing forward
-                pickupStart,
+                pickupPose,
                 config);
 
-        Trajectory driveToCubeTrajFinish = TrajectoryGenerator.generateTrajectory(
-                // Start position
-                pickupStart,
-                // Drive to cube
-                List.of(new Translation2d(pickupStart.getX() + pickupRange / 2, pickupStart.getY())),
-                // End end at the cube, facing forward
-                pickupPose,
-                configPickup);
+        // Trajectory driveToCubeTrajFinish = TrajectoryGenerator.generateTrajectory(
+        //         // Start position
+        //         pickupStart,
+        //         // Drive to cube
+        //         List.of(new Translation2d(pickupStart.getX() + pickupRange / 2, pickupStart.getY())),
+        //         // End end at the cube, facing forward
+        //         pickupPose,
+        //         configPickup);
 
-        driveToCubeTraj = driveToCubeTraj.concatenate(driveToCubeTrajFinish);
+        //driveToCubeTraj = driveToCubeTraj.concatenate(driveToCubeTrajFinish);
 
         Trajectory driveToPlaceTraj = TrajectoryGenerator.generateTrajectory(
                 // Start position
                 pickupPose,
                 // Drive to cube
-                List.of(new Translation2d(3.86, Units.inchesToMeters(129.0)),
-                        new Translation2d(2.2, Units.inchesToMeters(129.0))),
+                List.of(new Translation2d(3.86, Units.inchesToMeters(135)),
+                        new Translation2d(2.2, Units.inchesToMeters(138))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);
 
         var thetaController = new ProfiledPIDController(
-                2, 0, 0, AutoConstants.kThetaControllerConstraints);
+                3.0, 0, 0, AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand driveToCube = new SwerveControllerCommand(
@@ -155,7 +158,7 @@ public class RedRightConeCube extends SequentialCommandGroup {
                                 new InstantCommand(intake::intakeExtend),
                                 new InstantCommand(intake::intakeIn),
                                 new InstantCommand(() -> {
-                                    intake.runIntake(0.7 * Constants.IntakeConstants.kIntakePowerCone);
+                                    intake.runIntake(0.8 * Constants.IntakeConstants.kIntakePowerCone);
                                 })),
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
                         driveToCube),
@@ -163,7 +166,7 @@ public class RedRightConeCube extends SequentialCommandGroup {
                 new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
                 new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
 
-                new WaitCommand(0.5),
+                new WaitCommand(1.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeRetract),
