@@ -7,29 +7,38 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.customClass.ArmJointConstants;
+import frc.robot.customClass.ArmPosition;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Arm;
 
 public class CurrentSenseIntake extends CommandBase {
   /** Creates a new CurrentSenseIntake. */
   private Intake intake;
+  private Arm arm;
   private double startTime, stallTime;
   private boolean stallStarted;
   private boolean isFinished;
 
   private final double START_DELAY = 0.25; //seconds
-  private final double STALL_DELAY = 0.06;
+  private final double STALL_DELAY = 0.08;
   private final double STALL_CURRENT = 40;//AMPS
 
-  public CurrentSenseIntake(Intake intake) {
+  public CurrentSenseIntake(Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
+    addRequirements(arm);
 
     this.intake = intake;
+    this.arm = arm;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    arm.setShoulderPosition(ArmConstants.SAFE_POSITION.shoulderRadians);
+    arm.setElbowPosition(Math.toRadians(45));
     intake.intakeIn();
     intake.runIntake(0.7*Constants.IntakeConstants.kIntakePowerCone);
     intake.magicCarpetOff();

@@ -392,6 +392,11 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale*0.5;
     DriveConstants.rotRateModifier = DriveConstants.rotLowRateModifier;
   }
+
+  public void setSprint(){
+    DriveConstants.drivePercentScale = DriveConstants.driveNormalPercentScale*1.2;
+    DriveConstants.rotRateModifier = DriveConstants.rotNormalRateModifier*1.2;
+  }
   
 
   public void turnByAngle(double turnByDegrees){

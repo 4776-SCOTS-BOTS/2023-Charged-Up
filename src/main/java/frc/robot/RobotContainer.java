@@ -93,6 +93,7 @@ public class RobotContainer {
   final JoystickButton brakeButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
   final TriggerButton reallylowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kLeftTrigger);
+  final JoystickButton sprintTrigger = new JoystickButton(m_driverController, XboxController.Button.kRightStick.value);
   final JoystickButton signalCubeButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
   final JoystickButton signalConeButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
  
@@ -341,7 +342,7 @@ public class RobotContainer {
         m_Arm.runElbow(0);
     }, m_Arm));
 
-    currentSenseIntakeButton.onTrue(new CurrentSenseIntake(m_Intake)); 
+    currentSenseIntakeButton.onTrue(new CurrentSenseIntake(m_Intake, m_Arm)); 
 
         highPositionButton.onTrue(new SelectCommand(Map.ofEntries(
           Map.entry(true, //m_Arm.setArmPositionCommand(ArmConstants.HIGH_POSITION)),
@@ -438,6 +439,10 @@ public class RobotContainer {
 
     reallylowSpeedTrigger.onTrue(new InstantCommand(m_robotDrive::setReallySlowDrive, m_robotDrive))
         .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
+
+        sprintTrigger.onTrue(new InstantCommand(m_robotDrive::setSprint, m_robotDrive))
+        .onFalse(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
+        
 
     resetGyro.onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 

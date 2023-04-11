@@ -45,8 +45,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
         // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new
         // Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(295.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(288), new Rotation2d(Math.toRadians(0)));
-        Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(273.5), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.2, Units.inchesToMeters(284), new Rotation2d(Math.toRadians(0)));
+        Pose2d scoringPose = new Pose2d(1.75, Units.inchesToMeters(272), new Rotation2d(0));
 
         double pickupRange = 0.5;
         Pose2d pickupStart = new Pose2d(pickupPose.getX() - pickupRange, pickupPose.getY(), pickupPose.getRotation());

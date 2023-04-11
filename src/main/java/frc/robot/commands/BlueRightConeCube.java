@@ -42,7 +42,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
 
         //Pose2d startPose = new Pose2d(1.8, 1.626, new Rotation2d(0)); //Orig Values
         Pose2d startPose = new Pose2d(1.8, Units.inchesToMeters(20), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.2, 1.2, new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPose = new Pose2d(7.2, 1.45, new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(42), new Rotation2d(0));
 
         // Create config for trajectory

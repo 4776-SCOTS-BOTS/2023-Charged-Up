@@ -61,7 +61,7 @@ public final class Constants {
     // Non-final constants are initialized with the values of the practice bot
     // below.
 
-    public static final double driveNormalPercentScale = 1.0;
+    public static final double driveNormalPercentScale = 0.88;
     public static final double rotNormalRateModifier = 1.0;
     public static final double driveLowPercentScale = 0.5;
     public static final double rotLowRateModifier = 0.75;
@@ -114,7 +114,7 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     public static final boolean kGyroReversed = true;
-    public static final double kMaxSpeedMetersPerSecond = 4.8; // Theoretically 5.  Need to leave headroom for compensation
+    public static final double kMaxSpeedMetersPerSecond = 4.9; // Theoretically 5.  Need to leave headroom for compensation
 
   }
 
@@ -318,8 +318,8 @@ public final class Constants {
         ConfigConstants.hasCamera = true;
 
         // Swerve Module Alignment
-        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-120));//-180
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-30));//-180
+        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-121.5));//-180
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-33));//-180
         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(-144));
         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-44));
         // DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));

@@ -43,7 +43,7 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
 
         //Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(196), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.0, Units.inchesToMeters(180), new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPose = new Pose2d(7.0, Units.inchesToMeters(190), new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(174), new Rotation2d(0));
 
         // Create config for trajectory
@@ -58,15 +58,15 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 new MaxVelocityConstraint(2.0));
 
         TrajectoryConfig config = new TrajectoryConfig(
-                2.7,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                3.6,
+                2.0)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
                 .addConstraint(bumpConstraint);
 
         TrajectoryConfig configRev = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                3.6,
+                2.4)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(true)
                 .addConstraint(bumpConstraint);
@@ -76,7 +76,7 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 startPose,
                 // Drive to cube
                 List.of(new Translation2d(2.1, Units.inchesToMeters(190)),
-                        new Translation2d(3.86, Units.inchesToMeters(185))),
+                        new Translation2d(3.86, Units.inchesToMeters(190))),
                 // End end at the cube, facing forward
                 pickupPose,
                 config);
@@ -86,8 +86,8 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 pickupPose,
                 // Drive to cube
                 List.of(
-                        new Translation2d(3.86, Units.inchesToMeters(185)),
-                        new Translation2d(2.2, Units.inchesToMeters(185))),
+                        new Translation2d(3.86, Units.inchesToMeters(190)),
+                        new Translation2d(2.2, Units.inchesToMeters(190))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);

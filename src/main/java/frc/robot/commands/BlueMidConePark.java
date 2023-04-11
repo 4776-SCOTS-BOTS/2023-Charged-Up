@@ -45,7 +45,7 @@ public class BlueMidConePark extends SequentialCommandGroup {
     Pose2d startPose = new Pose2d(Units.inchesToMeters(75), Units.inchesToMeters(86.0), new Rotation2d(0));
     //Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
     //Pose2d pickupPoseFlipped = new Pose2d(7.1, Units.inchesToMeters(108), new Rotation2d(Math.toRadians(180)));
-    Pose2d balancePose = new Pose2d(Units.inchesToMeters(140), Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
+    Pose2d balancePose = new Pose2d(Units.inchesToMeters(165), Units.inchesToMeters(108), new Rotation2d(Math.toRadians(0)));
 
     // Create config for trajectory
     // RectangularRegionConstraint bumpConstraint = new
@@ -135,6 +135,7 @@ public class BlueMidConePark extends SequentialCommandGroup {
         new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Blue;}), 
         new PlaceFirstCone(drive, arm, gripper, intake, startPose),
         new MoveElbowThenShoulder(arm, Constants.ArmConstants.SAFE_POSITION, 1),
+        new InstantCommand(()->{intake.intakeRetract();}),
 
 
         driveToCube.andThen(() -> drive.drive(0, 0, 0, false)),
