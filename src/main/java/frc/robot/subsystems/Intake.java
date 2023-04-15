@@ -139,6 +139,10 @@ public class Intake extends SubsystemBase {
     magicCarpetMotor.stopMotor();
     isRunning = false;
   }
+  public void magicCarpetFast(){
+    magicCarpetMotor.set(-1);
+    isRunning = true; 
+  }
  
  
   public void intakeExtend(){

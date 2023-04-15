@@ -34,15 +34,14 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class BlueLeftCone extends SequentialCommandGroup {
+public class BlueLeftConeBackup extends SequentialCommandGroup {
     /** Creates a new CubeAndLeaveAuto. */
     DataLog log = DataLogManager.getLog();
     StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
 
-    public BlueLeftCone(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
-        Pose2d startPose = new Pose2d(0, Units.inchesToMeters(0), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(Units.feetToMeters(14), Units.inchesToMeters(0),
-                new Rotation2d(Math.toRadians(0)));
+    public BlueLeftConeBackup(DriveSubsystem drive, Arm arm, Gripper gripper, Intake intake) {
+        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.14, Units.inchesToMeters(178), new Rotation2d(Math.toRadians(0)));
 
         // Create config for trajectory
         // RectangularRegionConstraint bumpConstraint = new
@@ -58,18 +57,17 @@ public class BlueLeftCone extends SequentialCommandGroup {
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics)
-                .setEndVelocity(2.5)
-                .setReversed(false);
+                .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
+                .addConstraint(bumpConstraint);
 
         Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
                 // Start position
                 startPose,
                 // Drive to cube
-                List.of(new Translation2d(0.75, Units.inchesToMeters(0)),
-                        new Translation2d(1.5, Units.inchesToMeters(0))),
+                List.of(new Translation2d(2.1, Units.inchesToMeters(170)),
+                        new Translation2d(3.86, Units.inchesToMeters(185))),
                 // End end at the cube, facing forward
-                new Pose2d(pickupPose.getX() - 1.5, pickupPose.getY(), pickupPose.getRotation()),
+                pickupPose,
                 config);
 
         var thetaController = new ProfiledPIDController(
@@ -94,17 +92,21 @@ public class BlueLeftCone extends SequentialCommandGroup {
                 new InstantCommand(() -> {
                     Constants.ConfigConstants.alliance = Alliance.Blue;
                 }),
-                // Reset odometry to the starting pose of the trajectory.
-                new InstantCommand(() -> drive.resetOdometry(startPose)),
-                new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
-                // new PlaceFirstCone(drive, arm, gripper, intake, startPose),
-                // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                new PlaceFirstCone(drive, arm, gripper, intake, startPose),
+                new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
 
                 // Drive over line
-
-                driveToCube,
-        new ChaseCube(drive, pickupPose, 2.5, 5)
-        );
+                new ParallelCommandGroup(
+                        driveToCube,
+                        new WaitCommand(0.25)
+                                .andThen(new InstantCommand(intake::intakeExtend))
+                                .andThen(new InstantCommand(intake::intakeIn))),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false)),
+                new InstantCommand(() -> drive.drive(0, 0, 0, false)),
+                new WaitCommand(1),
+                new InstantCommand(intake::intakeOff),
+                new InstantCommand(intake::intakeOff),
+                new InstantCommand(intake::intakeRetract));
 
     }
 }

@@ -319,7 +319,7 @@ public final class Constants {
 
         // Swerve Module Alignment
         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-121.5));//-180
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-33));//-180
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-33 + 1.7));//-180
         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(-144));
         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-44));
         // DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));
@@ -351,11 +351,11 @@ public final class Constants {
         ModuleConstants.kRPMToMetersPerSecond = Math.PI * ModuleConstants.kWheelDiameter
             / (60 * ModuleConstants.kMotorGearsToWheelGears);
 
-        ModuleConstants.kPModuleTurningController = 0.45;//0.4
+        ModuleConstants.kPModuleTurningController = 0.6;//0.4
         ModuleConstants.kDModuleTurningController = 0.01;//0
 
         ModuleConstants.useSparkMaxPID = true;
-        ModuleConstants.kDriveP = 0.05;
+        ModuleConstants.kDriveP = 0.08;
         ModuleConstants.kDriveI = 0;
         ModuleConstants.kDriveD = 0.005;
         ModuleConstants.kDriveFF = 0.2;  // = maxV / 12v as a starting point

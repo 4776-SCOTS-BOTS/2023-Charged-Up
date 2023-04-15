@@ -36,6 +36,7 @@ import frc.robot.commands.BlueMidConePark;
 import frc.robot.commands.BlueRightCone;
 import frc.robot.commands.BlueRightConeCube;
 import frc.robot.commands.ChargeStationBalance;
+import frc.robot.commands.ChaseCube;
 import frc.robot.commands.CurrentSenseIntake;
 import frc.robot.commands.MoveElbowThenShoulder;
 import frc.robot.commands.MoveShoulderThenElbow;
@@ -379,7 +380,9 @@ public class RobotContainer {
         new InstantCommand(ControlArm, m_Arm)));
 
     cubeLowStick.onTrue(new InstantCommand(()->{m_Intake.runIntake(Constants.IntakeConstants.kSpitCubeLow);}));
-    cubeHighStick.onTrue(new InstantCommand(()->{m_Intake.runIntake(Constants.IntakeConstants.kSpitCubeHigh);}));
+    cubeHighStick.onTrue(new InstantCommand(()->{m_Intake.runIntake(Constants.IntakeConstants.kSpitCubeHigh);
+                                                 m_Intake.magicCarpetFast();
+    }));
 
     // standingConePickupButton.onTrue(new StandingCone(m_Arm, m_gripper, m_Intake)
     //     .andThen(m_Arm.setArmPositionCommand(Constants.ArmConstants.PICKUP_STANDING_CONE)));
@@ -448,8 +451,11 @@ public class RobotContainer {
 
     brakeButton.whileTrue(new RunCommand(m_robotDrive::setXModuleState, m_robotDrive));
     // AUTO BALANCE COMMAND
-    testCommandButton.onTrue(new ChargeStationBalance(m_robotDrive, 3, 10));
+    // testCommandButton.onTrue(new ChargeStationBalance(m_robotDrive, 3, 10));
+    testCommandButton.onTrue(new InstantCommand(() -> m_robotDrive.poseEstimator.setCurrentPose(new Pose2d()))
+    .andThen(new ChaseCube(m_robotDrive, new Pose2d(1.0, 0.0, new Rotation2d(0)), 0, 5)));
 
+  
     // m_robotDrive.turnByAngle(179.9);
     // }, m_robotDrive));
 

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ConfigConstants;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import frc.robot.subsystems.LED;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -41,7 +43,15 @@ public class Robot extends TimedRobot {
     
     // Start Camera Server
     if (ConfigConstants.hasCamera) {
-      CameraServer.startAutomaticCapture();
+      // UsbCamera driverCam = CameraServer.startAutomaticCapture();
+      // // driverCam.setResolution(176, 144);
+      // // driverCam.setFPS(30);
+      // driverCam.setVideoMode(PixelFormat.kMJPEG, 320, 240, 30);
+      // driverCam.setExposureManual(25);
+      // driverCam.setExposureHoldCurrent();
+      // driverCam.setWhiteBalanceManual(4601);
+      // driverCam.setWhiteBalanceHoldCurrent();
+
     }
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
