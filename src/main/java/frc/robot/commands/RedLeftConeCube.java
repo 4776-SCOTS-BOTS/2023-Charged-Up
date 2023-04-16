@@ -45,8 +45,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
         // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(251.5), new
         // Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(295.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.2, Units.inchesToMeters(284), new Rotation2d(Math.toRadians(0)));
-        Pose2d scoringPose = new Pose2d(1.75, Units.inchesToMeters(272), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.1, Units.inchesToMeters(279), new Rotation2d(Math.toRadians(0)));
+        Pose2d scoringPose = new Pose2d(1.75, Units.inchesToMeters(273), new Rotation2d(0));
 
 
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
@@ -97,8 +97,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 pickupPose,
                 // Drive to cube
                 List.of(
-                        new Translation2d(3.86, Units.inchesToMeters(285)),
-                        new Translation2d(2.2, Units.inchesToMeters(285))),
+                        new Translation2d(3.86, Units.inchesToMeters(283)),
+                        new Translation2d(2.2, Units.inchesToMeters(283))),
                 // End end at the cube, facing forward
                 scoringPose,
                 configRev);
