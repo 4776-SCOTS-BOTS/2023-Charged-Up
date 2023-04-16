@@ -26,6 +26,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.customClass.ArmPosition;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -57,18 +58,20 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 new MaxVelocityConstraint(1.8));
 
         TrajectoryConfig config = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                4.0,
+                3.5)
                 // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
+                .setKinematics(DriveConstants.kDriveKinematics)
+                .setReversed(false)
                 .addConstraint(bumpConstraint);
 
-        TrajectoryConfig configRev = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics).setReversed(true)
-                .addConstraint(bumpConstraint);
+                TrajectoryConfig configRev = new TrajectoryConfig(
+                    4.0,
+                    3.5)
+                    // Add kinematics to ensure max speed is actually obeyed
+                    .setKinematics(DriveConstants.kDriveKinematics)
+                    .setReversed(true)
+                    .addConstraint(bumpConstraint);
 
         Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
                 // Start position
@@ -77,7 +80,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 List.of(new Translation2d(2.1, Units.inchesToMeters(30)),
                         new Translation2d(3.86, Units.inchesToMeters(30))),
                 // End end at the cube, facing forward
-                pickupPose,
+                new Pose2d(pickupPose.getX()-1.5, pickupPose.getY(), pickupPose.getRotation()),
                 config);
 
         Trajectory driveToPlaceTraj = TrajectoryGenerator.generateTrajectory(
@@ -92,7 +95,7 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 configRev);
 
         var thetaController = new ProfiledPIDController(
-                2, 0, 0, AutoConstants.kThetaControllerConstraints);
+                3, 0, 0, AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand driveToCube = new SwerveControllerCommand(
@@ -102,8 +105,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
                 thetaController,
                 drive::setModuleStates,
                 drive);
@@ -114,8 +117,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
                 thetaController,
                 drive::setModuleStates,
                 drive);
@@ -130,22 +133,29 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 // new InstantCommand(() -> drive.resetOdometry(startPose)),
                 // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
 
+                new InstantCommand(intake::intakeExtend),
                 // Drive over line
                 new ParallelCommandGroup(
-                        new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                        driveToCube,
                         new SequentialCommandGroup(
                                 new WaitCommand(0.25),
                                 new InstantCommand(intake::intakeExtend),
-                                new InstantCommand(intake::intakeIn))),
+                                new InstantCommand(intake::intakeIn),
+                                new InstantCommand(() -> {
+                                    intake.runIntake(0.8
+                                            * Constants.IntakeConstants.kIntakePowerCone);
+                                })),
+                        new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                        driveToCube.andThen(new ChaseCube(drive, pickupPose, 3.0, 5))
+                        ),
 
-                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                // new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                // new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
 
-                new WaitCommand(0.5),
+                new WaitCommand(1.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeRetract),
+
 
                 new ParallelCommandGroup(
                         new GrabAndReadyCube(arm, intake, gripper),
@@ -162,8 +172,8 @@ public class BlueRightConeCube extends SequentialCommandGroup {
                 new WaitCommand(0.25),
                 new InstantCommand(gripper::retractKicker),
                 
-                // new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                new InstantCommand(intake::intakeRetract)
+                arm.setArmPositionCommand(new ArmPosition(ArmConstants.CUBE_HIGH_POSITION.elbowDegrees - 30,
+                        ArmConstants.CUBE_HIGH_POSITION.shoulderDegrees))
 
         );
 

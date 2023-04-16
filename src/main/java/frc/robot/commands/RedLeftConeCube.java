@@ -48,34 +48,26 @@ public class RedLeftConeCube extends SequentialCommandGroup {
         Pose2d pickupPose = new Pose2d(7.2, Units.inchesToMeters(284), new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(1.75, Units.inchesToMeters(272), new Rotation2d(0));
 
-        double pickupRange = 0.5;
-        Pose2d pickupStart = new Pose2d(pickupPose.getX() - pickupRange, pickupPose.getY(), pickupPose.getRotation());
 
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
                 new Translation2d(3.295, Units.inchesToMeters(256)),
                 new Translation2d(4.46, Units.inchesToMeters(315.5)),
-                new MaxVelocityConstraint(1.0));
+                new MaxVelocityConstraint(1.8));
 
         TrajectoryConfig config = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                4.0,
+                3.5)
                 // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
+                .setKinematics(DriveConstants.kDriveKinematics)
+                .setReversed(false)
                 .addConstraint(bumpConstraint);
 
-        TrajectoryConfig configPickup = new TrajectoryConfig(
-                AutoConstants.kPickupSpeed,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-                .addConstraint(bumpConstraint)
-                .setStartVelocity(1.5);
-
         TrajectoryConfig configRev = new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                4.0,
+                3.5)
                 // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.kDriveKinematics).setReversed(true)
+                .setKinematics(DriveConstants.kDriveKinematics)
+                .setReversed(true)
                 .addConstraint(bumpConstraint);
 
         Trajectory driveToCubeTraj = TrajectoryGenerator.generateTrajectory(
@@ -85,7 +77,7 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 List.of(new Translation2d(2.1, Units.inchesToMeters(290)),
                         new Translation2d(3.86, Units.inchesToMeters(285))),
                 // End end at the cube, facing forward
-                pickupPose,
+                new Pose2d(pickupPose.getX()-1.5, pickupPose.getY(), pickupPose.getRotation()),
                 config);
 
         // Trajectory driveToCubeTrajFinish = TrajectoryGenerator.generateTrajectory(
@@ -112,7 +104,7 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 configRev);
 
         var thetaController = new ProfiledPIDController(
-                2, 0, 0, AutoConstants.kThetaControllerConstraints);
+                3, 0, 0, AutoConstants.kThetaControllerConstraints);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         SwerveControllerCommand driveToCube = new SwerveControllerCommand(
@@ -121,8 +113,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
                 thetaController,
                 drive::setModuleStates,
                 drive);
@@ -133,8 +125,8 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
                 thetaController,
                 drive::setModuleStates,
                 drive);
@@ -149,19 +141,25 @@ public class RedLeftConeCube extends SequentialCommandGroup {
                 // new InstantCommand(() -> drive.resetOdometry(startPose)),
                 // new InstantCommand(() -> drive.poseEstimator.setCurrentPose(startPose)),
 
+                new InstantCommand(intake::intakeExtend),
                 // Drive over line
                 new ParallelCommandGroup(
-                        new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                        driveToCube,
                         new SequentialCommandGroup(
                                 new WaitCommand(0.25),
                                 new InstantCommand(intake::intakeExtend),
-                                new InstantCommand(intake::intakeIn))),
+                                new InstantCommand(intake::intakeIn),
+                                new InstantCommand(() -> {
+                                    intake.runIntake(0.8
+                                            * Constants.IntakeConstants.kIntakePowerCone);
+                                })),
+                        new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
+                        driveToCube.andThen(new ChaseCube(drive, pickupPose, 3.0, 5))
+                        ),
 
-                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                // new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                // new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
 
-                new WaitCommand(0.5),
+                new WaitCommand(1.5),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeOff),
                 new InstantCommand(intake::intakeRetract),

@@ -42,6 +42,7 @@ public class LimeLightCubeTracker extends SubsystemBase {
   private Timer timer = new Timer();
   private double lastGoodTime = -1;
   private double lastOnline = 1e6;
+  private double lastY = 0;
 
   DataLog log = DataLogManager.getLog();
   
@@ -55,11 +56,12 @@ public class LimeLightCubeTracker extends SubsystemBase {
 
   public double cubeFromCenterLine(){
     double online;
+    double y3 = tySub.get();
 
-    if(tvSub.get() == 1){
+    if(tvSub.get() == 1 && (y3 - lastY) < 1){
       lastGoodTime = timer.getFPGATimestamp();
       double x3 = txSub.get();
-      double y3 = tySub.get();
+      lastY = y3;
 
       //Negative value means cone is to the right
       online = ( (X2-X1) * (y3-Y1) ) - ( (Y2 - Y1) * (x3-X1) );

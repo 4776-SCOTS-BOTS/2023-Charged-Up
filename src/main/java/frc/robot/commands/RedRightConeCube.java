@@ -62,14 +62,6 @@ public class RedRightConeCube extends SequentialCommandGroup {
                 .addConstraint(bumpConstraint)
                 .setEndVelocity(3.0);
 
-        // TrajectoryConfig configPickup = new TrajectoryConfig(
-        //         3.3,
-        //         2.4)
-        //         // Add kinematics to ensure max speed is actually obeyed
-        //         .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-        //         .addConstraint(bumpConstraint)
-        //         .setStartVelocity(1.5);
-
         TrajectoryConfig configRev = new TrajectoryConfig(
                 4.0,
                 3.5)

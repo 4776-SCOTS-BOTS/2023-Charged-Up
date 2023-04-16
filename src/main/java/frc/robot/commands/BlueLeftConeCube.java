@@ -41,7 +41,8 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
         DataLog log = DataLogManager.getLog();
         StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
 
-        //Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new Rotation2d(0));
+        // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new
+        // Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(196), new Rotation2d(0));
         Pose2d pickupPose = new Pose2d(7.0, Units.inchesToMeters(190), new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(174), new Rotation2d(0));
@@ -58,15 +59,17 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 new MaxVelocityConstraint(2.0));
 
         TrajectoryConfig config = new TrajectoryConfig(
-                3.6,
-                2.0)
+                4.0,
+                // AutoConstants.kMaxSpeedMetersPerSecond,
+                3.5)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(false)
-                .addConstraint(bumpConstraint);
+                .addConstraint(bumpConstraint)
+                .setEndVelocity(3.0);
 
         TrajectoryConfig configRev = new TrajectoryConfig(
-                3.6,
-                2.4)
+                4.0,
+                3.5)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics).setReversed(true)
                 .addConstraint(bumpConstraint);
@@ -78,7 +81,7 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 List.of(new Translation2d(2.1, Units.inchesToMeters(190)),
                         new Translation2d(3.86, Units.inchesToMeters(190))),
                 // End end at the cube, facing forward
-                pickupPose,
+                new Pose2d(pickupPose.getX()-1.5, pickupPose.getY(), pickupPose.getRotation()),
                 config);
 
         Trajectory driveToPlaceTraj = TrajectoryGenerator.generateTrajectory(
@@ -102,8 +105,8 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
                 thetaController,
                 drive::setModuleStates,
                 drive);
@@ -114,8 +117,8 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                 DriveConstants.kDriveKinematics,
 
                 // Position controllers
-                new PIDController(2, 0, 0),
-                new PIDController(2, 0, 0),
+                new PIDController(3, 0, 0),
+                new PIDController(3, 0, 0),
                 thetaController,
                 drive::setModuleStates,
                 drive);
@@ -138,13 +141,14 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
                                 new InstantCommand(intake::intakeExtend),
                                 new InstantCommand(intake::intakeIn),
                                 new InstantCommand(() -> {
-                                    intake.runIntake(0.8 * Constants.IntakeConstants.kIntakePowerCone);
+                                    intake.runIntake(0.8
+                                            * Constants.IntakeConstants.kIntakePowerCone);
                                 })),
                         new MoveElbowThenShoulder(arm, ArmConstants.SAFE_POSITION),
-                        driveToCube),
+                        driveToCube.andThen(new ChaseCube(drive, pickupPose, 3.0, 5))),
 
-                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
-                new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                // new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
+                // new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
 
                 new WaitCommand(1.5),
                 new InstantCommand(intake::intakeOff),
@@ -168,7 +172,6 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
 
                 arm.setArmPositionCommand(new ArmPosition(ArmConstants.CUBE_HIGH_POSITION.elbowDegrees - 30,
                         ArmConstants.CUBE_HIGH_POSITION.shoulderDegrees))
-        // new InstantCommand(intake::intakeRetract)
 
         );
 

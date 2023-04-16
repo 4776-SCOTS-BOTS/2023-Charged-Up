@@ -23,7 +23,7 @@ public class CurrentSenseIntake extends CommandBase {
 
   private final double START_DELAY = 0.25; //seconds
   private final double STALL_DELAY = 0.08;
-  private final double STALL_CURRENT = 40;//AMPS
+  private final double STALL_CURRENT = 35;//AMPS
 
   public CurrentSenseIntake(Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
