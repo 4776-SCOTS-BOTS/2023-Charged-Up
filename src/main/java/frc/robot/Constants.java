@@ -318,10 +318,10 @@ public final class Constants {
         ConfigConstants.hasCamera = true;
 
         // Swerve Module Alignment
-        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-121.5));//-180
-        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-33 + 1.7));//-180
+        DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(-107.5));//-121.5+1.5
+        DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-33));//-180
         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(-144));
-        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-44));
+        DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-44+2));
         // DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(162 - 180));
         // DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-42.5 + 180));
         // DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(60.7));

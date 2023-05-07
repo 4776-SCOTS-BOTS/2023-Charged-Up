@@ -85,6 +85,14 @@ public class Intake extends SubsystemBase {
     filteredCurrent = intakeCurrentFilter.calculate(rawCurrent);
   }
 
+  public void setStallLow(){
+    intakeMotor.setSmartCurrentLimit(45);
+  }
+
+  public void setStallNormal(){
+    intakeMotor.setSmartCurrentLimit(45);
+  }
+  
   public double getIntakeCurrent(){
     return intakeMotor.getOutputCurrent();
   }

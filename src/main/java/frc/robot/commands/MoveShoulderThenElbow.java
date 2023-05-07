@@ -46,7 +46,7 @@ public class MoveShoulderThenElbow extends CommandBase {
   public void execute() {
     if (inStage1) {
       double shoulderPos = m_Arm.getShoulderPositionDeg();
-      if (Math.abs(shoulderPos - position1.shoulderDegrees) < 10) {
+      if (Math.abs(shoulderPos - position1.shoulderDegrees) < 15) {
         m_Arm.setElbowPosition(position1.elbowRadians);
         inStage1 = false;
       }

@@ -44,7 +44,7 @@ public class BlueLeftConeCube extends SequentialCommandGroup {
         // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(152), new
         // Rotation2d(0));
         Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(196), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.0, Units.inchesToMeters(180), new Rotation2d(Math.toRadians(0)));
+        Pose2d pickupPose = new Pose2d(7.2, Units.inchesToMeters(180), new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.0, Units.inchesToMeters(174), new Rotation2d(0));
 
         // Create config for trajectory

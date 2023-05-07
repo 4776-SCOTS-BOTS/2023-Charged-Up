@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.customClass.ArmPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Gripper;
@@ -53,19 +54,22 @@ public class PlaceFirstCone extends SequentialCommandGroup {
 
         // Drive against wall and ready arm
         new ParallelCommandGroup(
-            new DriveToWall(drive, 0.5),
+            //new DriveToWall(drive, 0.5),
             new MoveShoulderThenElbow(arm, ArmConstants.HIGH_POSITION_FINAL)),
+            new WaitCommand(1.0),
         
         // Stop drive, extend and drop
         new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
         new InstantCommand(() -> drive.drive(0, 0, 0, false), drive),
         //new MultiStepArm(arm, ArmConstants.HIGH_POSITION, ArmConstants.HIGH_POSITION),
-        new InstantCommand(intake::intakeExtend),
-        new WaitCommand(1.75),
+        arm.setArmPositionCommand(new ArmPosition(ArmConstants.HIGH_POSITION_FINAL.elbowDegrees, 
+        ArmConstants.HIGH_POSITION_FINAL.shoulderDegrees+7)),
+        new WaitCommand(0.25),
         //new InstantCommand(gripper::extendKicker),
         //new InstantCommand(intake::intakeRetract),
         new InstantCommand(gripper::openGripper, gripper),
         new WaitCommand(0.2),
+        new InstantCommand(intake::intakeExtend),
         //new InstantCommand(gripper::retractKicker),
 
         new InstantCommand(() -> statusLog.append("Leaving Place")),

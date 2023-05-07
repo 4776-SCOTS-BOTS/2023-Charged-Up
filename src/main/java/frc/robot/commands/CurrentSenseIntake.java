@@ -19,11 +19,14 @@ public class CurrentSenseIntake extends CommandBase {
   private Arm arm;
   private double startTime, stallTime;
   private boolean stallStarted;
+  private double stallFinishedTime;
   private boolean isFinished;
+  private boolean finalFinished;
 
   private final double START_DELAY = 0.25; //seconds
-  private final double STALL_DELAY = 0.08;
-  private final double STALL_CURRENT = 35;//AMPS
+  private final double STALL_DELAY = 0.18;
+  private final double STALL_CURRENT = 30;//AMPS
+  private final double FINAL_BLIP = 0.5; //seconds
 
   public CurrentSenseIntake(Intake intake, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -42,6 +45,7 @@ public class CurrentSenseIntake extends CommandBase {
     intake.intakeIn();
     intake.runIntake(0.7*Constants.IntakeConstants.kIntakePowerCone);
     intake.magicCarpetOff();
+    intake.setStallLow();
     startTime = Timer.getFPGATimestamp();
     stallStarted = false;
     isFinished = false;
@@ -57,13 +61,23 @@ public class CurrentSenseIntake extends CommandBase {
       } else if (stallStarted && (Timer.getFPGATimestamp() - stallTime >= STALL_DELAY)){
         intake.intakeOff();
         isFinished = true;
+        stallFinishedTime = Timer.getFPGATimestamp();
       }
     }
+    // if(isFinished){
+    //   intake.runIntake(0.25);
+    //   if(Timer.getFPGATimestamp()-stallFinishedTime > FINAL_BLIP){
+    //     finalFinished = true;
+    //   }
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intake.intakeOff();
+    intake.setStallNormal();
+  }
 
   // Returns true when the command should end.
   @Override

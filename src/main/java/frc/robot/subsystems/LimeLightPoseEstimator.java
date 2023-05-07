@@ -51,10 +51,11 @@ public class LimeLightPoseEstimator extends SubsystemBase {
 
     // this.alliance = DriverStation.getAlliance();
 
-    Shuffleboard.getTab("Auto")
-        .add("Alliance", DriverStation.getAlliance().toString())
-        .withPosition(0, 0)
-        .withSize(4, 2);
+    // Comment 4/21
+    // Shuffleboard.getTab("Auto")
+    //     .add("Alliance", DriverStation.getAlliance().toString())
+    //     .withPosition(0, 0)
+    //     .withSize(4, 2);
 
     table = NetworkTableInstance.getDefault().getTable(limelightName);
     poseRedSub = table.getDoubleArrayTopic(poseNameRed).subscribe(new double[] {});

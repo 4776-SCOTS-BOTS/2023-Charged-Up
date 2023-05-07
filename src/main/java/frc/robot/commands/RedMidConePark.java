@@ -116,7 +116,7 @@ public class RedMidConePark extends SequentialCommandGroup {
                 new InstantCommand(()->{Constants.ConfigConstants.alliance = Alliance.Red;}),         
                 new PlaceFirstCone(drive, arm, gripper, intake, startPose),
                 new MoveElbowThenShoulder(arm, Constants.ArmConstants.SAFE_POSITION, 2.0),
-                new InstantCommand(intake::intakeRetract),
+                // new InstantCommand(intake::intakeRetract),
                 
 
 

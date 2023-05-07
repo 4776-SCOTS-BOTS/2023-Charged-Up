@@ -44,8 +44,8 @@ public class RedRightConeCube extends SequentialCommandGroup {
 
         // Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(163.5), new
         // Rotation2d(0));
-        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(119.5), new Rotation2d(0));
-        Pose2d pickupPose = new Pose2d(7.0, Units.inchesToMeters(135.0), new Rotation2d(Math.toRadians(0)));
+        Pose2d startPose = new Pose2d(1.905, Units.inchesToMeters(123), new Rotation2d(0));
+        Pose2d pickupPose = new Pose2d(7.2, Units.inchesToMeters(135.0), new Rotation2d(Math.toRadians(0)));
         Pose2d scoringPose = new Pose2d(2.1, Units.inchesToMeters(141.5), new Rotation2d(0));
 
         RectangularRegionConstraint bumpConstraint = new RectangularRegionConstraint(
@@ -159,7 +159,8 @@ public class RedRightConeCube extends SequentialCommandGroup {
 
                 new WaitCommand(1.5),
                 new InstantCommand(intake::intakeOff),
-                new InstantCommand(intake::intakeOff),
+                //new InstantCommand(intake::intakeOff),
+                new InstantCommand(()->{intake.runMagicCarpet(0.3);}),
                 new InstantCommand(intake::intakeRetract),
 
                 new ParallelCommandGroup(

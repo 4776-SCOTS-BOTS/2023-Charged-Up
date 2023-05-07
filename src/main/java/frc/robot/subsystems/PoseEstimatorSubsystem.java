@@ -70,12 +70,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   private final SwerveDrivePoseEstimator poseEstimator;
 
   DataLog log = DataLogManager.getLog();
-  StringLogEntry limePoseLog = new StringLogEntry(log, "/my/LimePose");
-  StringLogEntry currentPoseLog = new StringLogEntry(log, "/my/CurrentPose");
-  DoubleLogEntry distancePrevLog = new DoubleLogEntry(log, "/my/DistancePrev");
-  DoubleLogEntry tagDistLog = new DoubleLogEntry(log, "/my/TagDist");
-  DoubleLogEntry tagIDLog = new DoubleLogEntry(log, "/my/TagID");
-  StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
+  // StringLogEntry limePoseLog = new StringLogEntry(log, "/my/LimePose");
+  // StringLogEntry currentPoseLog = new StringLogEntry(log, "/my/CurrentPose");
+  // DoubleLogEntry distancePrevLog = new DoubleLogEntry(log, "/my/DistancePrev");
+  // DoubleLogEntry tagDistLog = new DoubleLogEntry(log, "/my/TagDist");
+  // DoubleLogEntry tagIDLog = new DoubleLogEntry(log, "/my/TagID");
+  // StringLogEntry statusLog = new StringLogEntry(log, "/my/status");
   
 
   private final Field2d field2d = new Field2d();
@@ -124,12 +124,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     currentLimeLightPose = timestampedPoses3d[0];
     distancePrev = previousTrans.getDistance(currentLimeLightPose.pose3d.toPose2d().getTranslation());
     tagDistance = currentLimeLightPose.tagDistance;
-    
-    tagIDLog.append(currentLimeLightPose.tagID);
-    limePoseLog.append(getFormattedLimePose());
-    currentPoseLog.append(getFormattedPose());
-    distancePrevLog.append(distancePrev);
-    tagDistLog.append(tagDistance);
+
+    // Comment 4/21
+    // tagIDLog.append(currentLimeLightPose.tagID);
+    // limePoseLog.append(getFormattedLimePose());
+    // currentPoseLog.append(getFormattedPose());
+    // distancePrevLog.append(distancePrev);
+    // tagDistLog.append(tagDistance);
 
     //System.out.println("Target Distance = " + tagDistance);
     
@@ -149,7 +150,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     //if (false){
     if (currentLimeLightPose.timestamp != previousPipelineTimestamp && currentLimeLightPose.tagID > 0 
     && distancePrev <= distanceLimit && validPoint){
-      statusLog.append("Updating pose with Limelight");
+      // Comment 4/21
+      // statusLog.append("Updating pose with Limelight");
       
       previousPipelineTimestamp = currentLimeLightPose.timestamp;
       previousTrans = getCurrentPose().getTranslation();
