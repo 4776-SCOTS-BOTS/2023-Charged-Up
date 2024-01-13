@@ -53,6 +53,7 @@ import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.Shooter;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -73,7 +74,7 @@ public class RobotContainer {
   private final Kicker m_Kicker = new Kicker(false);
   private final Gripper m_gripper = new Gripper(true, m_Kicker);
 
-  
+  private Shooter shooter = new Shooter(58, 59);
 
   private Intake m_Intake = new Intake();
   private LED m_Led;
@@ -85,6 +86,7 @@ public class RobotContainer {
   // Trigger methods
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
+  XboxController m_shooterController = new XboxController(2);
 
   CommandXboxController m_manipCommandController = new CommandXboxController(OIConstants.kManipulatorControllerPort);
 
@@ -98,13 +100,14 @@ public class RobotContainer {
   final JoystickButton signalCubeButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
   final JoystickButton signalConeButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
  
+  final JoystickButton shoot = new JoystickButton(m_shooterController, XboxController.Button.kRightBumper.value);
+  final JoystickButton stopShoot = new JoystickButton(m_shooterController, XboxController.Button.kLeftBumper.value);
+
   // Manipulator controllers
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
   final JoystickButton intakeStopButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
   
-  
-
   // Arm Position Buttons
   final JoystickButton safePositionButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final POVButton kickerButtonExtend = new POVButton(m_manipulatorController, 0);
@@ -320,6 +323,9 @@ public class RobotContainer {
     // intakePowerConeButton.onTrue(new InstantCommand(m_Intake::setIntakePowerCone,
     // m_Intake)
     // .andThen(new InstantCommand(m_Led::setYellow, m_Led)));
+
+    shoot.onTrue(new InstantCommand(shooter::spinLaunch, shooter));
+    stopShoot.onTrue(new InstantCommand(shooter::stop, shooter));
 
     intakeExtendButton.onTrue(new InstantCommand(m_Intake::intakeExtend, m_Intake));
     intakeRetractButton.onTrue(new InstantCommand(m_Intake::intakeRetract, m_Intake));

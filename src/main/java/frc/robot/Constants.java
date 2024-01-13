@@ -114,7 +114,7 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     public static final boolean kGyroReversed = true;
-    public static final double kMaxSpeedMetersPerSecond = 4.9; // Theoretically 5.  Need to leave headroom for compensation
+    public static final double kMaxSpeedMetersPerSecond = 3.0; // Theoretically 5.  Need to leave headroom for compensation
 
   }
 
